@@ -21,12 +21,18 @@ server_build:
   script:
     - npm install --prefix ./server
     - npm build --prefix ./server
+  only:
+    changes:
+      - ./server/**/*
 
 client_build:
   stage: build
   script:
     - npm install --prefix ./client
     - npm build --prefix ./client
+  only:
+    changes:
+      - ./client/**/*
 
 ###############################################################################
 # TEST STAGE
@@ -36,11 +42,17 @@ server_test:
   script:
     - npm install --prefix ./server
     - npm test --prefix ./server
+  only:
+    changes:
+      - ./server/**/*
 
 client_test:
   stage: test
   script:
     - npm install --prefix ./client
     - npm test --prefix ./client
+  only:
+    changes:
+      - ./client/**/*
 
 
