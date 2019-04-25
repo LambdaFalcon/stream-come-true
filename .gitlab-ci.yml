@@ -1,15 +1,46 @@
-image: node:latest
+###############################################################################
+# SETTINGS
+
+# latest LTS that works well with create-react-app
+image: node:10.15.3
+
+stages:
+  - build
+  - test
 
 cache:
   paths:
-  - node_modules/
+    - server/node_modules/
+    - client/node_modules/
 
-build:
-  script:
-   - npm install
-   - npm build
+###############################################################################
+# BUILD STAGE
 
-test:
+server_build:
+  stage: build
   script:
-   - npm install
-   - npm test
+    - npm install --prefix ./server
+    - npm build --prefix ./server
+
+client_build:
+  stage: build
+  script:
+    - npm install --prefix ./client
+    - npm build --prefix ./client
+
+###############################################################################
+# TEST STAGE
+
+server_test:
+  stage: test
+  script:
+    - npm install --prefix ./server
+    - npm test --prefix ./server
+
+client_test:
+  stage: test
+  script:
+    - npm install --prefix ./client
+    - npm test --prefix ./client
+
+
