@@ -7,6 +7,7 @@ image: node:10.15.3
 stages:
   - build
   - test
+  - deploy
 
 cache:
   paths:
@@ -55,4 +56,10 @@ client_test:
     changes:
       - ./client/**/*
 
+###############################################################################
+# DEPLOY STAGE
 
+server_deploy:
+  stage: deploy
+  script: "echo 'No deploy job yet.'"
+  only: master
