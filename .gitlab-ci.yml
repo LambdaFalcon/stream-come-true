@@ -62,4 +62,6 @@ client_test:
 server_deploy:
   stage: deploy
   script: "echo 'No deploy job yet.'"
-  only: master
+  only:
+    refs:
+      - master
