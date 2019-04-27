@@ -7,33 +7,37 @@ image: node:10.15.3
 stages:
   - build
   - test
+  - staging
   - deploy
+
+variables:
+  CLIENT_DIR: "./client"
+  SERVER_DIR: "./server"
 
 cache:
   paths:
-    - server/node_modules/
-    - client/node_modules/
+    - $SERVER_DIR/node_modules/
+    - $CLIENT_DIR/node_modules/
 
 ###############################################################################
 # BUILD STAGE
 
-server_build:
+server_install:
   stage: build
   script:
-    - npm ci --prefix ./server
-    - npm run build --prefix ./server
+    - npm ci --prefix $SERVER_DIR
   only:
     changes:
-      - ./server/**/*
+      - $SERVER_DIR/**/*
 
 client_build:
   stage: build
   script:
-    - npm ci --prefix ./client
-    - npm run build --prefix ./client
+    - npm ci --prefix $CLIENT_DIR
+    - npm run build --prefix $CLIENT_DIR
   only:
     changes:
-      - ./client/**/*
+      - $CLIENT_DIR/**/*
 
 ###############################################################################
 # TEST STAGE
@@ -41,25 +45,36 @@ client_build:
 server_test:
   stage: test
   script:
-    - npm ci --prefix ./server
-    - npm test --prefix ./server
+    - npm ci --prefix $SERVER_DIR
+    - npm test --prefix $SERVER_DIR
   only:
     changes:
-      - ./server/**/*
+      - $SERVER_DIR/**/*
 
 client_test:
   stage: test
   script:
-    - npm ci --prefix ./client
-    - npm test --prefix ./client
+    - npm ci --prefix $CLIENT_DIR
+    - npm test --prefix $CLIENT_DIR
   only:
     changes:
-      - ./client/**/*
+      - $CLIENT_DIR/**/*
+
+###############################################################################
+# STAGING STAGE
+
+staging_job:
+  stage: staging
+  script: "echo 'No staging job yet.'"
+  only:
+    refs:
+      - dev
+      - master
 
 ###############################################################################
 # DEPLOY STAGE
 
-server_deploy:
+deploy_job:
   stage: deploy
   script: "echo 'No deploy job yet.'"
   only:
