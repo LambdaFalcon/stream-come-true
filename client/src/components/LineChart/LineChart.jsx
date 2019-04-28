@@ -1,33 +1,45 @@
 import React from "react";
 
 import "jqwidgets-scripts/jqwidgets/styles/jqx.base.css";
-
-import JqxBarGauge from "jqwidgets-scripts/jqwidgets-react-tsx/jqxbargauge";
+import "jqwidgets-scripts/jqwidgets/styles/jqx.material-purple.css";
+import JqxChart from "jqwidgets-scripts/jqwidgets-react-tsx/jqxchart";
 
 class LineChart extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    const n = 100;
+    const data = [...Array(n).keys()].map(n => ({
+      date: new Date(n),
+      value: (Math.random() + 0.5) * n
+    }));
+
     this.state = {
-      tooltip: {
-        formatFunction(value) {
-          return "Year: 2016 Price Index:" + value;
-        },
-        visible: true
-      },
-      values: [10, 20, 30, 40, 50]
+      width: "100%",
+      source: data,
+      xAxis: { dataField: "date" },
+      seriesGroups: [
+        {
+          type: "line",
+          seriesGapPercent: 0,
+          valueAxis: { minValue: 0, description: "count" },
+          series: [{ dataField: "value", displayText: "count" }]
+        }
+      ]
     };
   }
 
   render() {
     return (
-      <JqxBarGauge
-        width={600}
-        height={600}
-        max={60}
+      <JqxChart
+        style={{ width: 850, height: 500 }}
+        title={"Posts over time"}
+        description={""}
+        enableAnimations={true}
+        source={this.state.source}
+        xAxis={this.state.xAxis}
+        seriesGroups={this.state.seriesGroups}
         colorScheme={"scheme02"}
-        values={this.state.values}
-        tooltip={this.state.tooltip}
       />
     );
   }
