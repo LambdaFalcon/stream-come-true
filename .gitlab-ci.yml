@@ -11,8 +11,8 @@ stages:
   - deploy
 
 variables:
-  CLIENT_DIR: "./client"
-  SERVER_DIR: "./server"
+  CLIENT_DIR: "client"
+  SERVER_DIR: "server"
 
 cache:
   paths:
