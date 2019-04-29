@@ -10,14 +10,10 @@ stages:
   - staging
   - deploy
 
-variables:
-  CLIENT_DIR: "./client"
-  SERVER_DIR: "./server"
-
 cache:
   paths:
-    - $SERVER_DIR/node_modules/
-    - $CLIENT_DIR/node_modules/
+    - server/node_modules/
+    - client/node_modules/
 
 ###############################################################################
 # BUILD STAGE
@@ -25,19 +21,19 @@ cache:
 server_install:
   stage: build
   script:
-    - npm ci --prefix $SERVER_DIR
+    - npm ci --prefix server
   only:
     changes:
-      - $SERVER_DIR/**/*
+      - server/**/*
 
 client_build:
   stage: build
   script:
-    - npm ci --prefix $CLIENT_DIR
-    - npm run build --prefix $CLIENT_DIR
+    - npm ci --prefix client
+    - npm run build --prefix client
   only:
     changes:
-      - $CLIENT_DIR/**/*
+      - client/**/*
 
 ###############################################################################
 # TEST STAGE
@@ -45,20 +41,20 @@ client_build:
 server_test:
   stage: test
   script:
-    - npm ci --prefix $SERVER_DIR
-    - npm test --prefix $SERVER_DIR
+    - npm ci --prefix server
+    - npm test --prefix server
   only:
     changes:
-      - $SERVER_DIR/**/*
+      - server/**/*
 
 client_test:
   stage: test
   script:
-    - npm ci --prefix $CLIENT_DIR
-    - npm test --prefix $CLIENT_DIR
+    - npm ci --prefix client
+    - npm test --prefix client
   only:
     changes:
-      - $CLIENT_DIR/**/*
+      - client/**/*
 
 ###############################################################################
 # STAGING STAGE

@@ -3,9 +3,10 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const testAPIRouter = require('./routes/testAPI');
-const indexRouter = require('./routes/index');
 const cors = require("cors");
+
+const indexRouter = require('./routes/index');
+const milestone1Router = require('./routes/milestone1');
 
 const app = express();
 
@@ -13,14 +14,19 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// allow all CORS
+app.use(cors());
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// register routers
 app.use('/', indexRouter);
-app.use('/testAPI', testAPIRouter);
-app.use(cors());
+app.use('/milestone1', milestone1Router);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
