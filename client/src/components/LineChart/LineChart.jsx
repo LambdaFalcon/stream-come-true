@@ -11,32 +11,59 @@ class LineChart extends React.PureComponent {
     const n = 100;
     const data = [...Array(n).keys()].map(n => ({
       date: new Date(n),
-      value: (Math.random() + 0.5) * n
+      count: (Math.random() + 0.5) * n
     }));
 
     this.state = {
       width: "100%",
-      source: data,
-      xAxis: { dataField: "date" },
+      data,
+      xAxis: {
+        dataField: "date",
+        showGridLines: false,
+        formatFunction: function(d) {
+          return new Date(d).toDateString();
+        }
+      },
       seriesGroups: [
         {
           type: "line",
           seriesGapPercent: 0,
           valueAxis: { minValue: 0, description: "count" },
-          series: [{ dataField: "value", displayText: "count" }]
+          series: [{ dataField: "count", displayText: "count" }]
         }
       ]
     };
   }
 
+  componentWillMount() {
+    this.getData();
+  }
+
+  getData() {
+    fetch("http://localhost:9000/milestone1")
+      .then(res => res.json())
+      .then(res => res.aggregations.posts_over_time.buckets)
+      .then(res =>
+        res.map(({ key, doc_count }) => ({
+          date: new Date(key),
+          count: doc_count
+        }))
+      )
+      .then(res => {
+        this.setState({
+          data: res
+        });
+      });
+  }
+
   render() {
     return (
       <JqxChart
-        style={{ width: 850, height: 500 }}
+        style={{ width: 1600, height: 500 }}
         title={"Posts over time"}
         description={""}
         enableAnimations={true}
-        source={this.state.source}
+        source={this.state.data}
         xAxis={this.state.xAxis}
         seriesGroups={this.state.seriesGroups}
         colorScheme={"scheme02"}
