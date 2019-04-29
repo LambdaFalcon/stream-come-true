@@ -23,9 +23,11 @@ class LineChart extends React.PureComponent {
       data,
       xAxis: {
         dataField: "date",
+        type: "date",
         showGridLines: false,
-        formatFunction: function(d) {
-          return new Date(d).toDateString();
+        formatFunction: function(dString) {
+          const d = new Date(dString);
+          return `${d.toDateString()} - ${d.getHours()}:00`;
         }
       },
       seriesGroups: [
