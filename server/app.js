@@ -6,7 +6,6 @@ const logger = require('morgan');
 const cors = require("cors");
 
 const indexRouter = require('./routes/index');
-const testAPIRouter = require('./routes/testAPI');
 const milestone1Router = require('./routes/milestone1');
 
 const app = express();
@@ -26,7 +25,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // register routers
 app.use('/', indexRouter);
-app.use('/testAPI', testAPIRouter);
 app.use('/milestone1', milestone1Router);
 
 // catch 404 and forward to error handler
