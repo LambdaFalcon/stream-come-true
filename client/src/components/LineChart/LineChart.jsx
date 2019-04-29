@@ -4,6 +4,10 @@ import "jqwidgets-scripts/jqwidgets/styles/jqx.base.css";
 import "jqwidgets-scripts/jqwidgets/styles/jqx.material-purple.css";
 import JqxChart from "jqwidgets-scripts/jqwidgets-react-tsx/jqxchart";
 
+import config from "../../config";
+
+const { api } = config;
+
 class LineChart extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -40,7 +44,7 @@ class LineChart extends React.PureComponent {
   }
 
   getData() {
-    fetch("http://localhost:9000/milestone1")
+    fetch(`${api}/milestone1`)
       .then(res => res.json())
       .then(res => res.aggregations.posts_over_time.buckets)
       .then(res =>

@@ -2,6 +2,9 @@ import React from "react";
 import "./App.css";
 
 import Main from "./components/Main";
+import config from "./config";
+
+const { api } = config;
 
 class App extends React.Component {
   constructor(props) {
@@ -10,7 +13,7 @@ class App extends React.Component {
   }
 
   callAPI() {
-    fetch("http://localhost:9000/testAPI")
+    fetch(`${api}/testAPI`)
       .then(res => res.text())
       .then(res => this.setState({ testApiResponse: res }));
   }
