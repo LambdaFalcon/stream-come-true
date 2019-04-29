@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { Client } = require("@elastic/elasticsearch");
 
-const client = new Client({ node: "http://rhea1.inf.usi.ch:9200" });
+const ElasticClient = require("../elasticClient/ElasticClient");
+const elasticClient = new ElasticClient();
 
 const query = {
   aggs: {
@@ -19,10 +19,7 @@ const query = {
 const index = "reddit_news";
 
 router.get("/", async (req, res, next) => {
-  const result = await client.search({
-    index,
-    body: query
-  });
+  const result = await elasticClient.search(index, query);
 
   res.json(result.body);
 });
