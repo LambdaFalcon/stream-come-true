@@ -1,0 +1,78 @@
+###############################################################################
+# SETTINGS
+
+# latest LTS that works well with create-react-app
+image: node:10.15.3
+
+stages:
+  - build
+  - test
+  - staging
+  - deploy
+
+cache:
+  paths:
+    - server/node_modules/
+    - client/node_modules/
+
+###############################################################################
+# BUILD STAGE
+
+server_install:
+  stage: build
+  script:
+    - npm ci --prefix server
+  only:
+    changes:
+      - server/**/*
+
+client_build:
+  stage: build
+  script:
+    - npm ci --prefix client
+    - npm run build --prefix client
+  only:
+    changes:
+      - client/**/*
+
+###############################################################################
+# TEST STAGE
+
+server_test:
+  stage: test
+  script:
+    - npm ci --prefix server
+    - npm test --prefix server
+  only:
+    changes:
+      - server/**/*
+
+client_test:
+  stage: test
+  script:
+    - npm ci --prefix client
+    - npm test --prefix client
+  only:
+    changes:
+      - client/**/*
+
+###############################################################################
+# STAGING STAGE
+
+staging_job:
+  stage: staging
+  script: "echo 'No staging job yet.'"
+  only:
+    refs:
+      - dev
+      - master
+
+###############################################################################
+# DEPLOY STAGE
+
+deploy_job:
+  stage: deploy
+  script: "echo 'No deploy job yet.'"
+  only:
+    refs:
+      - master
