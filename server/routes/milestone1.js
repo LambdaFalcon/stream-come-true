@@ -1,24 +1,26 @@
-const express = require("express");
+const express = require('express');
+
 const router = express.Router();
 
-const ElasticClient = require("../elasticClient/ElasticClient");
+const ElasticClient = require('../elasticClient/ElasticClient');
+
 const elasticClient = new ElasticClient();
 
 const query = {
   aggs: {
     posts_over_time: {
       date_histogram: {
-        field: "creation_time",
-        interval: "hour"
-      }
-    }
+        field: 'creation_time',
+        interval: 'hour',
+      },
+    },
   },
-  size: 0
+  size: 0,
 };
 
-const index = "reddit_news";
+const index = 'reddit_news';
 
-router.get("/", async (req, res, next) => {
+router.get('/', async (req, res) => {
   const result = await elasticClient.search(index, query);
 
   res.json(result.body);

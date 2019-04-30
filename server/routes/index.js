@@ -1,18 +1,16 @@
 const express = require('express');
-const {env} = require('../config.js')
 const path = require('path');
+const { env } = require('../config.js');
+
 const router = express.Router();
-const app = express();
 
-if(env === 'development') {
-  router.get('/', function(req, res, next) {
+if (env === 'development') {
+  router.get('/', (req, res) => {
     res.render('index', { title: 'Stream Come True' });
-  });  
-
-} else if(env === 'production') {
+  });
+} else if (env === 'production') {
   router.use(express.static(path.resolve(__dirname, '../../client/build')));
-  router.get('/', function(req, res) {
-    
+  router.get('/', (req, res) => {
     res.sendFile('index.html');
   });
 }
