@@ -1,6 +1,6 @@
-const { Client } = require("@elastic/elasticsearch");
+const { Client } = require('@elastic/elasticsearch');
 
-const { elasticURL } = require("../config");
+const { elasticURL } = require('../config');
 
 class ElasticClient {
   constructor() {
@@ -16,7 +16,7 @@ class ElasticClient {
   search(index, query) {
     return this.client.search({
       index,
-      body: query
+      body: query,
     });
   }
 }
