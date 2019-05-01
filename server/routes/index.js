@@ -8,7 +8,7 @@ if (env === 'development') {
   router.get('/', (req, res) => {
     res.render('index', { title: 'Stream Come True' });
   });
-} else if (env === 'production') {
+} else if (env === 'production' || env === 'testing') {
   router.use(express.static(path.resolve(__dirname, '../../client/build')));
   router.get('/', (req, res) => {
     res.sendFile('index.html');
