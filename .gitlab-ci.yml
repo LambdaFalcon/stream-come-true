@@ -15,7 +15,6 @@ cache:
   paths:
     - server/node_modules/
     - client/node_modules/
-    - client/build/
 
 ###############################################################################
 # BUILD STAGE
@@ -33,6 +32,9 @@ client_build:
   script:
     - npm ci --prefix client
     - npm run build --prefix client
+  artifacts:
+    paths:
+     - client/build/
   only:
     changes:
       - client/**/*
@@ -56,6 +58,8 @@ server_test:
   script:
     - npm ci --prefix server
     - npm test --prefix server
+  dependencies:
+    - client_build
   only:
     changes:
       - server/**/*
