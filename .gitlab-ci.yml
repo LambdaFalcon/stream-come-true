@@ -6,6 +6,7 @@ image: node:10.15.3
 
 stages:
   - build
+  - lint
   - test
   - staging
   - deploy
@@ -34,6 +35,17 @@ client_build:
   only:
     changes:
       - client/**/*
+
+###############################################################################
+# LINT STAGE
+
+server_lint:
+  stage: lint
+  script:
+    - npm run lint --prefix server
+  only:
+    changes:
+      - server/**/*
 
 ###############################################################################
 # TEST STAGE
