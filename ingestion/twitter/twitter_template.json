@@ -1,0 +1,43 @@
+{
+  "template": "tweets",
+  "order":    1,
+  "settings": {
+    "number_of_shards": 1
+  },
+  "mappings": {
+    "tweet": {
+      "_all": {
+        "enabled": false
+      },
+      "properties": {
+        "created_at": {
+          "type": "date"
+        },
+        "text": {
+          "type": "string"
+        },
+        "coordinates": {
+            "type": "geo_point"
+        },
+          "followers_count": {
+            "type": "long"
+        }, 
+          "tweet_id": {
+            "type": "long"
+        },
+          "hashtags" : {
+            "type" : "text"
+        }, 
+        "domain" : {
+          "type" : "keyword"
+        },
+          "screen_name" : {
+            "type" : "keyword"
+        }, 
+          "user_id" : {
+            "type" : "long"
+        }
+      }
+    }
+  }
+}
