@@ -3,7 +3,10 @@ import json
 import socket
 import time
 import os
-
+import logging
+#logger setup
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
+LOGGER = logging.getLogger("reddit stream")
 class LogstashClient:
     '''Client that handles connection to logstash (over TCP) and automatically reconnects if there are any issues'''
     def __init__(self, host, port, max_reconnections = 100):
@@ -21,11 +24,13 @@ class LogstashClient:
             try:
                 self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.socket.connect(self.logstash_address)
+                LOGGER.info("Connected to logstash at "+ self.logstash_address[0] + ":" + str(self.logstash_address[1]))
+                print("Connected to logstash at "+ self.logstash_address[0] + ":" + str(self.logstash_address[1]))
                 return
             except socket.error as e:
                 #waiting between 0,2,4,8,16,32,64 seconds to reconnect untill shutting down completely after MAX_RECONNECTIONS tries
                 sleep_time = 64 if reconnection_attempts > 6 else 2**reconnection_attempts
-                print(str(e) + " trying to reconnect in "+str(sleep_time) +" seconds")
+                LOGGER.warning(str(e) + " trying to reconnect in "+str(sleep_time) +" seconds")
                 time.sleep(sleep_time)
                 reconnection_attempts += 1
                 self.socket.close()
@@ -49,7 +54,7 @@ def readConfig(filename="secret.json"):
     elif (os.path.isfile("/etc/stream-come-true/"+filename)):
         directory = '/etc/stream-come-true/'
     else:
-        print("couldn't find %s in /etc/stream-come-true/ or current directory" % filename)
+        LOGGER.error("couldn't find %s in /etc/stream-come-true/ or current directory" % filename)
         exit(-1)
     with open(directory+filename, 'r') as f:
         return json.load(f)
@@ -99,5 +104,5 @@ if __name__ == "__main__":
                     logstash_client.sendObject(parse_comment(comment))
         #if there is any error we just continue
         except praw.exceptions.PRAWException as e:
-            print(e)
+            LOGGER.warning(e)
             pass
