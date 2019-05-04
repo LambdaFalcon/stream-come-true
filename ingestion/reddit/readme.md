@@ -33,3 +33,7 @@ Now you con just run reddit_stream.py with
 >``` python reddit_stream.py``` 
 
 Note that you will need to run logstash with reddit_ingestion.conf for this to work.
+
+## Notes
+Note that reddit_stream is set up as a service on the vm and can be started and stopped with
+> ```sudo systemctl start/stop reddit_stream```
