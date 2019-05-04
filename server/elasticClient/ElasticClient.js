@@ -1,10 +1,12 @@
 const { Client } = require('@elastic/elasticsearch');
 
-const { elasticURL } = require('../config');
+const { elasticURL, indices } = require('../config');
 
 class ElasticClient {
-  constructor() {
-    this.client = new Client({ node: elasticURL });
+  constructor(sourceName) {
+    this.url = elasticURL;
+    this.index = indices[sourceName];
+    this.client = new Client({ node: this.url });
   }
 
   /**
@@ -20,5 +22,11 @@ class ElasticClient {
     });
   }
 }
+
+ElasticClient.prototype.toString = function toString() {
+  return `ElasticClient(
+    url: ${this.url},
+    index: ${this.index})`;
+};
 
 module.exports = ElasticClient;
