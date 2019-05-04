@@ -31,6 +31,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
+// Register API v1
+app.use('/api/v1', api(config));
+
 // Register development index router
 if (config.env === 'development') {
   app.get('/', (req, res) => {
