@@ -1,0 +1,7 @@
+{
+    "subreddits":["android","apple"],
+    "logstash":{
+        "port":5040,
+        "host":"localhost"
+    }
+}
