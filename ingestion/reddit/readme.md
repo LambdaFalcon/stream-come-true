@@ -29,7 +29,7 @@ Example:
 >```
 
 ### 3.) Run
-Now you con just run reddit_stream.py with 
+Now you can just run reddit_stream.py with 
 >``` python reddit_stream.py``` 
 
 Note that you will need to run logstash with reddit_ingestion.conf for this to work.
