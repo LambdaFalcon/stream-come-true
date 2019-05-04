@@ -21,17 +21,17 @@
       "created_at": {
         "type": "date"
       },
-      "id": {
+      "screen_name": {
         "type": "keyword"
       },
-      "screen_name": {
+      "domain": {
         "type": "keyword"
       },
       "subreddit": {
         "type": "keyword"
       },
-      "text": {
-        "type": "text"
+      "id": {
+        "type": "keyword"
       },
       "user_karma": {
         "type": "long"
