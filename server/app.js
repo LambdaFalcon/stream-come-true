@@ -4,11 +4,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 
-const { env } = require('./config');
-
-// Import routers
-const indexRouter = require('./routes/index');
-const milestone1Router = require('./routes/milestone1');
+// Import api and config
+const api = require('./api');
+const config = require('./config');
 
 // Import error handlers
 const catch404 = require('./utils/catch404');
@@ -24,15 +22,21 @@ app.set('view engine', 'pug');
 app.use(cors());
 
 // Other settings
-if (env === 'development') app.use(logger('dev'));
+if (config.env === 'development') app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-// Register routers
-app.use('/', indexRouter);
-app.use('/milestone1', milestone1Router);
+// Serve static files for error pages and static React App
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.resolve(__dirname, '../client/build')));
+
+// Register development index router
+if (config.env === 'development') {
+  app.get('/', (req, res) => {
+    res.render('index', { title: 'Stream Come True' });
+  });
+}
 
 // Catch 404 and setup error handler
 app.use(catch404);
