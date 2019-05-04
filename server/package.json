@@ -6,7 +6,7 @@
     "start": "DEBUG=server:* NODE_ENV=development nodemon ./bin/www",
     "prod": "DEBUG=server:error NODE_ENV=production node ./bin/www",
     "lint": "eslint .",
-    "test": "NODE_ENV=testing mocha --verbose --colors --globals '*' --exit"
+    "test": "NODE_ENV=testing mocha --verbose --recursive --colors --globals '*' --exit --slow 0"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.0.0-rc.2",
