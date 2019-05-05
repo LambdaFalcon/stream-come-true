@@ -9,6 +9,11 @@ const selectFields = {
     text,
     domain,
   }),
+
+  itemsOverTime: ({ key, doc_count }) => ({
+    time: key,
+    count: doc_count,
+  }),
 };
 
 module.exports = selectFields;
