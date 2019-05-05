@@ -130,16 +130,16 @@ class ElasticClient {
    * @typedef AggItem
    * @type {ItemsOverTimeElement | UsersOverTimeElement | PopularKeyword | PopularUser}
    *
-   * @function ResultMapper
-   * @param {Object} result aggregation result element
-   * @returns {AggItem}
+   * @function AggResultExtractor
+   * @param {Object} result aggregation result
+   * @returns {Array<AggItem>}
    *
    * @private
    * @param {Object} query
-   * @param {ResultMapper} resultMapper
+   * @param {AggResultExtractor} resultExtractor
    * @returns {Promise<Array<AggItem>}
    */
-  async aggregation(query, aggName, resultMapper) {
+  async aggregation(query, aggName, resultExtractor) {
     if (!query.aggs[aggName]) throw createError(500, `Aggregation ${aggName} is not specified in the given query`);
     return this.client
       .search({
@@ -147,7 +147,7 @@ class ElasticClient {
         body: query,
       })
       .then(res => res.body.aggregations[aggName])
-      .then(aggResult => aggResult.map(resultMapper));
+      .then(resultExtractor);
   }
 }
 
