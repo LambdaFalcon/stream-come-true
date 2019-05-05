@@ -9,19 +9,6 @@ class ElasticClient {
     this.index = indices[sourceName];
     this.client = new Client({ node: this.url });
   }
-
-  /**
-   *
-   * @param {String} index
-   * @param {Object} query
-   * @returns {Promise<Object>}
-   */
-  search(index, query) {
-    return this.client.search({
-      index,
-      body: query,
-    });
-  }
 }
 
 ElasticClient.prototype.toString = function toString() {
