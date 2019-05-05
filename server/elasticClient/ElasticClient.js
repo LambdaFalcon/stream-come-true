@@ -1,16 +1,20 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-underscore-dangle */
 const { Client } = require('@elastic/elasticsearch');
 
 // TODO: somehow pass this as an argument. Problem: it is used in a static method.
 const { sourceFieldName } = require('../config');
+const applyFiltersImpl = require('./filters');
 
 /**
  * @class ElasticClient
  */
 class ElasticClient {
-  constructor(sourceName, { elasticURL, indices }) {
+  constructor(sourceName, { elasticURL, indices, queryFields }) {
     this.url = elasticURL;
     this.index = indices[sourceName];
     this.client = new Client({ node: this.url });
+    this.queryFields = queryFields;
   }
 
   /**
@@ -77,6 +81,18 @@ class ElasticClient {
    */
   async popularUsers(filters) {
     return [this.index, filters]; // TODO: real implementation
+  }
+
+  /**
+   * Create simple query with filters applied.
+   * The default for the time frame filter is '5h'.
+   *
+   * @private
+   * @param {Filters} filters text and time frame filters
+   * @returns {object} ElasticSearch query with filters applied
+   */
+  applyFilters(filters) {
+    return applyFiltersImpl(filters, this.queryFields.dateField, this.queryFields.textFields);
   }
 }
 

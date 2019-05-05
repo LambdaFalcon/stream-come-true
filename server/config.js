@@ -5,6 +5,10 @@ const config = {
     reddit: 'reddit_comments',
     twitter: 'tweets',
   },
+  queryFields: {
+    dateField: 'created_at',
+    textFields: ['text'],
+  },
   sourceFieldName: 'source',
 };
 
