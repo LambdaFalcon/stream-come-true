@@ -32,6 +32,15 @@ describe('ElasticClient.all()', function allTest() {
       item.should.have.property('text');
       item.should.have.property('domain');
     });
+
+    it('should contain an element with properties of the correct types', async () => {
+      const res = await client.all();
+      const item = res[0];
+      item.created_at.should.be.a('string');
+      item.screen_name.should.be.a('string');
+      item.text.should.be.a('string');
+      item.domain.should.be.a('string');
+    });
   });
 
   describe('with text filter', () => {
@@ -70,7 +79,7 @@ describe('ElasticClient.all()', function allTest() {
       res.should.have.lengthOf.at.least(1);
     });
 
-    it('should contain an element that is within the time frame filter', async () => {
+    it('should contain elements that are within the time frame filter', async () => {
       const res = await client.all(filters);
       res.map(item => new Date(item.created_at)).should.all.be.at.least(fiveMinutesAgo);
     });
