@@ -43,6 +43,7 @@ class ElasticClient {
       .search({
         index: this.index,
         body: { ...query },
+        size: 10000,
       })
       .then(res => res.body.hits.hits)
       .then(hits => hits.map(el => el._source))
