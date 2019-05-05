@@ -6,6 +6,7 @@ const createError = require('http-errors');
 // TODO: somehow pass this as an argument. Problem: it is used in a static method.
 const { sourceFieldName } = require('../config');
 const applyFiltersImpl = require('./filters');
+const computeIntervalImpl = require('./computeInterval');
 const selectFields = require('./selectFields');
 
 /**
@@ -110,6 +111,16 @@ class ElasticClient {
       this.queryFields.dateField,
       this.queryFields.textFields,
     );
+  }
+
+  /**
+   * Computes a reasonable interval given a time frame.
+   *
+   * @param {Filters} filters text and time frame filters
+   */
+  computeInterval(filters) {
+    const timeframe = (filters && filters.timeframe) || this.config.defaultTimeFrameFilter;
+    return computeIntervalImpl(timeframe);
   }
 
   /**
