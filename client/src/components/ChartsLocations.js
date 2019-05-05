@@ -1,6 +1,9 @@
 import React from "react"
 import OverTime from "./LineChart"
 import MostWords from "./BarChart"
+import config from "../config"
+
+
 class ChartsLocation extends React.Component{
     render(){
       return(
