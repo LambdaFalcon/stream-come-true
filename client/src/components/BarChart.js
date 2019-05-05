@@ -1,7 +1,8 @@
 import React from "react"
-import {BarChart,CartesianGrid,XAxis,YAxis,Tooltip,Legend} from "recharts"
-class Bar extends React.Component{
-    render(){
+import {BarChart,Bar,CartesianGrid,XAxis,YAxis,Tooltip,Legend} from "recharts"
+class BarVisual extends React.PureComponent{
+    
+  render(){
       return(
         <div className="col-xs-6">
         <div className="panel panel-default">
@@ -70,7 +71,7 @@ class Graph extends React.Component{
   }
   render(){
     return(
-      <BarChart width={730} height={250} data={this.state.data}>
+      <BarChart width={600} height={250} data={this.state.data}>
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="name" />
       <YAxis />
@@ -82,5 +83,5 @@ class Graph extends React.Component{
     );
   }
 }
-export default BarChart;
+export default BarVisual;
   

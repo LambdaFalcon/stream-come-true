@@ -1,6 +1,6 @@
 import React from "react"
 import OverTime from "./LineChart"
-import Bar from "./BarChart"
+import BarVisual from "./BarChart"
 import config from "../config"
 
 const red_over_time = config['red_over_time'];
@@ -23,8 +23,8 @@ class ChartsLocation extends React.Component{
             <OverTime name={"Reddit Data"} data={red_over_time}/>
             </div>
             <div className="col-lg-12">
-              <Bar name={"Twitter Popular Keywords"} data={twit_pop_key_words}/>
-              <Bar name={"Reddit Popular Keywords"} data={red_pop_key_words}/>
+              <BarVisual name={"Twitter Popular Keywords"} data={twit_pop_key_words}/>
+              <BarVisual name={"Reddit Popular Keywords"} data={red_pop_key_words}/>
             </div>
          </div>
       );
