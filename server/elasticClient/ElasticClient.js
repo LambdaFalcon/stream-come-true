@@ -9,6 +9,8 @@ const applyFiltersImpl = require('./filters');
 const computeIntervalImpl = require('./computeInterval');
 const selectFields = require('./selectFields');
 
+const timeBucketing = require('./queries/timeBucketing');
+
 /**
  * @class ElasticClient
  */
@@ -61,7 +63,15 @@ class ElasticClient {
    * @returns {Promise<Array<ItemsOverTimeElement>>} items over time
    */
   async itemsOverTime(filters) {
-    return [this.index, filters]; // TODO: real implementation
+    const aggName = 'items_over_time';
+    const query = this.applyFilters(filters);
+    const queryWithAgg = {
+      ...query,
+      ...timeBucketing(aggName, this.queryFields.dateField, this.computeInterval(filters)),
+    };
+    const resultExtractor = aggResult => aggResult.buckets.map(selectFields.itemsOverTime);
+
+    return this.aggregation(queryWithAgg, aggName, resultExtractor);
   }
 
   /**

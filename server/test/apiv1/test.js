@@ -11,7 +11,7 @@ chai.should();
 const route = '/api/v1';
 
 describe('/api/v1 ROUTE', () => {
-  describe(`GET /${route}`, () => {
+  describe(`GET ${route}`, () => {
     it('should not be available', async () => {
       const res = await chai.request(app).get(route);
       res.should.have.status(404);
@@ -19,7 +19,7 @@ describe('/api/v1 ROUTE', () => {
     });
   });
 
-  describe(`POST /${route}`, () => {
+  describe(`POST ${route}`, () => {
     it('should not be available', async () => {
       const res = await chai.request(app).post(route);
       res.should.have.status(404);
@@ -27,7 +27,7 @@ describe('/api/v1 ROUTE', () => {
     });
   });
 
-  describe(`PUT /${route}`, () => {
+  describe(`PUT ${route}`, () => {
     it('should not be available', async () => {
       const res = await chai.request(app).put(route);
       res.should.have.status(404);
@@ -35,7 +35,7 @@ describe('/api/v1 ROUTE', () => {
     });
   });
 
-  describe(`PATCH /${route}`, () => {
+  describe(`PATCH ${route}`, () => {
     it('should not be available', async () => {
       const res = await chai.request(app).patch(route);
       res.should.have.status(404);
