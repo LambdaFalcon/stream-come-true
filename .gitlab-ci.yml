@@ -34,7 +34,7 @@ client_build:
     - npm run build --prefix client
   artifacts:
     paths:
-     - client/build/
+      - client/build/
   only:
     changes:
       - client/**/*
@@ -45,6 +45,7 @@ client_build:
 server_lint:
   stage: lint
   script:
+    - npm ci --prefix server
     - npm run lint --prefix server
   only:
     changes:
