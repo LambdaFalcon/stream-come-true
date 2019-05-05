@@ -4,7 +4,7 @@
  *
  * @typedef Item
  * @type {Object}
- * @property {string} created_at as datetime string, can be used in `new Date("2019-05-04T13:04:18.000Z")`
+ * @property {string} created_at as datetime string, e.g. "2019-05-04T13:04:18.000Z"
  * @property {string} screen_name user who created the item
  * @property {string} text
  * @property {string} domain domain selected for the ingestion
@@ -46,4 +46,12 @@
  * @type {Object}
  * @property {string} user
  * @property {number} count
+ */
+
+/**
+ * @typedef Filters
+ * @type {Object}
+ * @property {string} textfilter text filter for fulltext search
+ * @property {('5m'|'5h'|'5d')} timeframe time frame to consider,
+ *                                        5 minutes, hours or days, respcetively
  */
