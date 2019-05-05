@@ -1,5 +1,8 @@
 const { Client } = require('@elastic/elasticsearch');
 
+// TODO: somehow pass this as an argument. Problem: it is used in a static method.
+const { sourceFieldName } = require('../config');
+
 /**
  * @class ElasticClient
  */
@@ -8,6 +11,17 @@ class ElasticClient {
     this.url = elasticURL;
     this.index = indices[sourceName];
     this.client = new Client({ node: this.url });
+  }
+
+  /**
+   * Extract the client from the Express request.
+   * This is necessary to make the type available for VSCode.
+   *
+   * @param {Express.Request} req Express.js request object
+   * @returns {ElasticClient} the connected client
+   */
+  static getInstance(req) {
+    return req[sourceFieldName];
   }
 
   /**

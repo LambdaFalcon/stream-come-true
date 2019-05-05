@@ -5,6 +5,7 @@ const config = {
     reddit: 'reddit_comments',
     twitter: 'tweets',
   },
+  sourceFieldName: 'source',
 };
 
 module.exports = config;
