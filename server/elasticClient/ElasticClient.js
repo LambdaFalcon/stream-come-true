@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */ // _source is in all query results
 
 const { Client } = require('@elastic/elasticsearch');
+const createError = require('http-errors');
 
 // TODO: somehow pass this as an argument. Problem: it is used in a static method.
 const { sourceFieldName } = require('../config');
@@ -104,6 +105,33 @@ class ElasticClient {
    */
   applyFilters(filters) {
     return applyFiltersImpl(filters, this.queryFields.dateField, this.queryFields.textFields);
+  }
+
+  /**
+   * Send an aggregation search query the ElasticSearch instance and get a result.
+   * This is a private method used internally
+   *
+   * @typedef AggItem
+   * @type {ItemsOverTimeElement | UsersOverTimeElement | PopularKeyword | PopularUser}
+   *
+   * @function ResultMapper
+   * @param {Object} result aggregation result element
+   * @returns {AggItem}
+   *
+   * @private
+   * @param {Object} query
+   * @param {ResultMapper} resultMapper
+   * @returns {Promise<Array<AggItem>}
+   */
+  async aggregation(query, aggName, resultMapper) {
+    if (!query.aggs[aggName]) throw createError(500, `Aggregation ${aggName} is not specified in the given query`);
+    return this.client
+      .search({
+        index: this.index,
+        body: query,
+      })
+      .then(res => res.body.aggregations[aggName])
+      .then(aggResult => aggResult.map(resultMapper));
   }
 }
 
