@@ -1,14 +1,18 @@
 // Import the dependencies for testing
 const chai = require('chai');
+const chaiThings = require('chai-things');
 const config = require('../../config');
 const ElasticClient = require('../../elasticClient/ElasticClient');
 
 // Configure chai
 chai.should();
+chai.use(chaiThings);
 
 const client = new ElasticClient('twitter', config);
 
-describe('ElasticClient.all()', () => {
+describe('ElasticClient.all()', function allTest() {
+  this.timeout(5000);
+
   describe('without filters', () => {
     it('should return an array', async () => {
       const res = await client.all();
@@ -44,10 +48,9 @@ describe('ElasticClient.all()', () => {
       res.should.have.lengthOf.at.least(1);
     });
 
-    it('should contain an element that matches the text filter', async () => {
+    it('should contain elements that match the text filter', async () => {
       const res = await client.all(filters);
-      const item = res[0];
-      item.text.should.have.string(textfilter);
+      res.map(item => item.text.toLowerCase()).should.all.have.string(textfilter);
     });
   });
 

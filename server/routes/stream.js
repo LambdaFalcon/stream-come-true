@@ -7,7 +7,7 @@ const ElasticClient = require('../elasticClient/ElasticClient');
 const allData = asyncErrorCatch(async (req, res) => {
   const client = ElasticClient.getInstance(req);
   const items = await client.all();
-  res.send(items);
+  res.json(items);
 });
 
 const streamRouter = (config) => {
