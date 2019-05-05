@@ -42,7 +42,7 @@ class ElasticClient {
     return this.client
       .search({
         index: this.index,
-        body: { query },
+        body: { ...query },
       })
       .then(res => res.body.hits.hits)
       .then(hits => hits.map(el => el._source))

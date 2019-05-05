@@ -41,11 +41,11 @@ const textMatchFilter = (text, textFields) => {
  * @param {string} dateField name of the date field
  * @param {string[]} textFields names of all text fields
  */
-const applyFilters = ({ timeframe = '5h', textfilter }, dateField, textFields) => ({
+const applyFilters = ({ timeframe = '5h', textfilter } = {}, dateField, textFields) => ({
   query: {
     bool: {
-      must: [timeFrameRangeFilter(timeframe, dateField)],
-      filter: textMatchFilter(textfilter, textFields),
+      must: [textMatchFilter(textfilter, textFields)],
+      filter: timeFrameRangeFilter(timeframe, dateField),
     },
   },
 });
