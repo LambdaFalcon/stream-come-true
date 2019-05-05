@@ -1,10 +1,11 @@
-/* eslint-disable camelcase */
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-underscore-dangle */ // _source is in all query results
+
 const { Client } = require('@elastic/elasticsearch');
 
 // TODO: somehow pass this as an argument. Problem: it is used in a static method.
 const { sourceFieldName } = require('../config');
 const applyFiltersImpl = require('./filters');
+const selectFields = require('./selectFields');
 
 /**
  * @class ElasticClient
@@ -36,7 +37,16 @@ class ElasticClient {
    * @returns {Promise<Array<Item>>}
    */
   async all(filters) {
-    return [this.index, filters]; // TODO: real implementation
+    const query = this.applyFilters(filters);
+
+    return this.client
+      .search({
+        index: this.index,
+        body: { query },
+      })
+      .then(res => res.body.hits.hits)
+      .then(hits => hits.map(el => el._source))
+      .then(items => items.map(selectFields.all));
   }
 
   /**
