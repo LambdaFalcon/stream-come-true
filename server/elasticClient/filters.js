@@ -1,3 +1,5 @@
+const debug = require('debug')('server:elastic');
+
 /**
  * Create the time frame filter part of the query.
  *
@@ -41,13 +43,17 @@ const textMatchFilter = (text, textFields) => {
  * @param {string} dateField name of the date field
  * @param {string[]} textFields names of all text fields
  */
-const applyFilters = ({ timeframe = '5h', textfilter } = {}, dateField, textFields) => ({
-  query: {
-    bool: {
-      must: [textMatchFilter(textfilter, textFields)],
-      filter: timeFrameRangeFilter(timeframe, dateField),
+const applyFilters = ({ timeframe = '5h', textfilter } = {}, dateField, textFields) => {
+  debug(`Applying filters: textfilter=${textfilter}, timeframe=${timeframe}`);
+  const query = {
+    query: {
+      bool: {
+        must: [textMatchFilter(textfilter, textFields)],
+        filter: timeFrameRangeFilter(timeframe, dateField),
+      },
     },
-  },
-});
+  };
+  return query;
+};
 
 module.exports = applyFilters;
