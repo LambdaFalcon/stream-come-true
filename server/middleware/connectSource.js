@@ -13,7 +13,7 @@ const connectSource = config => asyncErrorCatch(async (req, res, next) => {
     throw createError(404, `Source ${sourceName} is not available`);
   }
 
-  req.source = new ElasticClient(sourceName);
+  req.source = new ElasticClient(sourceName, config);
   next();
 });
 
