@@ -9,6 +9,7 @@ const config = {
     dateField: 'created_at',
     textFields: ['text'],
   },
+  defaultTimeFrameFilter: '5h',
   sourceFieldName: 'source',
 };
 
