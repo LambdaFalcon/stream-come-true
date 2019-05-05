@@ -39,11 +39,20 @@ const textMatchFilter = (text, textFields) => {
  * Create a complete ElasticSearch query object with the given filters applied.
  * Defaults are applied for the time frame filter, it is set to '5h'.
  *
+ * @function ApplyFiltersFunc
  * @param {Filters} filters text and time frame filters
  * @param {string} dateField name of the date field
  * @param {string[]} textFields names of all text fields
+ * @returns {object} an ElasticSearch query object
+ *
+ * @param {object} config the application configuration
+ * @returns {ApplyFiltersFunc} the actual function that applied filters
  */
-const applyFilters = ({ timeframe = '5h', textfilter } = {}, dateField, textFields) => {
+const applyFilters = config => (
+  { timeframe = config.defaultTimeFrameFilter, textfilter } = {},
+  dateField,
+  textFields,
+) => {
   debug(`Applying filters: textfilter=${textfilter}, timeframe=${timeframe}`);
   const query = {
     query: {

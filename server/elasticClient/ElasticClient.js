@@ -12,11 +12,12 @@ const selectFields = require('./selectFields');
  * @class ElasticClient
  */
 class ElasticClient {
-  constructor(sourceName, { elasticURL, indices, queryFields }) {
-    this.url = elasticURL;
-    this.index = indices[sourceName];
+  constructor(sourceName, config) {
+    this.url = config.elasticURL;
+    this.index = config.indices[sourceName];
     this.client = new Client({ node: this.url });
-    this.queryFields = queryFields;
+    this.queryFields = config.queryFields;
+    this.config = config;
   }
 
   /**
@@ -104,7 +105,11 @@ class ElasticClient {
    * @returns {object} ElasticSearch query with filters applied
    */
   applyFilters(filters) {
-    return applyFiltersImpl(filters, this.queryFields.dateField, this.queryFields.textFields);
+    return applyFiltersImpl(this.config)(
+      filters,
+      this.queryFields.dateField,
+      this.queryFields.textFields,
+    );
   }
 
   /**
