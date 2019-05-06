@@ -74,7 +74,7 @@ describe('ElasticClient.popularKeywords()', function popularKeywordsTest() {
   });
 
   describe('with time frame filter', () => {
-    const timeframe = '5m';
+    const timeframe = '1h';
     const filters = { timeframe };
 
     it('should return an array', async () => {
