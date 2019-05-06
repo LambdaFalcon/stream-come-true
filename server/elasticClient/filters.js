@@ -18,15 +18,15 @@ const timeFrameRangeFilter = (value, dateField) => ({
  * Create the text filter part of the query.
  *
  * @param {string} text the text filter
- * @param {string[]} textFields all text fields to filter on
+ * @param {string} textField the field to filter on
  * @returns {object} part of a query
  */
-const textMatchFilter = (text, textFields) => {
+const textMatchFilter = (text, textField) => {
   if (text) {
     return {
       multi_match: {
         query: text,
-        fields: textFields,
+        fields: textField,
       },
     };
   }
@@ -42,7 +42,7 @@ const textMatchFilter = (text, textFields) => {
  * @function ApplyFiltersFunc
  * @param {Filters} filters text and time frame filters
  * @param {string} dateField name of the date field
- * @param {string[]} textFields names of all text fields
+ * @param {string} textField name of the text field
  * @returns {object} an ElasticSearch query object
  *
  * @param {object} config the application configuration
@@ -51,13 +51,13 @@ const textMatchFilter = (text, textFields) => {
 const applyFilters = config => (
   { timeframe = config.defaultTimeFrameFilter, textfilter } = {},
   dateField,
-  textFields,
+  textField,
 ) => {
   debug(`Applying filters: textfilter=${textfilter}, timeframe=${timeframe}`);
   const query = {
     query: {
       bool: {
-        must: [textMatchFilter(textfilter, textFields)],
+        must: [textMatchFilter(textfilter, textField)],
         filter: timeFrameRangeFilter(timeframe, dateField),
       },
     },

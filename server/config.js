@@ -7,7 +7,7 @@ const config = {
   },
   queryFields: {
     dateField: 'created_at',
-    textFields: ['text'],
+    textField: 'text',
   },
   defaultTimeFrameFilter: '5h',
   sourceFieldName: 'source',

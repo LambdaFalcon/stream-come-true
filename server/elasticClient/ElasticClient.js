@@ -119,7 +119,7 @@ class ElasticClient {
     return applyFiltersImpl(this.config)(
       filters,
       this.queryFields.dateField,
-      this.queryFields.textFields,
+      this.queryFields.textField,
     );
   }
 
