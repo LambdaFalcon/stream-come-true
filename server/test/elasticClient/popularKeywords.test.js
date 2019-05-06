@@ -10,7 +10,7 @@ chai.use(chaiThings);
 
 const client = new ElasticClient('twitter', config);
 
-describe.skip('ElasticClient.popularKeywords()', function popularKeywordsTest() {
+describe('ElasticClient.popularKeywords()', function popularKeywordsTest() {
   this.timeout(5000);
 
   describe('without filters', () => {

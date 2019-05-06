@@ -10,6 +10,7 @@ const computeIntervalImpl = require('./computeInterval');
 const selectFields = require('./selectFields');
 
 const timeBucketing = require('./queries/timeBucketing');
+const significantText = require('./queries/significantText');
 
 /**
  * @class ElasticClient
@@ -93,7 +94,15 @@ class ElasticClient {
    * @returns {Promise<Array<PopularKeyword>>} popular keywords
    */
   async popularKeywords(filters) {
-    return [this.index, filters]; // TODO: real implementation
+    const aggName = 'popular_keywords';
+    const query = this.applyFilters(filters);
+    const queryWithAgg = {
+      ...query,
+      ...significantText(aggName, this.queryFields.textField),
+    };
+    const resultExtractor = aggResult => aggResult.buckets.map(selectFields.popularKeywords);
+
+    return this.aggregation(queryWithAgg, aggName, resultExtractor);
   }
 
   /**
