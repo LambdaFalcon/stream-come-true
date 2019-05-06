@@ -40,7 +40,6 @@ class Graph extends React.Component{
   fetchData(){
     fetch(this.props.api + `?textfilter=${this.props.textfilter || ''}`)
     .then(res => {
-      console.log(res);
       return res;
     })
     .then(res=>res.json())
