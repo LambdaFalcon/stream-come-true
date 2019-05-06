@@ -5,6 +5,12 @@ const config = {
     reddit: 'reddit_comments',
     twitter: 'tweets',
   },
+  queryFields: {
+    dateField: 'created_at',
+    textField: 'text',
+  },
+  defaultTimeFrameFilter: '5h',
+  sourceFieldName: 'source',
 };
 
 module.exports = config;
