@@ -156,7 +156,7 @@ class ElasticClient {
    * @private
    * @param {Object} query
    * @param {AggResultExtractor} resultExtractor
-   * @returns {Promise<Array<AggItem>}
+   * @returns {Promise<Array<AggItem>>}
    */
   async aggregation(query, aggName, resultExtractor) {
     if (!query.aggs[aggName]) throw createError(500, `Aggregation ${aggName} is not specified in the given query`);

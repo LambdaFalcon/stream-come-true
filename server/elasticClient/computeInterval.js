@@ -4,6 +4,7 @@ const seconds = {
   d: 86400,
   h: 3600,
   m: 60,
+  s: 1,
 };
 
 /**
@@ -34,9 +35,11 @@ const encode = interval => `${interval}s`;
  * @returns {string} a good interval
  */
 const computeInterval = (timeframe) => {
-  debug(`Computing interval: timeframe=${timeframe}`);
   const decodedTimeframe = decode(timeframe);
-  return encode(decodedTimeframe / 100);
+  const interval = Math.max(1, Math.round(decodedTimeframe / 100)) || 1;
+  const encodedInterval = encode(interval);
+  debug(`Computing interval: timeframe=${timeframe}, computed_interval=${encodedInterval}`);
+  return encodedInterval;
 };
 
 module.exports = computeInterval;
