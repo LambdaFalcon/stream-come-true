@@ -15,7 +15,7 @@ class ChartsLocation extends React.Component{
          <div>
             <div className="row">
               <div className="col-lg-12">
-                <h1 className="page-header">Charts</h1>
+                <h1 className="page-header col-lg-12">Charts</h1>
               </div>
             </div>
             <div className="col-lg-12">
