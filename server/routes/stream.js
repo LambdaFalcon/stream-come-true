@@ -1,20 +1,14 @@
 const express = require('express');
 
-const asyncErrorCatch = require('./../utils/asyncErrorCatch');
 const connectSource = require('./../middleware/connectSource');
-const ElasticClient = require('../elasticClient/ElasticClient');
 
-const allData = asyncErrorCatch(async (req, res) => {
-  const client = ElasticClient.getInstance(req);
-  const items = await client.all();
-  res.json(items);
-});
+const sourceRouter = require('./source');
 
 const streamRouter = (config) => {
   const router = express.Router();
   router.all('/:source*', connectSource(config));
 
-  router.get('/:source', allData);
+  router.use('/:source', sourceRouter(config));
 
   return router;
 };
