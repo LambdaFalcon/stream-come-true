@@ -1,7 +1,7 @@
 import React from "react"
 import {BarChart,Bar,CartesianGrid,XAxis,YAxis,Tooltip,Legend} from "recharts"
 class BarVisual extends React.PureComponent{
-    
+   
   render(){
       return(
         <div className="col-xs-6">
@@ -10,7 +10,7 @@ class BarVisual extends React.PureComponent{
             {this.props.name}
           </div>
           <div className="panel-body">
-            <Graph data={this.props.data}/>
+            <Graph api={this.props.api}/>
           </div>
         </div>
       </div>
@@ -21,43 +21,37 @@ class BarVisual extends React.PureComponent{
 class Graph extends React.Component{
   constructor(props){
     super(props);
-    this.api = this.props.data;
     this.state = {
-      data: [
-        {
-          "keyword":"android",
-          "count": 4000,
-        },
-        {
-          "kwyqord": "apple",
-          "count": 3000 
-        },
-        {
-          "keyword": "microsoft",
-          "count": 8000,
-        },
-        {
-          "keyword": "Java",
-          "count": 3000
-        },
-        {
-          "keyword": "C++",
-          "count": 3200,
-        },
-        {
-          "keyword": "Pascal",
-          "count": 3000,
-        },
-        {
-          "keyword": "Spring",
-          "count": 100,
-        }
-      ]
+      data: []
+    }
+    this.textfilter = "";
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.textfilter !== this.textfilter) {
+      this.fetchData();
+      this.textfilter = this.props.textfilter;
     }
   }
+
+  fetchData(){
+    fetch(this.props.api + `?textfilter=${this.props.textfilter || ''}`)
+    .then(res => {
+      console.log(res);
+      return res;
+    })
+    .then(res=>res.json())
+    .then(res=>{
+      this.setState({
+          data: res
+      });
+    });
+  }
+
+  
   render(){
     return(
-      <BarChart width={600} height={250} data={this.state.data}>
+      <BarChart width={730} height={250} data={this.state.data}>
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="keyword" />
       <YAxis />
