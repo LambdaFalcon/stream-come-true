@@ -10,7 +10,7 @@ class OverTime extends React.Component{
             {this.props.name}
           </div>
           <div className="panel-body">
-            <Graph api= {this.props.api}/>
+            <Graph api= {this.props.api} textfilter={this.props.textfilter}/>
           </div>
         </div>
       </div>
@@ -24,13 +24,15 @@ class OverTime extends React.Component{
         data: []
       }
     }
-
-    componentWillUpdate(){
+  
+    componentDidMount(){
       this.fetchData()
     }
-  
-    componentWillMount(){
-      this.fetchData()
+
+    componentDidUpdate(prevProps) {
+      if (this.props.textfilter !== prevProps.textfilter) {
+        this.fetchData();
+      }
     }
 
     fetchData(){

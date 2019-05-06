@@ -10,7 +10,7 @@ class BarVisual extends React.PureComponent{
             {this.props.name}
           </div>
           <div className="panel-body">
-            <Graph api={this.props.api}/>
+            <Graph api={this.props.api} textfilter={this.props.textfilter}/>
           </div>
         </div>
       </div>
@@ -27,10 +27,13 @@ class Graph extends React.Component{
     this.textfilter = "";
   }
 
+  componentDidMount(){
+    this.fetchData()
+  }
+
   componentDidUpdate(prevProps) {
-    if (this.props.textfilter !== this.textfilter) {
+    if (this.props.textfilter !== prevProps.textfilter) {
       this.fetchData();
-      this.textfilter = this.props.textfilter;
     }
   }
 

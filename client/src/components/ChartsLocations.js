@@ -19,7 +19,7 @@ class ChartsLocation extends React.Component{
               </div>
             </div>
             <div className="col-lg-12">
-            <OverTime name={"Twiter Data"} api={twit_over_time} textfilter={this.props.textfilter}/>
+            <OverTime name={"Twitter Data"} api={twit_over_time} textfilter={this.props.textfilter}/>
             <OverTime name={"Reddit Data"} api={red_over_time} textfilter={this.props.textfilter}/>
             </div>
             <div className="col-lg-12">
