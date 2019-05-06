@@ -10,7 +10,7 @@ class OverTime extends React.Component{
             {this.props.name}
           </div>
           <div className="panel-body">
-            <Graph data= {this.props.data}/>
+            <Graph api= {this.props.api} textfilter={this.props.textfilter}/>
           </div>
         </div>
       </div>
@@ -20,59 +20,44 @@ class OverTime extends React.Component{
   class Graph extends React.Component{
     constructor(props){
       super(props);
-      this.api = this.props.data
       this.state = {
-        data: [
-          {
-            "time": 2000,
-            "count":2100
-          },
-          {
-            "time": 3000,
-            "count": 2200
-          },
-          {
-            "time": 3200,
-            "count": 2300
-          },
-          {
-            "time": 3300,
-            "count": 3400
-          },
-          {
-            "name": 3400,
-            "count": 2000
-          },
-          {
-            "time": 3600,
-            "count": 2200
-          },
-          {
-            "time": 3800,
-            "count":2500
-          }
-        ]
+        data: []
+      }
+    }
+  
+    componentDidMount(){
+      this.fetchData()
+    }
+
+    componentDidUpdate(prevProps) {
+      if (this.props.textfilter !== prevProps.textfilter) {
+        this.fetchData();
       }
     }
 
-    
     fetchData(){
-      fetch(this.api.concat("?timeframe=10s"))
+      fetch(this.props.api + `?textfilter=${this.props.textfilter || ''}`)
+      .then(res => {
+        console.log(res);
+        return res;
+      })
+      .then(res=>res.json())
       .then(res=>{
-        var new_data = this.state.data
-        var apend_data = new_data.append(res[0])
-        this.State({
-            data: apend_data
+        this.setState({
+            data: res
         });
       });
     }
-    
+    formatDate(time){
+        const date =  new Date(time);
+        return date.toLocaleTimeString("it-IT");
+    }
     render(){
       return(
-        <LineChart width={600} height={250} data={this.state.data}>
+        <LineChart width={730} height={250} data={this.state.data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="time" />
-        <YAxis domain={[0, 10000]}/>
+        <XAxis dataKey="time" tickFormatter={this.formatDate}/>
+        <YAxis/>
         <Tooltip/>
         <Legend/>
         <Line type="monotone" dataKey="count" stroke="#8884d8" />

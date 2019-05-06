@@ -14,14 +14,26 @@ import Search from "./components/Search"
 import ChartsLocation from "./components/ChartsLocations"
 
 class App extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      textfilter: ""
+    }
+  }
   render() {
     return (
       <div className="App">
         <Menu/>
-        <Search/>
-        <ChartsLocation/>
+        <Search handler={this.handleChange.bind(this)}/>
+        <ChartsLocation textfilter={this.state.textfilter}/>
       </div>
     );
+  }
+
+  handleChange(e){
+    this.setState({
+      textfilter: e.target.value
+    })
   }
 }
 
