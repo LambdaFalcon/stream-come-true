@@ -1,45 +1,48 @@
-const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const cors = require("cors");
+const cors = require('cors');
 
-const indexRouter = require('./routes/index');
-const milestone1Router = require('./routes/milestone1');
+// Import api and config
+const api = require('./api');
+const config = require('./config');
+
+// Import error handlers
+const catch404 = require('./utils/catch404');
+const errorHandler = require('./utils/errorHandler');
 
 const app = express();
 
-// view engine setup
+// View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-// allow all CORS
+// Allow all CORS
 app.use(cors());
 
-app.use(logger('dev'));
+// Other settings
+if (config.env === 'development') app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// Serve static files for error pages and static React App
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.resolve(__dirname, '../client/build')));
 
-// register routers
-app.use('/', indexRouter);
-app.use('/milestone1', milestone1Router);
+// Register API v1
+app.use('/api/v1', api(config));
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+// Register development index router
+if (config.env === 'development') {
+  app.get('/', (req, res) => {
+    res.render('index', { title: 'Stream Come True' });
+  });
+}
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// Catch 404 and setup error handler
+app.use(catch404);
+app.use(errorHandler);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
 module.exports = app;

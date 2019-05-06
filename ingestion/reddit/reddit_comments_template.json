@@ -1,0 +1,41 @@
+{
+  "template": "reddit_comments",
+  "order":    1,
+  "settings": {
+    "number_of_shards": 1
+  },
+  "mappings": {
+    "properties": {
+      "@timestamp": {
+        "type": "date"
+      },
+      "@version": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "created_at": {
+        "type": "date"
+      },
+      "screen_name": {
+        "type": "keyword"
+      },
+      "domain": {
+        "type": "keyword"
+      },
+      "subreddit": {
+        "type": "keyword"
+      },
+      "id": {
+        "type": "keyword"
+      },
+      "user_karma": {
+        "type": "long"
+      }
+    }
+  }
+}
