@@ -69,6 +69,7 @@ def parse_comment(comment):
         'id': comment.id,
         'subreddit':comment.subreddit.display_name,
         'domain':comment.subreddit.display_name,
+        'user_image': comment.author.icon_img,
         #is a unix timestamp
         'created_at': comment.created_utc,
         'screen_name': comment.author.name,

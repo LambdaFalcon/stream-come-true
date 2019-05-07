@@ -35,6 +35,9 @@
       },
       "user_karma": {
         "type": "long"
+      },
+      "user_image": {
+        "type": "text"
       }
     }
   }
