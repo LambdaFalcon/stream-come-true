@@ -2,12 +2,13 @@
 
 const selectFields = {
   all: ({
-    created_at, screen_name, text, domain,
+    created_at, screen_name, text, domain, user_image,
   }) => ({
     created_at,
     screen_name,
     text,
     domain,
+    user_image,
   }),
 
   itemsOverTime: ({ key, doc_count }) => ({

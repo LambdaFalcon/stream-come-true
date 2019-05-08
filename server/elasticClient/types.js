@@ -8,6 +8,7 @@
  * @property {string} screen_name user who created the item
  * @property {string} text
  * @property {string} domain domain selected for the ingestion
+ * @property {string} user_image url to user image
  */
 
 /**
