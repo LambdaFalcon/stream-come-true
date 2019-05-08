@@ -31,7 +31,7 @@ describe('ElasticClient.all()', function allTest() {
       item.should.have.property('screen_name');
       item.should.have.property('text');
       item.should.have.property('domain');
-      // item.should.have.property('user_image');
+      item.should.have.property('user_image');
     });
 
     it('should contain an element with properties of the correct types', async () => {
@@ -41,7 +41,7 @@ describe('ElasticClient.all()', function allTest() {
       item.screen_name.should.be.a('string');
       item.text.should.be.a('string');
       item.domain.should.be.a('string');
-      // item.user_image.should.be.a('string');
+      item.user_image.should.be.a('string');
     });
   });
 
