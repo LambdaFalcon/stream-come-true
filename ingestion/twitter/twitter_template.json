@@ -20,7 +20,11 @@
           "type": "string"
         },
         "coordinates": {
-            "type": "geo_point"
+          "properties": {
+            "coordinates": {
+              "type": "geo_point"
+            }
+          }
         },
           "followers_count": {
             "type": "long"
@@ -39,6 +43,9 @@
         }, 
           "user_id" : {
             "type" : "long"
+        },
+        "user_image": {
+          "type": "text"
         }
       }
     }
