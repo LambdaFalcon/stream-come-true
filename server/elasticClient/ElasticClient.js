@@ -45,11 +45,19 @@ class ElasticClient {
   async all(filters) {
     const query = this.applyFilters(filters);
 
+    const { dateField, textField } = this.queryFields;
+    const sortByDate = { [dateField]: { order: 'desc' } };
+    const highlight = { fields: { [textField]: {} }, number_of_fragments: 0 };
+
     return this.client
       .search({
         index: this.index,
-        body: { ...query },
-        size: 10000,
+        body: {
+          ...query,
+          sort: [sortByDate],
+          highlight,
+        },
+        size: 15,
       })
       .then(res => res.body.hits.hits)
       .then(hits => hits.map(el => el._source))
