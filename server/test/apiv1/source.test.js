@@ -59,7 +59,9 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
     it('should contain elements that match a given filter', async () => {
       const textfilter = 'google';
       const res = await getRequest(`${twitterRoute}?textfilter=${textfilter}`);
-      res.body.map(item => item.text.toLowerCase()).should.all.have.string(textfilter);
+      res.body
+        .map(item => item.text.toLowerCase())
+        .should.all.have.string(`<em>${textfilter}</em>`);
     });
   });
 
@@ -106,7 +108,9 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
     it('should contain elements that match a given filter', async () => {
       const textfilter = 'google';
       const res = await getRequest(`${redditRoute}?textfilter=${textfilter}`);
-      res.body.map(item => item.text.toLowerCase()).should.all.have.string(textfilter);
+      res.body
+        .map(item => item.text.toLowerCase())
+        .should.all.have.string(`<em>${textfilter}</em>`);
     });
   });
 
