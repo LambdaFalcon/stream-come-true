@@ -60,6 +60,7 @@ class ElasticClient {
         size: 15,
       })
       .then(res => res.body.hits.hits)
+      .then(hits => hits.map(this.extractHighlightIfTextFilter(filters)))
       .then(hits => hits.map(el => el._source))
       .then(items => items.map(selectFields.all));
   }
@@ -140,9 +141,23 @@ class ElasticClient {
     );
   }
 
+  extractHighlightIfTextFilter({ textfilter = '' } = {}) {
+    if (!textfilter) return i => i;
+
+    const { textField } = this.queryFields;
+    return ({ _source, highlight, ...rest }) => ({
+      ...rest,
+      _source: {
+        ..._source,
+        text: highlight[textField][0],
+      },
+    });
+  }
+
   /**
    * Computes a reasonable interval given a time frame.
    *
+   * @private
    * @param {Filters} filters text and time frame filters
    */
   computeInterval(filters) {
