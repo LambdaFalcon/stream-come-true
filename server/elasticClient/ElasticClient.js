@@ -141,15 +141,35 @@ class ElasticClient {
     );
   }
 
+  /**
+   * If the passed filters are defined and contain a textfilter, returns a mapper that takes an
+   * ElasticSearch hit object, extracts the first string in the highlight field and uses it as a
+   * replacement for the textField of the `_source` object of the hit.
+   *
+   * This is used to return an {@link Item} that already has the text with the text filter match
+   * highlighted.
+   *
+   * If the passed filters are undefined or the textfilter is not specified, this function returns
+   * the identity function.
+   *
+   * @function HitMapper
+   * @param {{ _source: { text: string }, highlight?: object }} hit ElasticSearch hit with _source
+   *                                                                and optional highlight field
+   * @returns {{ _source: { text: string }}} the same hit, with the first highlight string inserted
+   *                                         in the field _source.text
+   *
+   * @param {Filters} filters text and time frame filters
+   * @returns {HitMapper}
+   */
   extractHighlightIfTextFilter({ textfilter = '' } = {}) {
-    if (!textfilter) return i => i;
+    if (!textfilter) return hit => hit;
 
     const { textField } = this.queryFields;
     return ({ _source, highlight, ...rest }) => ({
       ...rest,
       _source: {
         ..._source,
-        text: highlight[textField][0],
+        [textField]: highlight[textField][0],
       },
     });
   }
