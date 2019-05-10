@@ -3,8 +3,6 @@
 const { Client } = require('@elastic/elasticsearch');
 const createError = require('http-errors');
 
-// TODO: somehow pass this as an argument. Problem: it is used in a static method.
-const { sourceFieldName } = require('../config');
 const applyFiltersImpl = require('./filters');
 const computeIntervalImpl = require('./computeInterval');
 const selectFields = require('./selectFields');
@@ -31,7 +29,7 @@ class ElasticClient {
    * @param {Express.Request} req Express.js request object
    * @returns {ElasticClient} the connected client
    */
-  static getInstance(req) {
+  static getInstance(req, { sourceFieldName }) {
     return req[sourceFieldName];
   }
 
