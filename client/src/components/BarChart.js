@@ -55,7 +55,7 @@ class Graph extends React.Component{
     return(
       <BarChart width={730} height={250} data={this.state.data}>
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey={this.props.x}/>
+      <XAxis dataKey={this.props.x} allowDuplicatedCategory={false} />
       <YAxis />
       <Tooltip />
       <Legend />

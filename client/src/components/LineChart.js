@@ -55,11 +55,11 @@ class OverTime extends React.Component{
       return(
         <LineChart width={730} height={250} data={this.state.data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={this.props.x} tickFormatter={this.formatDate}/>
-        <YAxis/>
-        <Tooltip/>
+        <XAxis dataKey={this.props.x} tickFormatter={this.formatDate} allowDuplicatedCategory={false}/>
+        <YAxis minTickGap={5} tickSize={3} />
+        <Tooltip filterNull={true}/>
         <Legend/>
-        <Line type="monotone" dataKey={this.props.y} stroke="#8884d8" />
+        <Line type="monotone" dataKey={this.props.y} stroke="#8884d8" activeDot={true}/>
         </LineChart>
       );
     }
