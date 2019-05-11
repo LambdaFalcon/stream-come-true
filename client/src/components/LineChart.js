@@ -10,7 +10,7 @@ class OverTime extends React.Component{
             {this.props.name}
           </div>
           <div className="panel-body">
-            <Graph api= {this.props.api} textfilter={this.props.textfilter}/>
+            <Graph api= {this.props.api} textfilter={this.props.textfilter} x={this.props.x} y={this.props.y}/>
           </div>
         </div>
       </div>
@@ -55,11 +55,11 @@ class OverTime extends React.Component{
       return(
         <LineChart width={730} height={250} data={this.state.data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="time" tickFormatter={this.formatDate}/>
+        <XAxis dataKey={this.props.x} tickFormatter={this.formatDate}/>
         <YAxis/>
         <Tooltip/>
         <Legend/>
-        <Line type="monotone" dataKey="count" stroke="#8884d8" />
+        <Line type="monotone" dataKey={this.props.y} stroke="#8884d8" />
         </LineChart>
       );
     }
