@@ -63,8 +63,9 @@ describe('ElasticClient.popularUsers()', function popularUsersTest() {
   });
 
   describe('with time frame filter', () => {
-    const timeframe = '1h';
-    const filters = { timeframe };
+    const oneHourAgo = new Date();
+    oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+    const filters = { fromdatetime: oneHourAgo.toISOString() };
 
     it('should return an array', async () => {
       const res = await client.popularUsers(filters);

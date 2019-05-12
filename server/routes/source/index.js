@@ -29,7 +29,7 @@ const popularUsers = require('./popularUsers');
 const sourceRouter = (config) => {
   const router = express.Router();
 
-  router.all('/*', addFilters);
+  router.all('/*', addFilters(config));
 
   router.get('/', allData(config));
   router.get('/items_over_time', itemsOverTime(config));
