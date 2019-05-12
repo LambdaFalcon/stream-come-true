@@ -1,5 +1,6 @@
 const express = require('express');
 
+const checkSourceAvailable = require('./../middleware/checkSourceAvailable');
 const connectSource = require('./../middleware/connectSource');
 const sourceRouter = require('./source');
 
@@ -19,7 +20,9 @@ const sourceRouter = require('./source');
 const streamRouter = (config) => {
   const router = express.Router();
 
-  // middleware to add ElasticClient to req
+  // middleware to check that source is available
+  // and add ElasticClient to req
+  router.all('/:source*', checkSourceAvailable(config));
   router.all('/:source*', connectSource(config));
 
   // mount subroutes
