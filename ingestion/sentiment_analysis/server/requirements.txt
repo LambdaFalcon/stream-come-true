@@ -1,0 +1,4 @@
+flask
+waitress
+tensorflow
+keras

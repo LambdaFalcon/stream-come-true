@@ -60,4 +60,4 @@ if __name__ == "__main__":
         host = os.environ["SENTIMENT_HOST"]
 
     #serve using waitress
-    serve(app, host=host, port=port)
+    serve(app, host="0.0.0.0", port=port)
