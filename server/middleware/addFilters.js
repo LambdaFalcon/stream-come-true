@@ -9,9 +9,12 @@ const asyncErrorCatch = require('../utils/asyncErrorCatch');
  *
  * @example
  *    const addFilters = require('./middleware/addFilters');
- *    router.all('/*', addFilters);
+ *    router.all('/*', addFilters(config));
+ *
+ * @param {object} config server configuration
+ * @returns {object} Express.js middleware
  */
-const addFilters = asyncErrorCatch(async (req, _res, next) => {
+const addFilters = config => asyncErrorCatch(async (req, _res, next) => {
   debug(`Extracting URL query: ${JSON.stringify(req.query)}`);
   const { textfilter, timeframe } = req.query;
   req.filters = { textfilter, timeframe };
