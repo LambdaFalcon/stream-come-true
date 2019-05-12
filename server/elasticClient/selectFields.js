@@ -27,6 +27,11 @@ const selectFields = {
     keyword: key,
     count: doc_count,
   }),
+
+  usersOverTime: ({ key, users_count: { value } }) => ({
+    time: key,
+    count: value,
+  }),
 };
 
 module.exports = selectFields;
