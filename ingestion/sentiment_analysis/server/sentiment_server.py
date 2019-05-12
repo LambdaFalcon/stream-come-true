@@ -2,6 +2,7 @@ import sys
 import pickle 
 import json
 import re
+import os
 
 from flask import Flask
 from flask import request
@@ -36,7 +37,6 @@ def analyze_sentiment_ml():
     return json.dumps({"sentiment": float(positive_probability)})
 
 if __name__ == "__main__":
-    sys.argv = ["","ml_model/200000-sentiment_classifier.h5", "ml_model/200000-tokenizer.pickle" ]
     if len(sys.argv)!= 3:
         print("usage: <path-to-classifier.h5> <path-to-tokenizer.pickle>")
         exit(0)
@@ -44,11 +44,20 @@ if __name__ == "__main__":
     tokenizer_file = sys.argv[2]
     #loading model
     model = load_model(model_file)
+    #otherwise model.predict doesn't work
     model._make_predict_function()
 
-    #load tokenizer
+    #loading tokenizer
     with open(tokenizer_file, 'rb') as f:
         tokenizer = pickle.load(f)
-    
+
+    #server setup
+    port = 5050
+    host = 'localhost'
+    if "SENTIMENT_PORT" in os.environ:
+        port = int(os.environ["SENTIMENT_PORT"])
+    if "SENTIMENT_HOST" in os.environ:
+        host = os.environ["SENTIMENT_HOST"]
+
     #serve using waitress
-    serve(app, host='localhost', port=5050)
+    serve(app, host=host, port=port)
