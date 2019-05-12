@@ -1,4 +1,5 @@
 const debug = require('debug')('server:info');
+const createError = require('http-errors');
 
 const asyncErrorCatch = require('../utils/asyncErrorCatch');
 
@@ -24,6 +25,14 @@ const minusHours = (ds, h) => {
  * Usually used in the main /:source router to add filters for all
  * /:source subroutes.
  *
+ * This will also apply defaults if the filters are not provided.
+ *
+ * The available filters are:
+ * - textfilter:  used to search text fields
+ * - timeframe: DEPRECATED
+ * - fromdatetime: start of time frame to consider
+ * - todatetime: end of time frame to consider
+ *
  * @example
  *    const addFilters = require('./middleware/addFilters');
  *    router.all('/*', addFilters(config));
@@ -33,8 +42,27 @@ const minusHours = (ds, h) => {
  */
 const addFilters = config => asyncErrorCatch(async (req, _res, next) => {
   debug(`Extracting URL query: ${JSON.stringify(req.query)}`);
-  const { textfilter, timeframe } = req.query;
-  req.filters = { textfilter, timeframe };
+
+  // Destructuring with default assignments
+  const {
+    textfilter = '',
+    timeframe = undefined,
+    fromdatetime: candidateFromdatetime,
+    todatetime = new Date().toISOString(),
+  } = req.query;
+
+  // Set default fromdatetime
+  const fromdatetime = candidateFromdatetime || minusHours(todatetime, config.defaultHourRange);
+
+  // Check validity of date filters
+  if (validDateFilters(fromdatetime)) throw createError(400, 'Bad date filters');
+
+  req.filters = {
+    textfilter,
+    timeframe,
+    fromdatetime,
+    todatetime,
+  };
   next();
 });
 
