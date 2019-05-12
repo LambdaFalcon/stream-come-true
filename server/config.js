@@ -10,6 +10,7 @@ const config = {
     textField: 'text',
   },
   defaultTimeFrameFilter: '5h',
+  defaultHourRange: 5,
   sourceFieldName: 'source',
 };
 
