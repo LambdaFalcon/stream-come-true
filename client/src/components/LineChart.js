@@ -50,7 +50,7 @@ class Graph extends React.Component {
     }));
   }
   filterTime() {
-    let { refAreaLeft, refAreaRight, data } = this.state;
+    let { refAreaLeft, refAreaRight} = this.state;
     //if the selected area has no width don't filter
     if (refAreaLeft === refAreaRight || refAreaRight === "") {
       this._resetSelectionState();
