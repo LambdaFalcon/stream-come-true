@@ -19,7 +19,6 @@ const popularKeywords = require('./popularKeywords');
  *
  * @example
  *    const sourceRouter = require('./source');
- *
  *    router.use('/:source', sourceRouter(config));
  *
  * @param {object} config server configuration
