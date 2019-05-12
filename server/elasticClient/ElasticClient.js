@@ -185,6 +185,27 @@ class ElasticClient {
   }
 
   /**
+   * Nest an aggregation in a given parent aggregation.
+   * The argument parentAggName is needed to know how the parent
+   * aggregation is called.
+   *
+   * @param {{aggs: object}} parentAgg
+   * @param {string} parentAggName
+   * @param {{aggs: object}} aggToNest
+   */
+  static nestAgg(parentAgg, parentAggName, aggToNest) {
+    const parentAggInternal = parentAgg.aggs[parentAggName];
+    return {
+      aggs: {
+        [parentAggName]: {
+          ...parentAggInternal,
+          ...aggToNest,
+        },
+      },
+    };
+  }
+
+  /**
    * Send an aggregation search query the ElasticSearch instance and get a result.
    * This is a private method used internally
    *
