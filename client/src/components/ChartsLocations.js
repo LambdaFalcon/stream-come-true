@@ -30,11 +30,11 @@ class ChartsLocation extends React.Component{
             </div>
             <div className="col-lg-12">
               <OverTime name={"Twitter Users Over Time"} api={twit_user_over_time} textfilter={this.props.textfilter} x={"time"} y={"count"}/>
-              <OverTime name={"Reddit Uses Over Time"} api={red_user_over_time} textfilter={this.props.textfilter} x={"time"} y={"count"}/>
+              <OverTime name={"Reddit Users Over Time"} api={red_user_over_time} textfilter={this.props.textfilter} x={"time"} y={"count"}/>
             </div>
             <div className="col-lg-12">
               <BarVisual name={"Twitter Popular Users"} api={twit_pop_users} textfilter={this.props.textfilter} x={"user"} y={"count"}/>
-              <BarVisual name={"Reddit Poopular Users"} api={red_pop_users} textfilter={this.props.textfilter} x={"user"} y={"count"}/>
+              <BarVisual name={"Reddit Popular Users"} api={red_pop_users} textfilter={this.props.textfilter} x={"user"} y={"count"}/>
             </div>
          </div>
       );

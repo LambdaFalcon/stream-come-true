@@ -57,7 +57,7 @@ class OverTime extends React.Component{
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey={this.props.x} tickFormatter={this.formatDate} allowDuplicatedCategory={false}/>
         <YAxis minTickGap={5} tickSize={3} />
-        <Tooltip filterNull={true}/>
+        <Tooltip filterNull={true} labelFormatter={this.formatDate} />
         <Legend/>
         <Line type="monotone" dataKey={this.props.y} stroke="#8884d8" activeDot={true}/>
         </LineChart>
