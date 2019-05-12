@@ -177,6 +177,7 @@ class ElasticClient {
    *
    * @private
    * @param {Filters} filters text and time frame filters
+   * @returns {string} an interval in Date Math syntax, e.g. 5h
    */
   computeInterval(filters) {
     const timeframe = (filters && filters.timeframe) || this.config.defaultTimeFrameFilter;
