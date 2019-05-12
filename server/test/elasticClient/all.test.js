@@ -19,44 +19,36 @@ describe('ElasticClient.all()', function allTest() {
       res.should.be.instanceOf(Array);
     });
 
-    it('should contain at least one element', async () => {
+    it('should contain elements with the correct properties', async () => {
       const res = await client.all();
-      res.should.have.lengthOf.at.least(1);
+      res.forEach((item) => {
+        item.should.have.property('created_at');
+        item.should.have.property('screen_name');
+        item.should.have.property('text');
+        item.should.have.property('domain');
+        item.should.have.property('user_image');
+      });
     });
 
-    it('should contain an element with the correct properties', async () => {
+    it('should contain elements with properties of the correct types', async () => {
       const res = await client.all();
-      const item = res[0];
-      item.should.have.property('created_at');
-      item.should.have.property('screen_name');
-      item.should.have.property('text');
-      item.should.have.property('domain');
-      item.should.have.property('user_image');
-    });
-
-    it('should contain an element with properties of the correct types', async () => {
-      const res = await client.all();
-      const item = res[0];
-      item.created_at.should.be.a('string');
-      item.screen_name.should.be.a('string');
-      item.text.should.be.a('string');
-      item.domain.should.be.a('string');
-      item.user_image.should.be.a('string');
+      res.forEach((item) => {
+        item.created_at.should.be.a('string');
+        item.screen_name.should.be.a('string');
+        item.text.should.be.a('string');
+        item.domain.should.be.a('string');
+        item.user_image.should.be.a('string');
+      });
     });
   });
 
   describe('with text filter', () => {
-    const textfilter = 'google';
+    const textfilter = 'apex';
     const filters = { textfilter };
 
     it('should return an array', async () => {
       const res = await client.all(filters);
       res.should.be.instanceOf(Array);
-    });
-
-    it('should contain at least one element', async () => {
-      const res = await client.all(filters);
-      res.should.have.lengthOf.at.least(1);
     });
 
     it('should contain elements that match the text filter', async () => {
@@ -74,11 +66,6 @@ describe('ElasticClient.all()', function allTest() {
     it('should return an array', async () => {
       const res = await client.all(filters);
       res.should.be.instanceOf(Array);
-    });
-
-    it('should contain at least one element', async () => {
-      const res = await client.all(filters);
-      res.should.have.lengthOf.at.least(1);
     });
 
     it('should contain elements that are within the time frame filter', async () => {

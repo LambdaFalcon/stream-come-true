@@ -29,9 +29,9 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
       res.body.should.be.instanceOf(Array);
     });
 
-    it('should contain 15 elements', async () => {
+    it('should contain 15 or less elements', async () => {
       const res = await getRequest(twitterRoute);
-      res.body.should.have.lengthOf(15);
+      res.body.should.have.lengthOf.at.most(15);
     });
 
     it('should contain elements with the correct properties', async () => {
@@ -57,7 +57,7 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
     });
 
     it('should contain elements that match a given filter', async () => {
-      const textfilter = 'google';
+      const textfilter = 'apex';
       const res = await getRequest(`${twitterRoute}?textfilter=${textfilter}`);
       res.body
         .map(item => item.text.toLowerCase())
@@ -78,9 +78,9 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
       res.body.should.be.instanceOf(Array);
     });
 
-    it('should contain 15 elements', async () => {
+    it('should contain 15 or less elements', async () => {
       const res = await getRequest(redditRoute);
-      res.body.should.have.lengthOf(15);
+      res.body.should.have.lengthOf.at.most(15);
     });
 
     it('should contain elements with the correct properties', async () => {
@@ -106,7 +106,7 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
     });
 
     it('should contain elements that match a given filter', async () => {
-      const textfilter = 'google';
+      const textfilter = 'apex';
       const res = await getRequest(`${redditRoute}?textfilter=${textfilter}`);
       res.body
         .map(item => item.text.toLowerCase())
