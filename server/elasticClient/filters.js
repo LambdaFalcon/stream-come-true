@@ -3,13 +3,15 @@ const debug = require('debug')('server:elastic');
 /**
  * Create the time frame filter part of the query.
  *
- * @param {string} value time frame to keep, e.g. 5m, 5h, 5d. See types.js for more info
+ * @param {string} fromdatetime a datestring indicating the start of time frame to consider
+ * @param {string} todatetime a datestring indicating the end of time frame to consider
  * @param {string} dateField name of the date field
  */
-const timeFrameRangeFilter = (value, dateField) => ({
+const timeFrameRangeFilter = (fromdatetime, todatetime, dateField) => ({
   range: {
     [dateField]: {
-      gte: `now-${value}`, // e.g.: 'now-5h'
+      gte: fromdatetime,
+      lte: todatetime,
     },
   },
 });
@@ -45,20 +47,22 @@ const textMatchFilter = (text, textField) => {
  * @param {string} textField name of the text field
  * @returns {object} an ElasticSearch query object
  *
- * @param {object} config the application configuration
- * @returns {ApplyFiltersFunc} the actual function that applied filters
+ * @param {object} config UNUSED: the application configuration
+ * @returns {ApplyFiltersFunc} the actual function that applies filters
  */
-const applyFilters = config => (
-  { timeframe = config.defaultTimeFrameFilter, textfilter } = {},
+const applyFilters = _config => (
+  { textfilter, fromdatetime, todatetime } = {},
   dateField,
   textField,
 ) => {
-  debug(`Applying filters: textfilter=${textfilter}, timeframe=${timeframe}`);
+  debug(
+    `Applying filters: textfilter=${textfilter}, fromdatetime=${fromdatetime}, todatetime=${todatetime}`,
+  );
   const query = {
     query: {
       bool: {
         must: [textMatchFilter(textfilter, textField)],
-        filter: timeFrameRangeFilter(timeframe, dateField),
+        filter: timeFrameRangeFilter(fromdatetime, todatetime, dateField),
       },
     },
   };
