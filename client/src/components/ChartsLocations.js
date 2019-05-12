@@ -11,7 +11,6 @@ const red_user_over_time = config['red_user_over_time'];
 const twit_user_over_time = config['twit_user_over_time'];
 const red_pop_users = config['red_pop_users'];
 const twit_pop_users = config['twit_pop_users'];
-
 class ChartsLocation extends React.Component{
     render(){
       return(
@@ -30,12 +29,12 @@ class ChartsLocation extends React.Component{
               <BarVisual name={"Reddit Popular Keywords"} api={red_pop_key_words} textfilter={this.props.textfilter} x={"keyword"} y={"count"}/>
             </div>
             <div className="col-lg-12">
-              <OverTime name={"Reddit User Over Time"} api={red_user_over_time} textfilter={this.props.textfilter} x={"time"} y={"count"}/>
-              <OverTime name={"Twitter User Over Time"} api={twit_user_over_time} textfilter={this.props.textfilter} x={"time"} y={"count"}/>
+              <OverTime name={"Twitter Users Over Time"} api={twit_user_over_time} textfilter={this.props.textfilter} x={"time"} y={"count"}/>
+              <OverTime name={"Reddit Uses Over Time"} api={red_user_over_time} textfilter={this.props.textfilter} x={"time"} y={"count"}/>
             </div>
             <div className="col-lg-12">
-              <BarVisual name={"Reddit Poopular User"} api={red_pop_users} textfilter={this.props.textfilter} x={"user"} y={"count"}/>
-              <BarVisual name={"Reddit Popular User"} api={twit_pop_users} textfilter={this.props.textfilter} x={"user"} y={"count"}/>
+              <BarVisual name={"Twitter Popular Users"} api={twit_pop_users} textfilter={this.props.textfilter} x={"user"} y={"count"}/>
+              <BarVisual name={"Reddit Poopular Users"} api={red_pop_users} textfilter={this.props.textfilter} x={"user"} y={"count"}/>
             </div>
          </div>
       );
