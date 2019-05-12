@@ -10,7 +10,7 @@ class BarVisual extends React.PureComponent{
             {this.props.name}
           </div>
           <div className="panel-body">
-            <Graph api={this.props.api} textfilter={this.props.textfilter}/>
+            <Graph api={this.props.api} textfilter={this.props.textfilter} x={this.props.x} y={this.props.y}/>
           </div>
         </div>
       </div>
@@ -55,11 +55,11 @@ class Graph extends React.Component{
     return(
       <BarChart width={730} height={250} data={this.state.data}>
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="keyword" />
+      <XAxis dataKey={this.props.x} allowDuplicatedCategory={false} />
       <YAxis />
       <Tooltip />
       <Legend />
-      <Bar dataKey="count" fill="#8884d8" />
+      <Bar dataKey={this.props.y} fill="#8884d8" />
 </BarChart>
     );
   }
