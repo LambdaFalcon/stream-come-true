@@ -1,5 +1,6 @@
 import re
 import pickle
+import sys
 import pandas as pd
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
@@ -80,11 +81,16 @@ def train_classifier(data):
 
 
 if __name__ == "__main__":
-    file = "data/training.1600000.processed.noemoticon.csv"
+    if len(sys.argv) < 2:
+        print("usage: <path-to-Sentiment140-dataset.csv> <optional: TRAINING_SIZE>")
+        exit(0)
+
+    sentiment_140 = sys.argv[1]
     #Training size should be divisble by two, since we are taking half positive and half negative samples
     #note 20% will be used for evaluating the model
-    TRAINING_SIZE = 200000
-    data = read_data(file)
+    TRAINING_SIZE = 100000 if len(sys.argv) < 3 else int(sys.argv[2]) 
+
+    data = read_data(sentiment_140)
     data = get_training_data(data, TRAINING_SIZE)
     tokenizer, model = train_classifier(data)
 
