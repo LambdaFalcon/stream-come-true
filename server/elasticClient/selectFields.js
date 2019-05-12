@@ -32,6 +32,11 @@ const selectFields = {
     time: key,
     count: value,
   }),
+
+  popularUsers: ({ key, doc_count }) => ({
+    user: key,
+    count: doc_count,
+  }),
 };
 
 module.exports = selectFields;
