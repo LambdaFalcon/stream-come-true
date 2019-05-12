@@ -4,6 +4,8 @@ const addFilters = require('../../middleware/addFilters');
 const allData = require('./all');
 const itemsOverTime = require('./itemsOverTime');
 const popularKeywords = require('./popularKeywords');
+const usersOverTime = require('./usersOverTime');
+const popularUsers = require('./popularUsers');
 
 /**
  * Create the router for a specific source.
@@ -32,6 +34,8 @@ const sourceRouter = (config) => {
   router.get('/', allData(config));
   router.get('/items_over_time', itemsOverTime(config));
   router.get('/popular_keywords', popularKeywords(config));
+  router.get('/users_over_time', usersOverTime(config));
+  router.get('/popular_users', popularUsers(config));
 
   return router;
 };

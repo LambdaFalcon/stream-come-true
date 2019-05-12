@@ -9,6 +9,8 @@ const selectFields = require('./selectFields');
 
 const timeBucketing = require('./queries/timeBucketing');
 const significantText = require('./queries/significantText');
+const distinctCount = require('./queries/distinctCount');
+const termsCount = require('./queries/termsCount');
 
 /**
  * @class ElasticClient
@@ -90,7 +92,24 @@ class ElasticClient {
    * @returns {Promise<Array<UsersOverTimeElement>>} users over time
    */
   async usersOverTime(filters) {
-    return [this.index, filters]; // TODO: real implementation
+    const aggName = 'users_over_time';
+    const query = this.applyFilters(filters);
+    const timeBucketsAgg = timeBucketing(
+      aggName,
+      this.queryFields.dateField,
+      this.computeInterval(filters),
+    );
+    const distinctUsersAgg = distinctCount('users_count', 'screen_name');
+
+    // Nest aggregations and define result extractor
+    const usersOverTimeAgg = ElasticClient.nestAgg(timeBucketsAgg, aggName, distinctUsersAgg);
+    const queryWithAgg = {
+      ...query,
+      ...usersOverTimeAgg,
+    };
+    const resultExtractor = aggResult => aggResult.buckets.map(selectFields.usersOverTime);
+
+    return this.aggregation(queryWithAgg, aggName, resultExtractor);
   }
 
   /**
@@ -120,7 +139,15 @@ class ElasticClient {
    * @returns {Promise<Array<PopularUser>>} popular users
    */
   async popularUsers(filters) {
-    return [this.index, filters]; // TODO: real implementation
+    const aggName = 'popular_users';
+    const query = this.applyFilters(filters);
+    const queryWithAgg = {
+      ...query,
+      ...termsCount(aggName, 'screen_name'),
+    };
+    const resultExtractor = aggResult => aggResult.buckets.map(selectFields.popularUsers);
+
+    return this.aggregation(queryWithAgg, aggName, resultExtractor);
   }
 
   /**
@@ -185,6 +212,27 @@ class ElasticClient {
   }
 
   /**
+   * Nest an aggregation in a given parent aggregation.
+   * The argument parentAggName is needed to know how the parent
+   * aggregation is called.
+   *
+   * @param {{aggs: object}} parentAgg
+   * @param {string} parentAggName
+   * @param {{aggs: object}} aggToNest
+   */
+  static nestAgg(parentAgg, parentAggName, aggToNest) {
+    const parentAggInternal = parentAgg.aggs[parentAggName];
+    return {
+      aggs: {
+        [parentAggName]: {
+          ...parentAggInternal,
+          ...aggToNest,
+        },
+      },
+    };
+  }
+
+  /**
    * Send an aggregation search query the ElasticSearch instance and get a result.
    * This is a private method used internally
    *
@@ -196,8 +244,9 @@ class ElasticClient {
    * @returns {Array<AggItem>}
    *
    * @private
-   * @param {Object} query
-   * @param {AggResultExtractor} resultExtractor
+   * @param {Object} query an ElasticSearch query object (see QueryDSL in ES docs)
+   * @param {AggResultExtractor} resultExtractor a function that extracts data from the result
+   *                                             and returns an Array of AggItem
    * @returns {Promise<Array<AggItem>>}
    */
   async aggregation(query, aggName, resultExtractor) {
