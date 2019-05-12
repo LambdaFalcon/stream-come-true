@@ -10,6 +10,7 @@ const selectFields = require('./selectFields');
 const timeBucketing = require('./queries/timeBucketing');
 const significantText = require('./queries/significantText');
 const distinctCount = require('./queries/distinctCount');
+const termsCount = require('./queries/termsCount');
 
 /**
  * @class ElasticClient
@@ -138,7 +139,15 @@ class ElasticClient {
    * @returns {Promise<Array<PopularUser>>} popular users
    */
   async popularUsers(filters) {
-    return [this.index, filters]; // TODO: real implementation
+    const aggName = 'popular_users';
+    const query = this.applyFilters(filters);
+    const queryWithAgg = {
+      ...query,
+      ...termsCount(aggName, 'screen_name'),
+    };
+    const resultExtractor = aggResult => aggResult.buckets.map(selectFields.popularUsers);
+
+    return this.aggregation(queryWithAgg, aggName, resultExtractor);
   }
 
   /**
