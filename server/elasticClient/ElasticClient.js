@@ -3,6 +3,8 @@
 const { Client } = require('@elastic/elasticsearch');
 const createError = require('http-errors');
 
+const datetimeUtils = require('../utils/datetime');
+
 const applyFiltersImpl = require('./filters');
 const computeIntervalImpl = require('./computeInterval');
 const selectFields = require('./selectFields');
@@ -206,9 +208,12 @@ class ElasticClient {
    * @param {Filters} filters text and time frame filters
    * @returns {string} an interval in Date Math syntax, e.g. 5h
    */
-  computeInterval(filters) {
-    const timeframe = (filters && filters.timeframe) || this.config.defaultTimeFrameFilter;
-    return computeIntervalImpl(timeframe);
+  computeInterval(filters = {}) {
+    const { fromdatetime: candidateFromdatetime, todatetime = new Date().toISOString() } = filters;
+    const fromdatetime = candidateFromdatetime
+      || datetimeUtils.minusHours(todatetime, this.config.defaultHourRange);
+    const seconds = (new Date(todatetime).getTime() - new Date(fromdatetime).getTime()) / 1000;
+    return computeIntervalImpl(this.config, seconds);
   }
 
   /**
