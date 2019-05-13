@@ -11,8 +11,6 @@ class Search extends React.PureComponent {
             <div className="input-group">
           <input id="btn-input" type="text" className="form-control input-md" placeholder="Keyword" onChange={this.props.handler}>
           </input>
-          <span className="input-group-btn">
-          </span>
         </div>
       );
     }
