@@ -9,7 +9,7 @@ chai.use(chaiHttp);
 chai.should();
 
 describe('ROOT ROUTE', () => {
-  describe.skip('GET /', () => {
+  describe('GET /', () => {
     it('should get the homepage', async () => {
       const res = await chai.request(app).get('/');
       res.should.have.status(200);

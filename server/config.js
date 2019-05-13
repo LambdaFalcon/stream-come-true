@@ -11,6 +11,7 @@ const config = {
   },
   defaultTimeFrameFilter: '5h',
   defaultHourRange: 5,
+  overTimeSplits: 100,
   sourceFieldName: 'source',
 };
 
