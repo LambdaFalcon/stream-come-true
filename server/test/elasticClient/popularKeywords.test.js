@@ -19,28 +19,25 @@ describe('ElasticClient.popularKeywords()', function popularKeywordsTest() {
       res.should.be.instanceOf(Array);
     });
 
-    it('should contain at least one element', async () => {
+    it('should contain elements with the correct properties', async () => {
       const res = await client.popularKeywords();
-      res.should.have.lengthOf.at.least(1);
+      res.forEach((item) => {
+        item.should.have.property('keyword');
+        item.should.have.property('count');
+      });
     });
 
-    it('should contain an element with the correct properties', async () => {
+    it('should contain elements with properties of the correct types', async () => {
       const res = await client.popularKeywords();
-      const item = res[0];
-      item.should.have.property('keyword');
-      item.should.have.property('count');
-    });
-
-    it('should contain an element with properties of the correct types', async () => {
-      const res = await client.popularKeywords();
-      const item = res[0];
-      item.keyword.should.be.a('string');
-      item.count.should.be.a('number');
+      res.forEach((item) => {
+        item.keyword.should.be.a('string');
+        item.count.should.be.a('number');
+      });
     });
   });
 
   describe('with text filter', () => {
-    const textfilter = 'google';
+    const textfilter = 'apex';
     const filters = { textfilter };
 
     it('should return an array', async () => {
@@ -48,57 +45,54 @@ describe('ElasticClient.popularKeywords()', function popularKeywordsTest() {
       res.should.be.instanceOf(Array);
     });
 
-    it('should contain at least one element', async () => {
+    it('should contain elements with the correct properties', async () => {
       const res = await client.popularKeywords(filters);
-      res.should.have.lengthOf.at.least(1);
+      res.forEach((item) => {
+        item.should.have.property('keyword');
+        item.should.have.property('count');
+      });
     });
 
-    it('should contain an element with the correct properties', async () => {
+    it('should contain elements with properties of the correct types', async () => {
       const res = await client.popularKeywords(filters);
-      const item = res[0];
-      item.should.have.property('keyword');
-      item.should.have.property('count');
-    });
-
-    it('should contain an element with properties of the correct types', async () => {
-      const res = await client.popularKeywords(filters);
-      const item = res[0];
-      item.keyword.should.be.a('string');
-      item.count.should.be.a('number');
+      res.forEach((item) => {
+        item.keyword.should.be.a('string');
+        item.count.should.be.a('number');
+      });
     });
 
     it('should contain at least one element matching the text filter', async () => {
       const res = await client.popularKeywords(filters);
-      res.should.contain.an.item.with.property('keyword', textfilter);
+      if (res.length !== 0) {
+        res.should.contain.an.item.with.property('keyword', textfilter);
+      }
     });
   });
 
   describe('with time frame filter', () => {
-    const timeframe = '1h';
-    const filters = { timeframe };
+    const oneHourAgo = new Date();
+    oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+    const filters = { fromdatetime: oneHourAgo.toISOString() };
 
     it('should return an array', async () => {
       const res = await client.popularKeywords(filters);
       res.should.be.instanceOf(Array);
     });
 
-    it('should contain at least one element', async () => {
+    it('should contain elements with the correct properties', async () => {
       const res = await client.popularKeywords(filters);
-      res.should.have.lengthOf.at.least(1);
+      res.forEach((item) => {
+        item.should.have.property('keyword');
+        item.should.have.property('count');
+      });
     });
 
-    it('should contain an element with the correct properties', async () => {
+    it('should contain elements with properties of the correct types', async () => {
       const res = await client.popularKeywords(filters);
-      const item = res[0];
-      item.should.have.property('keyword');
-      item.should.have.property('count');
-    });
-
-    it('should contain an element with properties of the correct types', async () => {
-      const res = await client.popularKeywords(filters);
-      const item = res[0];
-      item.keyword.should.be.a('string');
-      item.count.should.be.a('number');
+      res.forEach((item) => {
+        item.keyword.should.be.a('string');
+        item.count.should.be.a('number');
+      });
     });
   });
 });

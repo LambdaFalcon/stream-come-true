@@ -3,6 +3,7 @@ const chai = require('chai');
 const chaiThings = require('chai-things');
 const config = require('../../config');
 const ElasticClient = require('../../elasticClient/ElasticClient');
+const testUtils = require('../utils');
 
 // Configure chai
 chai.should();
@@ -19,28 +20,25 @@ describe('ElasticClient.itemsOverTime()', function itemsOverTimeTest() {
       res.should.be.instanceOf(Array);
     });
 
-    it('should contain at least one element', async () => {
+    it('should contain elements with the correct properties', async () => {
       const res = await client.itemsOverTime();
-      res.should.have.lengthOf.at.least(1);
+      res.forEach((item) => {
+        item.should.have.property('time');
+        item.should.have.property('count');
+      });
     });
 
-    it('should contain an element with the correct properties', async () => {
+    it('should contain elements with properties of the correct types', async () => {
       const res = await client.itemsOverTime();
-      const item = res[0];
-      item.should.have.property('time');
-      item.should.have.property('count');
-    });
-
-    it('should contain an element with properties of the correct types', async () => {
-      const res = await client.itemsOverTime();
-      const item = res[0];
-      item.time.should.be.a('number');
-      item.count.should.be.a('number');
+      res.forEach((item) => {
+        item.time.should.be.a('number');
+        item.count.should.be.a('number');
+      });
     });
   });
 
   describe('with text filter', () => {
-    const textfilter = 'google';
+    const textfilter = 'apex';
     const filters = { textfilter };
 
     it('should return an array', async () => {
@@ -48,59 +46,56 @@ describe('ElasticClient.itemsOverTime()', function itemsOverTimeTest() {
       res.should.be.instanceOf(Array);
     });
 
-    it('should contain at least one element', async () => {
+    it('should contain elements with the correct properties', async () => {
       const res = await client.itemsOverTime(filters);
-      res.should.have.lengthOf.at.least(1);
+      res.forEach((item) => {
+        item.should.have.property('time');
+        item.should.have.property('count');
+      });
     });
 
-    it('should contain an element with the correct properties', async () => {
+    it('should contain elements with properties of the correct types', async () => {
       const res = await client.itemsOverTime(filters);
-      const item = res[0];
-      item.should.have.property('time');
-      item.should.have.property('count');
-    });
-
-    it('should contain an element with properties of the correct types', async () => {
-      const res = await client.itemsOverTime(filters);
-      const item = res[0];
-      item.time.should.be.a('number');
-      item.count.should.be.a('number');
+      res.forEach((item) => {
+        item.time.should.be.a('number');
+        item.count.should.be.a('number');
+      });
     });
   });
 
   describe('with time frame filter', () => {
-    const timeframe = '5m';
-    const filters = { timeframe };
-    const msPerMinute = 60000;
-    const fiveMinutesAgo = new Date(Date.now().valueOf() - 5 * msPerMinute);
+    const fiveMinutesAgo = testUtils.getNMinutesAgo(5, true);
+    const tenMinutesAgo = testUtils.getNMinutesAgo(10, false);
+    const filters = {
+      fromdatetime: tenMinutesAgo.toISOString(),
+      todatetime: fiveMinutesAgo.toISOString(),
+    };
 
     it('should return an array', async () => {
       const res = await client.itemsOverTime(filters);
       res.should.be.instanceOf(Array);
     });
 
-    it('should contain at least one element', async () => {
+    it('should contain elements with the correct properties', async () => {
       const res = await client.itemsOverTime(filters);
-      res.should.have.lengthOf.at.least(1);
+      res.forEach((item) => {
+        item.should.have.property('time');
+        item.should.have.property('count');
+      });
     });
 
-    it('should contain an element with the correct properties', async () => {
+    it('should contain elements with properties of the correct types', async () => {
       const res = await client.itemsOverTime(filters);
-      const item = res[0];
-      item.should.have.property('time');
-      item.should.have.property('count');
-    });
-
-    it('should contain an element with properties of the correct types', async () => {
-      const res = await client.itemsOverTime(filters);
-      const item = res[0];
-      item.time.should.be.a('number');
-      item.count.should.be.a('number');
+      res.forEach((item) => {
+        item.time.should.be.a('number');
+        item.count.should.be.a('number');
+      });
     });
 
     it('should contain elements that are within the time frame filter', async () => {
       const res = await client.itemsOverTime(filters);
-      res.map(item => new Date(item.time)).should.all.be.at.least(fiveMinutesAgo);
+      res.map(item => new Date(item.time)).should.all.be.at.most(fiveMinutesAgo);
+      res.map(item => new Date(item.time)).should.all.be.at.least(tenMinutesAgo);
     });
   });
 });

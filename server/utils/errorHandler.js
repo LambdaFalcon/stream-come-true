@@ -1,6 +1,18 @@
 const debug = require('debug')('server:error');
 
-// eslint-disable-next-line no-unused-vars
+/**
+ * Error handling middleware.
+ * This is called whenever a route handler calls next(err) by passing
+ * an error.
+ * Log 500 errors, responds with error page if the request has not been
+ * responded to yet.
+ * In development mode, the error page will also show the stack trace.
+ *
+ * @example
+ *    const errorHandler = require('./utils/errorHandler');
+ *    // at the end of app.js
+ *    app.use(errorHandler);
+ */
 const errorHandler = (err, req, res, next) => {
   const status = err.status || 500;
 

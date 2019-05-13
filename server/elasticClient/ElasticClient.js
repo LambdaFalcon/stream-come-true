@@ -3,14 +3,16 @@
 const { Client } = require('@elastic/elasticsearch');
 const createError = require('http-errors');
 
-// TODO: somehow pass this as an argument. Problem: it is used in a static method.
-const { sourceFieldName } = require('../config');
+const datetimeUtils = require('../utils/datetime');
+
 const applyFiltersImpl = require('./filters');
 const computeIntervalImpl = require('./computeInterval');
 const selectFields = require('./selectFields');
 
 const timeBucketing = require('./queries/timeBucketing');
 const significantText = require('./queries/significantText');
+const distinctCount = require('./queries/distinctCount');
+const termsCount = require('./queries/termsCount');
 
 /**
  * @class ElasticClient
@@ -31,7 +33,7 @@ class ElasticClient {
    * @param {Express.Request} req Express.js request object
    * @returns {ElasticClient} the connected client
    */
-  static getInstance(req) {
+  static getInstance(req, { sourceFieldName }) {
     return req[sourceFieldName];
   }
 
@@ -45,13 +47,22 @@ class ElasticClient {
   async all(filters) {
     const query = this.applyFilters(filters);
 
+    const { dateField, textField } = this.queryFields;
+    const sortByDate = { [dateField]: { order: 'desc' } };
+    const highlight = { fields: { [textField]: {} }, number_of_fragments: 0 };
+
     return this.client
       .search({
         index: this.index,
-        body: { ...query },
-        size: 10000,
+        body: {
+          ...query,
+          sort: [sortByDate],
+          highlight,
+        },
+        size: 15,
       })
       .then(res => res.body.hits.hits)
+      .then(hits => hits.map(this.extractHighlightIfTextFilter(filters)))
       .then(hits => hits.map(el => el._source))
       .then(items => items.map(selectFields.all));
   }
@@ -83,7 +94,24 @@ class ElasticClient {
    * @returns {Promise<Array<UsersOverTimeElement>>} users over time
    */
   async usersOverTime(filters) {
-    return [this.index, filters]; // TODO: real implementation
+    const aggName = 'users_over_time';
+    const query = this.applyFilters(filters);
+    const timeBucketsAgg = timeBucketing(
+      aggName,
+      this.queryFields.dateField,
+      this.computeInterval(filters),
+    );
+    const distinctUsersAgg = distinctCount('users_count', 'screen_name');
+
+    // Nest aggregations and define result extractor
+    const usersOverTimeAgg = ElasticClient.nestAgg(timeBucketsAgg, aggName, distinctUsersAgg);
+    const queryWithAgg = {
+      ...query,
+      ...usersOverTimeAgg,
+    };
+    const resultExtractor = aggResult => aggResult.buckets.map(selectFields.usersOverTime);
+
+    return this.aggregation(queryWithAgg, aggName, resultExtractor);
   }
 
   /**
@@ -113,7 +141,15 @@ class ElasticClient {
    * @returns {Promise<Array<PopularUser>>} popular users
    */
   async popularUsers(filters) {
-    return [this.index, filters]; // TODO: real implementation
+    const aggName = 'popular_users';
+    const query = this.applyFilters(filters);
+    const queryWithAgg = {
+      ...query,
+      ...termsCount(aggName, 'screen_name'),
+    };
+    const resultExtractor = aggResult => aggResult.buckets.map(selectFields.popularUsers);
+
+    return this.aggregation(queryWithAgg, aggName, resultExtractor);
   }
 
   /**
@@ -133,13 +169,72 @@ class ElasticClient {
   }
 
   /**
-   * Computes a reasonable interval given a time frame.
+   * If the passed filters are defined and contain a textfilter, returns a mapper that takes an
+   * ElasticSearch hit object, extracts the first string in the highlight field and uses it as a
+   * replacement for the textField of the `_source` object of the hit.
+   *
+   * This is used to return an {@link Item} that already has the text with the text filter match
+   * highlighted.
+   *
+   * If the passed filters are undefined or the textfilter is not specified, this function returns
+   * the identity function.
+   *
+   * @function HitMapper
+   * @param {{ _source: { text: string }, highlight?: object }} hit ElasticSearch hit with _source
+   *                                                                and optional highlight field
+   * @returns {{ _source: { text: string }}} the same hit, with the first highlight string inserted
+   *                                         in the field _source.text
    *
    * @param {Filters} filters text and time frame filters
+   * @returns {HitMapper}
    */
-  computeInterval(filters) {
-    const timeframe = (filters && filters.timeframe) || this.config.defaultTimeFrameFilter;
-    return computeIntervalImpl(timeframe);
+  extractHighlightIfTextFilter({ textfilter = '' } = {}) {
+    if (!textfilter) return hit => hit;
+
+    const { textField } = this.queryFields;
+    return ({ _source, highlight, ...rest }) => ({
+      ...rest,
+      _source: {
+        ..._source,
+        [textField]: highlight[textField][0],
+      },
+    });
+  }
+
+  /**
+   * Computes a reasonable interval given a time frame.
+   *
+   * @private
+   * @param {Filters} filters text and time frame filters
+   * @returns {string} an interval in Date Math syntax, e.g. 5h
+   */
+  computeInterval(filters = {}) {
+    const { fromdatetime: candidateFromdatetime, todatetime = new Date().toISOString() } = filters;
+    const fromdatetime = candidateFromdatetime
+      || datetimeUtils.minusHours(todatetime, this.config.defaultHourRange);
+    const seconds = (new Date(todatetime).getTime() - new Date(fromdatetime).getTime()) / 1000;
+    return computeIntervalImpl(this.config, seconds);
+  }
+
+  /**
+   * Nest an aggregation in a given parent aggregation.
+   * The argument parentAggName is needed to know how the parent
+   * aggregation is called.
+   *
+   * @param {{aggs: object}} parentAgg
+   * @param {string} parentAggName
+   * @param {{aggs: object}} aggToNest
+   */
+  static nestAgg(parentAgg, parentAggName, aggToNest) {
+    const parentAggInternal = parentAgg.aggs[parentAggName];
+    return {
+      aggs: {
+        [parentAggName]: {
+          ...parentAggInternal,
+          ...aggToNest,
+        },
+      },
+    };
   }
 
   /**
@@ -154,8 +249,9 @@ class ElasticClient {
    * @returns {Array<AggItem>}
    *
    * @private
-   * @param {Object} query
-   * @param {AggResultExtractor} resultExtractor
+   * @param {Object} query an ElasticSearch query object (see QueryDSL in ES docs)
+   * @param {AggResultExtractor} resultExtractor a function that extracts data from the result
+   *                                             and returns an Array of AggItem
    * @returns {Promise<Array<AggItem>>}
    */
   async aggregation(query, aggName, resultExtractor) {
@@ -169,11 +265,5 @@ class ElasticClient {
       .then(resultExtractor);
   }
 }
-
-ElasticClient.prototype.toString = function toString() {
-  return `ElasticClient(
-    url: ${this.url},
-    index: ${this.index})`;
-};
 
 module.exports = ElasticClient;

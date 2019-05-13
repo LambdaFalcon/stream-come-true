@@ -8,6 +8,7 @@
  * @property {string} screen_name user who created the item
  * @property {string} text
  * @property {string} domain domain selected for the ingestion
+ * @property {string} user_image url to user image
  */
 
 /**
@@ -52,6 +53,8 @@
  * @typedef Filters
  * @type {Object}
  * @property {string} textfilter text filter for fulltext search
- * @property {('5m'|'5h'|'5d')} timeframe time frame to consider,
+ * @property {('5m'|'5h'|'5d')} timeframe DEPRECATED: time frame to consider,
  *                                        5 minutes, hours or days, respcetively
+ * @property {string} fromdatetime datetime string (ISO 8601), gte date filter
+ * @property {string} todatetime datetime string (ISO 8601), lte date filter
  */
