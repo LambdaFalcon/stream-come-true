@@ -55,7 +55,7 @@ const addFilters = config => asyncErrorCatch(async (req, _res, next) => {
   const fromdatetime = candidateFromdatetime || minusHours(todatetime, config.defaultHourRange);
 
   // Check validity of date filters
-  if (validDateFilters(fromdatetime)) throw createError(400, 'Bad date filters');
+  if (!validDateFilters(fromdatetime, todatetime)) throw createError(400, 'Bad date filters');
 
   req.filters = {
     textfilter,
