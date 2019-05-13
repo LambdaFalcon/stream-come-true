@@ -66,7 +66,7 @@ describe('ElasticClient.itemsOverTime()', function itemsOverTimeTest() {
     const fiveMinutesAgo = new Date();
     const tenMinutesAgo = new Date();
     fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 5);
-    fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 10);
+    tenMinutesAgo.setMinutes(tenMinutesAgo.getMinutes() - 10);
     const filters = {
       fromdatetime: tenMinutesAgo.toISOString(),
       todatetime: fiveMinutesAgo.toISOString(),
@@ -95,8 +95,8 @@ describe('ElasticClient.itemsOverTime()', function itemsOverTimeTest() {
 
     it('should contain elements that are within the time frame filter', async () => {
       const res = await client.itemsOverTime(filters);
-      res.map(item => new Date(item.created_at)).should.all.be.at.most(fiveMinutesAgo);
-      res.map(item => new Date(item.created_at)).should.all.be.at.least(tenMinutesAgo);
+      res.map(item => new Date(item.time)).should.all.be.at.most(fiveMinutesAgo);
+      res.map(item => new Date(item.time)).should.all.be.at.least(tenMinutesAgo);
     });
   });
 });
