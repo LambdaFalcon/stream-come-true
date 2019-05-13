@@ -12,13 +12,13 @@ import {
 
 class OverTime extends React.Component {
   render() {
-    const {onChangeTimeInterval, textfilter, x, y, api} = this.props
+    const {onChangeTimeInterval, textfilter,timefilter, x, y, api} = this.props
     return (
       <div className="col-xs-6">
         <div className="panel panel-default">
           <div className="panel-heading">{this.props.name}</div>
           <div className="panel-body">
-            <Graph api={api} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={x} y={y}/>
+            <Graph api={api} textfilter={textfilter} timefilter={timefilter} onChangeTimeInterval={onChangeTimeInterval} x={x} y={y}/>
           </div>
         </div>
       </div>
@@ -44,6 +44,9 @@ class Graph extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.textfilter !== prevProps.textfilter) {
       this.fetchData();
+    }
+    if(this.props.timefilter !== prevProps.timefilter){
+      this.fetchData()
     }
   }
   //disables removes the selection rectangle
@@ -71,10 +74,7 @@ class Graph extends React.Component {
   }
 
   fetchData() {
-    fetch(this.props.api + `?textfilter=${this.props.textfilter || ""}`)
-      .then(res => {
-        return res;
-      })
+    fetch(this.props.api + `?textfilter=${this.props.textfilter || ""}` + (this.props.timefilter ? this.props.timefilter : ""))
       .then(res => res.json())
       .then(res => {
         this.setState({

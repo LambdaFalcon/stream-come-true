@@ -3,6 +3,7 @@ import {BarChart,Bar,CartesianGrid,XAxis,YAxis,Tooltip,Legend} from "recharts"
 class BarVisual extends React.PureComponent{
    
   render(){
+    const {textfilter, timefilter} = this.props
       return(
         <div className="col-xs-6">
         <div className="panel panel-default">
@@ -10,7 +11,7 @@ class BarVisual extends React.PureComponent{
             {this.props.name}
           </div>
           <div className="panel-body">
-            <Graph api={this.props.api} textfilter={this.props.textfilter} x={this.props.x} y={this.props.y}/>
+            <Graph api={this.props.api} textfilter={textfilter} timefilter={timefilter} x={this.props.x} y={this.props.y}/>
           </div>
         </div>
       </div>
@@ -35,10 +36,13 @@ class Graph extends React.Component{
     if (this.props.textfilter !== prevProps.textfilter) {
       this.fetchData();
     }
+    if(this.props.timefilter !== prevProps.timefilter){
+      this.fetchData()
+    }
   }
 
   fetchData(){
-    fetch(this.props.api + `?textfilter=${this.props.textfilter || ''}`)
+    fetch(this.props.api + `?textfilter=${this.props.textfilter || ""}` + (this.props.timefilter ? this.props.timefilter : ""))
     .then(res => {
       return res;
     })
