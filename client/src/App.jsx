@@ -25,7 +25,7 @@ class App extends React.Component {
       <div className="App">
         <Menu/>
         <Search handler={this.handleChange.bind(this)}/>
-        <ChartsLocation textfilter={this.state.textfilter} onChangeTimeInterval={this.handleTimeIntervalChange}/>
+        <ChartsLocation textfilter={this.state.textfilter} onChangeTimeInterval={this.handleTimeIntervalChange} onTextFilterChange={this.handleTextFilterChange.bind(this)}/>
       </div>
     );
   }
@@ -36,6 +36,12 @@ class App extends React.Component {
   handleChange(e){
     this.setState({
       textfilter: e.target.value
+    })
+  }
+
+  handleTextFilterChange(keyword){
+    this.setState({
+      textfilter: keyword
     })
   }
 }
