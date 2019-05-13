@@ -25,11 +25,14 @@ class App extends React.Component {
       <div className="App">
         <Menu/>
         <Search handler={this.handleChange.bind(this)}/>
-        <ChartsLocation textfilter={this.state.textfilter}/>
+        <ChartsLocation textfilter={this.state.textfilter} onChangeTimeInterval={this.handleTimeIntervalChange}/>
       </div>
     );
   }
-
+  handleTimeIntervalChange(fromDateTime, toDateTime){
+    //TODO actually change time
+    console.log(fromDateTime, toDateTime)
+  }
   handleChange(e){
     this.setState({
       textfilter: e.target.value
