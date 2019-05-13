@@ -12,7 +12,6 @@ import "./css/styles.css"
 import Menu from "./components/Menu"
 import Search from "./components/Search"
 import ChartsLocation from "./components/ChartsLocations"
-import Users from "./components/ListOfUsers"
 
 class App extends React.Component {
   constructor(props){
