@@ -41,8 +41,8 @@ class ChartsLocation extends React.Component{
               <BarVisual name={"Reddit Popular Users"} api={red_pop_users} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={"user"} y={"count"}/>
             </div>
             <div className="col-lg-12">
-                <Users name={"Latest Users Twitter"} api={reddit_data} textfilter={this.props.textfilter} timefilter={"timefilter"}></Users>
-                <Users name={"Latest Users Reddit"} api={twit_data} textfilter={this.props.textfilter} timefilter={"timefilter"}></Users>
+                <Users name={"Latest Posts Twitter"} api={reddit_data} textfilter={this.props.textfilter} timefilter={"timefilter"}></Users>
+                <Users name={"Latest Posts Reddit"} api={twit_data} textfilter={this.props.textfilter} timefilter={"timefilter"}></Users>
             </div>
          </div>
       );
