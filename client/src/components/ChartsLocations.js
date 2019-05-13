@@ -26,16 +26,16 @@ class ChartsLocation extends React.Component{
             <OverTime name={"Reddit Data"} api={red_over_time} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={"time"} y={"count"}/>
             </div>
             <div className="col-lg-12">
-              <BarVisual name={"Twitter Popular Keywords"} api={twit_pop_key_words} textfilter={textfilter} x={"keyword"} y={"count"}/>
-              <BarVisual name={"Reddit Popular Keywords"} api={red_pop_key_words} textfilter={textfilter} x={"keyword"} y={"count"}/>
+              <BarVisual name={"Twitter Popular Keywords"} api={twit_pop_key_words} textfilter={textfilter} x={"keyword"} y={"count"} onTextFilterChange={onTextFilterChange}/>
+              <BarVisual name={"Reddit Popular Keywords"} api={red_pop_key_words} textfilter={textfilter} x={"keyword"} y={"count"} onTextFilterChange={onTextFilterChange}/>
             </div>
             <div className="col-lg-12">
               <OverTime name={"Twitter Users Over Time"} api={twit_user_over_time} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={"time"} y={"count"}/>
               <OverTime name={"Reddit Users Over Time"} api={red_user_over_time} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={"time"} y={"count"}/>
             </div>
             <div className="col-lg-12">
-              <BarVisual name={"Twitter Popular Users"} api={twit_pop_users} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={"user"} y={"count"} onTextFilterChange={onTextFilterChange}/>
-              <BarVisual name={"Reddit Popular Users"} api={red_pop_users} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={"user"} y={"count"} onTextFilterChange={onTextFilterChange}/>
+              <BarVisual name={"Twitter Popular Users"} api={twit_pop_users} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={"user"} y={"count"}/>
+              <BarVisual name={"Reddit Popular Users"} api={red_pop_users} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={"user"} y={"count"}/>
             </div>
          </div>
       );
