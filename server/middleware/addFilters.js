@@ -2,23 +2,11 @@ const debug = require('debug')('server:info');
 const createError = require('http-errors');
 
 const asyncErrorCatch = require('../utils/asyncErrorCatch');
+const datetimeUtils = require('../utils/datetime');
 
 const validDate = d => !!Date.parse(d);
 const fromBeforeTo = (from, to) => new Date(to) - new Date(from) > 0;
 const validDateFilters = (from, to) => validDate(from) && validDate(to) && fromBeforeTo(from, to);
-
-/**
- * Subtract a given number of hours from a given date.
- *
- * @param {string} ds a date string
- * @param {number} h a number of hours to subtract
- * @returns {string} a new date string with the hours subtracted
- */
-const minusHours = (ds, h) => {
-  const d = new Date(ds);
-  d.setHours(d.getHours() - h);
-  return d.toISOString();
-};
 
 /**
  * Middleware to attach filters present in req.query to req.filters.
@@ -52,7 +40,8 @@ const addFilters = config => asyncErrorCatch(async (req, _res, next) => {
   } = req.query;
 
   // Set default fromdatetime
-  const fromdatetime = candidateFromdatetime || minusHours(todatetime, config.defaultHourRange);
+  const fromdatetime = candidateFromdatetime
+    || datetimeUtils.minusHours(todatetime, config.defaultHourRange);
 
   // Check validity of date filters
   if (!validDateFilters(fromdatetime, todatetime)) throw createError(400, 'Bad date filters');
