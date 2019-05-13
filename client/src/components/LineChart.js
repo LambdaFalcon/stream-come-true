@@ -65,8 +65,8 @@ class Graph extends React.Component {
     }
     const fromDate = new Date(Math.min(refAreaLeft, refAreaRight))
     const toDate = new Date(Math.max(refAreaLeft, refAreaRight))
-    onChangeTimeInterval(fromDate, toDate)
     //call calback
+    onChangeTimeInterval(fromDate, toDate)
     this._resetSelectionState();
   }
 
