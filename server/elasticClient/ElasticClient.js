@@ -261,10 +261,4 @@ class ElasticClient {
   }
 }
 
-ElasticClient.prototype.toString = function toString() {
-  return `ElasticClient(
-    url: ${this.url},
-    index: ${this.index})`;
-};
-
 module.exports = ElasticClient;
