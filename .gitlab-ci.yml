@@ -58,7 +58,8 @@ server_test:
   stage: test
   script:
     - npm ci --prefix server
-    - npm test --prefix server
+    - npm run cov --prefix server
+  coverage: '/All files\s*\|\s*([0-9.]+)/'
   dependencies:
     - client_build
   only:
