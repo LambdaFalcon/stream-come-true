@@ -2,6 +2,7 @@ import React from "react";
 import OverTime from "./LineChart";
 import BarVisual from "./BarChart";
 import config from "../config";
+import Users from "./ListOfUsers";
 
 const red_over_time = config["red_over_time"];
 const twit_over_time = config["twit_over_time"];
@@ -11,6 +12,9 @@ const red_user_over_time = config["red_user_over_time"];
 const twit_user_over_time = config["twit_user_over_time"];
 const red_pop_users = config["red_pop_users"];
 const twit_pop_users = config["twit_pop_users"];
+const reddit_data = config["reddit_data"];
+const twit_data = config["twit_data"];
+
 class ChartsLocation extends React.Component {
   render() {
     const {
@@ -104,6 +108,20 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"user"}
             y={"count"}
+          />
+        </div>
+        <div className="col-lg-12">
+          <Users
+            name={"Latest Posts Twitter"}
+            api={twit_data}
+            textfilter={this.props.textfilter}
+            timefilter={"timefilter"}
+          />
+          <Users
+            name={"Latest Posts Reddit"}
+            api={reddit_data}
+            textfilter={this.props.textfilter}
+            timefilter={"timefilter"}
           />
         </div>
       </div>
