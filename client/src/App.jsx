@@ -10,7 +10,6 @@ import "./css/bootstrap.min.css.map"
 import "./css/datepicker3.css"
 import "./css/styles.css"
 import Menu from "./components/Menu"
-import Search from "./components/Search"
 import ChartsLocation from "./components/ChartsLocations"
 
 class App extends React.Component {
@@ -20,11 +19,11 @@ class App extends React.Component {
       textfilter: ""
     }
   }
+  
   render() {
     return (
       <div className="App">
-        <Menu/>
-        <Search handler={this.handleChange.bind(this)}/>
+        <Menu handler={this.handleChange.bind(this )}/>
         <ChartsLocation textfilter={this.state.textfilter}/>
       </div>
     );

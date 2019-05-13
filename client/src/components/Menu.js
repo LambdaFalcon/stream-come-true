@@ -1,5 +1,7 @@
 import React from "react";
+import Search from "./Search"
 class Menu extends React.PureComponent {
+   
     render() {
       return(
         <div className="navbar navbar-custom navbar-fixed-top" role="navigation">
@@ -9,10 +11,13 @@ class Menu extends React.PureComponent {
                 <span>STREAM</span>
                 COMETRUE
               </div>
+              <Search handler={this.props.handler}/>
             </div>
           </div>
         </div>
       );
     }
+
+    
   }
   export default Menu;
