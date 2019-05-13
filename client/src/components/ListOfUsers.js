@@ -59,9 +59,16 @@ class List extends React.Component {
     for (let i = 0; i < this.state.data.length; i++) {}
   };
 
+  styles1 = {
+    margin: '10px',
+    padding: '10px',
+    width: '500px',
+    height: 'auto'
+  };
+
   render() {
     return this.state.data.map(i => (
-      <div className="row">
+    <div className="row" style={this.styles1}>
         <div className="col-sm-6 col-md-3">
           <img
             src={i["user_image"]}
@@ -71,9 +78,18 @@ class List extends React.Component {
           />
         </div>
         <div>
-        <h6>{i["created_at"]}</h6>
+        <h6>{i["screen_name"]}</h6>
         </div>
-      </div>
+        <hr/>
+        <div>
+            <h6>{i["created_at"]}</h6>
+        </div>
+        <div>
+            <p>
+                {i["text"]}
+            </p>
+        </div>
+    </div>
     ));
   }
 }
