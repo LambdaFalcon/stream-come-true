@@ -3,7 +3,7 @@ import {BarChart,Bar,CartesianGrid,XAxis,YAxis,Tooltip,Legend} from "recharts"
 class BarVisual extends React.PureComponent{
    
   render(){
-    const {onTextFilterChange, textfilter, api} = this.props
+    const {onTextFilterChange} = this.props
       return(
         <div className="col-xs-6">
         <div className="panel panel-default">
@@ -72,11 +72,7 @@ class Graph extends React.Component{
       <YAxis />
       <Tooltip />
       <Legend />
-<<<<<<< HEAD
-      <Bar dataKey={this.props.y} fill="#8884d8" />
-=======
-      <Bar dataKey="count" fill="#8884d8" onClick={this.handleClick.bind(this)}/> 
->>>>>>> Made bar chart interactive
+      <Bar dataKey={this.props.y} fill="#8884d8" onClick={this.handleClick.bind(this)}/>
 </BarChart>
       );
     }
