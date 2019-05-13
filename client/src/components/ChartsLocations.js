@@ -2,6 +2,7 @@ import React from "react"
 import OverTime from "./LineChart"
 import BarVisual from "./BarChart"
 import config from "../config"
+import Users from "./ListOfUsers"
 
 const red_over_time = config['red_over_time'];
 const twit_over_time = config['twit_over_time'];
@@ -11,6 +12,8 @@ const red_user_over_time = config['red_user_over_time'];
 const twit_user_over_time = config['twit_user_over_time'];
 const red_pop_users = config['red_pop_users'];
 const twit_pop_users = config['twit_pop_users'];
+const reddit_data = config["reddit_data"];
+const twit_data = config["twit_data"];
 class ChartsLocation extends React.Component{
     render(){
       const {textfilter, onChangeTimeInterval} = this.props
@@ -36,6 +39,10 @@ class ChartsLocation extends React.Component{
             <div className="col-lg-12">
               <BarVisual name={"Twitter Popular Users"} api={twit_pop_users} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={"user"} y={"count"}/>
               <BarVisual name={"Reddit Popular Users"} api={red_pop_users} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={"user"} y={"count"}/>
+            </div>
+            <div className="col-lg-12">
+                <Users name={"Most 15 Users Twitter"} api={reddit_data} textfilter={this.props.textfilter} timefilter={"timefilter"}></Users>
+                <Users name={"Most 15 Users Reddit"} api={twit_data} textfilter={this.props.textfilter} timefilter={"timefilter"}></Users>
             </div>
          </div>
       );
