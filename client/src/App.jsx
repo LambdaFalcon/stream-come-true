@@ -28,7 +28,10 @@ class App extends React.Component {
       </div>
     );
   }
-
+  handleTimeIntervalChange(fromDateTime, toDateTime){
+    //TODO actually change time
+    console.log(fromDateTime, toDateTime)
+  }
   handleChange(e){
     this.setState({
       textfilter: e.target.value
