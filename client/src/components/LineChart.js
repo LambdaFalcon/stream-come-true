@@ -12,12 +12,13 @@ import {
 
 class OverTime extends React.Component {
   render() {
+    const {onChangeTimeInterval, textfilter, x, y, api} = this.props
     return (
       <div className="col-xs-6">
         <div className="panel panel-default">
           <div className="panel-heading">{this.props.name}</div>
           <div className="panel-body">
-            <Graph api= {this.props.api} textfilter={this.props.textfilter} x={this.props.x} y={this.props.y}/>
+            <Graph api={api} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={x} y={y}/>
           </div>
         </div>
       </div>
@@ -28,7 +29,9 @@ class Graph extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      //stores the value of where we start the drag process
       refAreaLeft: "",
+      //stores the value of where we end the drag prrocess
       refAreaRight: "",
       data: []
     };
@@ -43,21 +46,26 @@ class Graph extends React.Component {
       this.fetchData();
     }
   }
+  //disables removes the selection rectangle
   _resetSelectionState() {
     this.setState(() => ({
       refAreaLeft: "",
       refAreaRight: ""
     }));
   }
-  filterTime() {
+  //calls this.props.onChangeTimeInterval
+  changeTimeInterval() {
+    let {onChangeTimeInterval} = this.props
     let { refAreaLeft, refAreaRight} = this.state;
-    //if the selected area has no width don't filter
-    if (refAreaLeft === refAreaRight || refAreaRight === "") {
+    //if the from and to time are the same or there is no onChangeTimeInterval callback
+    //we return immediately
+    if (refAreaLeft === refAreaRight || refAreaRight === "" || !onChangeTimeInterval ) {
       this._resetSelectionState();
       return;
     }
-    console.log("left date ", new Date(refAreaLeft))
-    console.log("right date ", new Date(refAreaRight))
+    const fromDate = new Date(Math.min(refAreaLeft, refAreaRight))
+    const toDate = new Date(Math.max(refAreaLeft, refAreaRight))
+    onChangeTimeInterval(fromDate, toDate)
     //call calback
     this._resetSelectionState();
   }
@@ -90,7 +98,7 @@ class Graph extends React.Component {
           this.state.refAreaLeft &&
           this.setState({ refAreaRight: e.activeLabel })
         }
-        onMouseUp={this.filterTime.bind(this)}
+        onMouseUp={this.changeTimeInterval.bind(this)}
         data={this.state.data}
       >
         <CartesianGrid strokeDasharray="3 3" />
@@ -99,6 +107,7 @@ class Graph extends React.Component {
         <Tooltip filterNull={true} labelFormatter={this.formatDate} />
         <Legend/>
         <Line type="monotone" dataKey={this.props.y} stroke="#8884d8" activeDot={true}/>
+        {/*the reference area is a rectangle repersenting the new time selection*/}
         {refAreaLeft && refAreaRight ? (
           <ReferenceArea
             x1={refAreaLeft}
