@@ -3,6 +3,7 @@ const chai = require('chai');
 const chaiThings = require('chai-things');
 const config = require('../../config');
 const ElasticClient = require('../../elasticClient/ElasticClient');
+const testUtils = require('../utils');
 
 // Configure chai
 chai.should();
@@ -63,10 +64,8 @@ describe('ElasticClient.usersOverTime()', function usersOverTimeTest() {
   });
 
   describe('with time frame filter', () => {
-    const fiveMinutesAgo = new Date();
-    const tenMinutesAgo = new Date();
-    fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 5);
-    tenMinutesAgo.setMinutes(tenMinutesAgo.getMinutes() - 10);
+    const fiveMinutesAgo = testUtils.getNMinutesAgo(5, true);
+    const tenMinutesAgo = testUtils.getNMinutesAgo(10, false);
     const filters = {
       fromdatetime: tenMinutesAgo.toISOString(),
       todatetime: fiveMinutesAgo.toISOString(),

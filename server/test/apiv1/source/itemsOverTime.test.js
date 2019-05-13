@@ -3,6 +3,7 @@ const chai = require('chai');
 const chaiThings = require('chai-things');
 
 const app = require('../../../app');
+const testUtils = require('../../utils');
 
 // Configure chai
 chai.should();
@@ -69,10 +70,8 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
   });
 
   describe('with time frame filter', () => {
-    const fiveMinutesAgo = new Date();
-    const tenMinutesAgo = new Date();
-    fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 5);
-    tenMinutesAgo.setMinutes(tenMinutesAgo.getMinutes() - 10);
+    const fiveMinutesAgo = testUtils.getNMinutesAgo(5, true);
+    const tenMinutesAgo = testUtils.getNMinutesAgo(10, false);
     const filters = `?fromdatetime=${tenMinutesAgo.toISOString()}&todatetime=${fiveMinutesAgo.toISOString()}`;
 
     const itemsOverTimeRoute = `${route}/items_over_time${filters}`;
