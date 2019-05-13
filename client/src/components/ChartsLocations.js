@@ -13,7 +13,7 @@ const red_pop_users = config['red_pop_users'];
 const twit_pop_users = config['twit_pop_users'];
 class ChartsLocation extends React.Component{
     render(){
-      const {textfilter, onChangeTimeInterval} = this.props
+      const {textfilter, onChangeTimeInterval, onTextFilterChange} = this.props
       return(
          <div>
             <div className="row">
@@ -26,8 +26,8 @@ class ChartsLocation extends React.Component{
             <OverTime name={"Reddit Data"} api={red_over_time} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={"time"} y={"count"}/>
             </div>
             <div className="col-lg-12">
-              <BarVisual name={"Twitter Popular Keywords"} api={twit_pop_key_words} textfilter={textfilter} x={"keyword"} y={"count"}/>
-              <BarVisual name={"Reddit Popular Keywords"} api={red_pop_key_words} textfilter={textfilter} x={"keyword"} y={"count"}/>
+              <BarVisual name={"Twitter Popular Keywords"} api={twit_pop_key_words} textfilter={textfilter} x={"keyword"} y={"count"} onTextFilterChange={onTextFilterChange}/>
+              <BarVisual name={"Reddit Popular Keywords"} api={red_pop_key_words} textfilter={textfilter} x={"keyword"} y={"count"} onTextFilterChange={onTextFilterChange}/>
             </div>
             <div className="col-lg-12">
               <OverTime name={"Twitter Users Over Time"} api={twit_user_over_time} textfilter={textfilter} onChangeTimeInterval={onChangeTimeInterval} x={"time"} y={"count"}/>
