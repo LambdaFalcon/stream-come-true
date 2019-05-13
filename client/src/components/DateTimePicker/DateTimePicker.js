@@ -2,21 +2,6 @@ import React from "react";
 import "./DateTimePicker.css";
 
 class DateTime extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    // this.state = {
-    //   value: props.value
-    // };
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    // if (this.props.value !== prevProps.value) {
-    //   this.setState({
-    //     value: this.p
-    //   })
-    // }
-  }
-
   render() {
     //datetime-local only works on chrom
     return (

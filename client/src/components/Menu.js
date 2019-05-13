@@ -28,21 +28,6 @@ class Menu extends React.PureComponent {
               COMETRUE
             </div>
           </div>
-          {/* TODOthe date picker is broken we need to change that for next time */}
-          {/* <div className="pull-right nav navbar-right">
-            <DateTime
-              value={this.props.todate}
-              handler={e => this.setState({ todate: new Date(e.target.value) })}
-            />
-          </div>
-          <div className="pull-right nav navbar-right">
-            <DateTime
-              value={this.props.fromdate}
-              handler={e =>
-                this.setState({ fromdate: new Date(e.target.value) })
-              }
-            />
-          </div> */}
           <div className="pull-right nav navbar-right">
             <Search handler={this.props.handler.bind(this)} />
           </div>
