@@ -47,6 +47,7 @@ class App extends React.Component {
           textfilter={this.state.textfilter}
           onChangeTimeInterval={this.handleTimeIntervalChange.bind(this)}
           timefilter={this.getTimeFilter()}
+          onTextFilterChange={this.handleTextFilterChange.bind(this)}
         />
       </div>
     );
@@ -76,6 +77,12 @@ class App extends React.Component {
   handleChange(e) {
     this.setState({
       textfilter: e.target.value
+    });
+  }
+
+  handleTextFilterChange(keyword) {
+    this.setState({
+      textfilter: keyword
     });
   }
 }
