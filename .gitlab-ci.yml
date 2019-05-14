@@ -122,7 +122,7 @@ docker deploy staging:
   script:
     - docker info
     - docker image ls
-    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
+    - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin
     - docker push $REGISTRY_USER/stream-come-true:staging
     - docker
   only:
@@ -141,7 +141,7 @@ docker deploy release:
   script:
     - docker info
     - docker image ls
-    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
+    - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin
     - docker push $REGISTRY_USER/stream-come-true:latest
   only:
     refs:
