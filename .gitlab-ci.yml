@@ -8,26 +8,24 @@ stages:
   - build
   - lint
   - test
-  - staging
+  - docker build
   - deploy
-
-cache:
-  paths:
-    - server/node_modules/
-    - client/node_modules/
 
 ###############################################################################
 # BUILD STAGE
 
-server_install:
+server install:
   stage: build
   script:
     - npm ci --prefix server
+  artifacts:
+    paths:
+      - server/node_modules/
   only:
     changes:
       - server/**/*
 
-client_build:
+client build:
   stage: build
   script:
     - npm ci --prefix client
@@ -35,6 +33,7 @@ client_build:
   artifacts:
     paths:
       - client/build/
+      - client/node_modules/
   only:
     changes:
       - client/**/*
@@ -42,11 +41,12 @@ client_build:
 ###############################################################################
 # LINT STAGE
 
-server_lint:
+server lint:
   stage: lint
   script:
-    - npm ci --prefix server
     - npm run lint --prefix server
+  dependencies:
+    - server install
   only:
     changes:
       - server/**/*
@@ -54,44 +54,88 @@ server_lint:
 ###############################################################################
 # TEST STAGE
 
-server_test:
+server test:
   stage: test
   script:
     - npm ci --prefix server
     - npm run cov --prefix server
   coverage: '/All files\s*\|\s*([0-9.]+)/'
   dependencies:
-    - client_build
+    - server install
+    - client build
   only:
     changes:
       - server/**/*
 
-client_test:
+client test:
   stage: test
   script:
-    - npm ci --prefix client
     - npm test --prefix client
+  dependencies:
+    - client build
   only:
     changes:
       - client/**/*
 
 ###############################################################################
-# STAGING STAGE
+# DOCKER BUILD STAGE
 
-staging_job:
-  stage: staging
-  script: "echo 'No staging job yet.'"
+docker build staging:
+  image: docker:stable
+  stage: docker build
+  script:
+    - docker info
+    - docker build -t stream-come-true:staging .
   only:
     refs:
       - dev
+    changes:
+      - client/**/*
+      - server/**/*
+
+docker build release:
+  image: docker:stable
+  stage: docker build
+  script:
+    - docker info
+    - docker build -t stream-come-true:latest .
+  only:
+    refs:
       - master
+    changes:
+      - client/**/*
+      - server/**/*
 
 ###############################################################################
 # DEPLOY STAGE
 
-deploy_job:
+docker deploy staging:
+  image: docker:stable
   stage: deploy
-  script: "echo 'No deploy job yet.'"
+  script:
+    - docker info
+    - docker image ls
+    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
+    - docker push 7falcon/stream-come-true:staging
+    - docker
+  only:
+    refs:
+      - dev
+    changes:
+      - client/**/*
+      - server/**/*
+
+docker deploy release:
+  image: docker:stable
+  stage: deploy
+  script:
+    - docker info
+    - docker image ls
+    - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
+    - docker push 7falcon/stream-come-true:latest
   only:
     refs:
       - master
+    changes:
+      - client/**/*
+      - server/**/*
