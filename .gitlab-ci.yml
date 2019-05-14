@@ -2,7 +2,13 @@
 # SETTINGS
 
 # latest LTS that works well with create-react-app
-image: node:10.15.3
+image: docker:stable
+
+services:
+  - docker:dind
+
+variables:
+  NODE: node:10.15.3
 
 stages:
   - build
@@ -15,6 +21,7 @@ stages:
 # BUILD STAGE
 
 server install:
+  image: $NODE
   stage: build
   script:
     - npm ci --prefix server
@@ -26,6 +33,7 @@ server install:
       - server/**/*
 
 client build:
+  image: $NODE
   stage: build
   script:
     - npm ci --prefix client
@@ -42,6 +50,7 @@ client build:
 # LINT STAGE
 
 server lint:
+  image: $NODE
   stage: lint
   script:
     - npm run lint --prefix server
@@ -55,6 +64,7 @@ server lint:
 # TEST STAGE
 
 server test:
+  image: $NODE
   stage: test
   script:
     - npm ci --prefix server
@@ -68,6 +78,7 @@ server test:
       - server/**/*
 
 client test:
+  image: $NODE
   stage: test
   script:
     - npm test --prefix client
@@ -81,9 +92,6 @@ client test:
 # DOCKER BUILD STAGE
 
 docker build staging:
-  image: docker:stable
-  services:
-    - docker:dind
   stage: docker build
   script:
     - docker info
@@ -97,9 +105,6 @@ docker build staging:
       - server/**/*
 
 docker build release:
-  image: docker:stable
-  services:
-    - docker:dind
   stage: docker build
   script:
     - docker info
@@ -115,9 +120,6 @@ docker build release:
 # DEPLOY STAGE
 
 docker deploy staging:
-  image: docker:stable
-  services:
-    - docker:dind
   stage: deploy
   script:
     - docker info
@@ -134,9 +136,6 @@ docker deploy staging:
       - server/**/*
 
 docker deploy release:
-  image: docker:stable
-  services:
-    - docker:dind
   stage: deploy
   script:
     - docker info
