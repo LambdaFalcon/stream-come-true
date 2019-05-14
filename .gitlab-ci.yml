@@ -82,6 +82,8 @@ client test:
 
 docker build staging:
   image: docker:stable
+  services:
+    - docker:dind
   stage: docker build
   script:
     - docker info
@@ -96,6 +98,8 @@ docker build staging:
 
 docker build release:
   image: docker:stable
+  services:
+    - docker:dind
   stage: docker build
   script:
     - docker info
@@ -112,6 +116,8 @@ docker build release:
 
 docker deploy staging:
   image: docker:stable
+  services:
+    - docker:dind
   stage: deploy
   script:
     - docker info
@@ -129,6 +135,8 @@ docker deploy staging:
 
 docker deploy release:
   image: docker:stable
+  services:
+    - docker:dind
   stage: deploy
   script:
     - docker info
