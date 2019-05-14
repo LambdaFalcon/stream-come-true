@@ -10,9 +10,15 @@ const config = {
     textField: 'text',
   },
   defaultTimeFrameFilter: '5h',
-  defaultHourRange: 5,
-  overTimeSplits: 100,
   sourceFieldName: 'source',
+
+  // Defaults and constants for queries
+  // - default range for date histograms
+  defaultHourRange: 5,
+  // - buckets for time histograms
+  overTimeSplits: 100,
+  // - size of sample for significant text agg
+  samplerSize: 1000,
 };
 
 module.exports = config;
