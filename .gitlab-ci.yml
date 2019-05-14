@@ -89,6 +89,7 @@ docker build staging:
   only:
     refs:
       - dev
+      - 49-implement-staging-and-deploy-stages-of-ci
     changes:
       - client/**/*
       - server/**/*
@@ -116,11 +117,12 @@ docker deploy staging:
     - docker info
     - docker image ls
     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
-    - docker push 7falcon/stream-come-true:staging
+    - docker push $REGISTRY_USER/stream-come-true:staging
     - docker
   only:
     refs:
       - dev
+      - 49-implement-staging-and-deploy-stages-of-ci
     changes:
       - client/**/*
       - server/**/*
@@ -132,7 +134,7 @@ docker deploy release:
     - docker info
     - docker image ls
     - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
-    - docker push 7falcon/stream-come-true:latest
+    - docker push $REGISTRY_USER/stream-come-true:latest
   only:
     refs:
       - master
