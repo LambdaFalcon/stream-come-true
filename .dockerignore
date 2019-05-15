@@ -1,0 +1,11 @@
+client/node_modules/
+client/build/
+client/coverage/
+client/.gitignore
+client/README.md
+
+server/node_modules/
+server/.nyc_output/
+server/coverage/
+server/.eslintrc
+server/.gitignore

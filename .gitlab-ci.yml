@@ -2,32 +2,39 @@
 # SETTINGS
 
 # latest LTS that works well with create-react-app
-image: node:10.15.3
+image: docker:stable
+
+services:
+  - docker:dind
+
+variables:
+  NODE: node:10.15.3
+  IMAGE_TAG_STAGING: stream-come-true:staging
+  IMAGE_TAG_LATEST: stream-come-true:latest
 
 stages:
   - build
   - lint
   - test
-  - staging
   - deploy
-
-cache:
-  paths:
-    - server/node_modules/
-    - client/node_modules/
 
 ###############################################################################
 # BUILD STAGE
 
-server_install:
+server install:
+  image: $NODE
   stage: build
   script:
     - npm ci --prefix server
+  artifacts:
+    paths:
+      - server/node_modules/
   only:
     changes:
       - server/**/*
 
-client_build:
+client build:
+  image: $NODE
   stage: build
   script:
     - npm ci --prefix client
@@ -35,6 +42,7 @@ client_build:
   artifacts:
     paths:
       - client/build/
+      - client/node_modules/
   only:
     changes:
       - client/**/*
@@ -42,11 +50,13 @@ client_build:
 ###############################################################################
 # LINT STAGE
 
-server_lint:
+server lint:
+  image: $NODE
   stage: lint
   script:
-    - npm ci --prefix server
     - npm run lint --prefix server
+  dependencies:
+    - server install
   only:
     changes:
       - server/**/*
@@ -54,44 +64,62 @@ server_lint:
 ###############################################################################
 # TEST STAGE
 
-server_test:
+server test:
+  image: $NODE
   stage: test
   script:
     - npm ci --prefix server
     - npm run cov --prefix server
   coverage: '/All files\s*\|\s*([0-9.]+)/'
   dependencies:
-    - client_build
+    - server install
+    - client build
   only:
     changes:
       - server/**/*
 
-client_test:
+client test:
+  image: $NODE
   stage: test
   script:
-    - npm ci --prefix client
     - npm test --prefix client
+  dependencies:
+    - client build
   only:
     changes:
       - client/**/*
 
 ###############################################################################
-# STAGING STAGE
+# DEPLOY STAGE
 
-staging_job:
-  stage: staging
-  script: "echo 'No staging job yet.'"
+deploy as staging:
+  stage: deploy
+  script:
+    - docker info
+    - docker build -t $IMAGE_TAG_STAGING .
+    - docker image ls
+    - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin
+    - docker tag $IMAGE_TAG_STAGING $REGISTRY_USER/$IMAGE_TAG_STAGING
+    - docker push $REGISTRY_USER/$IMAGE_TAG_STAGING
   only:
     refs:
       - dev
-      - master
+    changes:
+      - client/**/*
+      - server/**/*
 
-###############################################################################
-# DEPLOY STAGE
-
-deploy_job:
+deploy as latest:
   stage: deploy
-  script: "echo 'No deploy job yet.'"
+  script:
+    - docker info
+    - docker build -t $IMAGE_TAG_LATEST .
+    - docker image ls
+    - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin
+    - docker tag $IMAGE_TAG_LATEST $REGISTRY_USER/$IMAGE_TAG_LATEST
+    - docker push $REGISTRY_USER/$IMAGE_TAG_LATEST
   only:
     refs:
       - master
+    changes:
+      - client/**/*
+      - server/**/*

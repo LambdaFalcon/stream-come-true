@@ -13,6 +13,7 @@ const timeBucketing = require('./queries/timeBucketing');
 const significantText = require('./queries/significantText');
 const distinctCount = require('./queries/distinctCount');
 const termsCount = require('./queries/termsCount');
+const sampler = require('./queries/sampler');
 
 /**
  * @class ElasticClient
@@ -122,15 +123,26 @@ class ElasticClient {
    * @returns {Promise<Array<PopularKeyword>>} popular keywords
    */
   async popularKeywords(filters) {
-    const aggName = 'popular_keywords';
+    const parentAggName = 'sample';
+    const childAggName = 'popular_keywords';
     const query = this.applyFilters(filters);
+    const samplerAgg = sampler(parentAggName, this.config.samplerSize);
+    const significantTextAgg = significantText(childAggName, this.queryFields.textField);
+
+    // Nest significant text into sampler and define result extractor
+    const sampledSignificantTextAgg = ElasticClient.nestAgg(
+      samplerAgg,
+      parentAggName,
+      significantTextAgg,
+    );
     const queryWithAgg = {
       ...query,
-      ...significantText(aggName, this.queryFields.textField),
+      ...sampledSignificantTextAgg,
     };
-    const resultExtractor = aggResult => aggResult.buckets.map(selectFields.popularKeywords);
+    const resultExtractor = aggResult => aggResult[childAggName]
+      .buckets.map(selectFields.popularKeywords);
 
-    return this.aggregation(queryWithAgg, aggName, resultExtractor);
+    return this.aggregation(queryWithAgg, parentAggName, resultExtractor);
   }
 
   /**
