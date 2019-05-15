@@ -99,6 +99,7 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"user"}
             y={"count"}
+            onTextFilterChange={onTextFilterChange}
           />
           <BarVisual
             name={"Reddit Popular Users"}
@@ -108,6 +109,7 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"user"}
             y={"count"}
+            onTextFilterChange={onTextFilterChange}
           />
         </div>
         <div className="col-lg-12">
