@@ -96,6 +96,7 @@ docker build staging:
   script:
     - docker info
     - docker build -t stream-come-true:staging .
+    - docker image ls
   only:
     refs:
       - dev
@@ -109,6 +110,7 @@ docker build release:
   script:
     - docker info
     - docker build -t stream-come-true:latest .
+    - docker image ls
   only:
     refs:
       - master
