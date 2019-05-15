@@ -9,12 +9,13 @@ services:
 
 variables:
   NODE: node:10.15.3
+  IMAGE_TAG_STAGING: stream-come-true:staging
+  IMAGE_TAG_LATEST: stream-come-true:latest
 
 stages:
   - build
   - lint
   - test
-  - docker build
   - deploy
 
 ###############################################################################
@@ -89,46 +90,17 @@ client test:
       - client/**/*
 
 ###############################################################################
-# DOCKER BUILD STAGE
-
-docker build staging:
-  stage: docker build
-  script:
-    - docker info
-    - docker build -t stream-come-true:staging .
-    - docker image ls
-  only:
-    refs:
-      - dev
-      - 49-implement-staging-and-deploy-stages-of-ci
-    changes:
-      - client/**/*
-      - server/**/*
-
-docker build release:
-  stage: docker build
-  script:
-    - docker info
-    - docker build -t stream-come-true:latest .
-    - docker image ls
-  only:
-    refs:
-      - master
-    changes:
-      - client/**/*
-      - server/**/*
-
-###############################################################################
 # DEPLOY STAGE
 
-docker deploy staging:
+deploy as staging:
   stage: deploy
   script:
     - docker info
+    - docker build -t $IMAGE_TAG_STAGING .
     - docker image ls
-    - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin
-    - docker push $REGISTRY_USER/stream-come-true:staging
-    - docker
+    - docker login --username $REGISTRY_USER --password $REGISTRY_PASSWORD
+    - docker tag $IMAGE_TAG_STAGING $REGISTRY_USER/$IMAGE_TAG_STAGING
+    - docker push $REGISTRY_USER/$IMAGE_TAG_STAGING
   only:
     refs:
       - dev
@@ -137,13 +109,15 @@ docker deploy staging:
       - client/**/*
       - server/**/*
 
-docker deploy release:
+deploy as latest:
   stage: deploy
   script:
     - docker info
+    - docker build -t $IMAGE_TAG_LATEST .
     - docker image ls
-    - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin
-    - docker push $REGISTRY_USER/stream-come-true:latest
+    - docker login --username $REGISTRY_USER --password $REGISTRY_PASSWORD
+    - docker tag $IMAGE_TAG_LATEST $REGISTRY_USER/$IMAGE_TAG_LATEST
+    - docker push $REGISTRY_USER/$IMAGE_TAG_LATEST
   only:
     refs:
       - master
