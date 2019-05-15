@@ -92,7 +92,7 @@ class Graph extends React.Component {
       <LineChart
         width={730}
         height={250}
-        /*makeing the chart intercative*/
+        /*making the chart interactive*/
         onMouseDown={e => this.setState({ refAreaLeft: e.activeLabel })}
         onMouseMove={e =>
           this.state.refAreaLeft &&
@@ -107,7 +107,7 @@ class Graph extends React.Component {
         <Tooltip filterNull={true} labelFormatter={this.formatDate} />
         <Legend/>
         <Line type="monotone" dataKey={this.props.y} stroke="#8884d8" activeDot={true}/>
-        {/*the reference area is a rectangle repersenting the new time selection*/}
+        {/*the reference area is a rectangle representing the new time selection*/}
         {refAreaLeft && refAreaRight ? (
           <ReferenceArea
             x1={refAreaLeft}

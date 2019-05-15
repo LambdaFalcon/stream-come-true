@@ -76,10 +76,13 @@ class Graph extends React.Component {
   }
 
   handleClick = data => {
-    this.setState({
-      textfilter: data.keyword
-    });
-    this.changeTextFilter(data.keyword);
+    // this handler should only work for the keyword bar charts
+    if(this.changeTextFilter && data.keyword){
+      this.setState({
+        textfilter: data.keyword
+      });
+      this.changeTextFilter(data.keyword);
+    }
   };
 
   render() {
