@@ -2,7 +2,7 @@ const port = 9999;
 const baseUrl =
   process.env.NODE_ENV === "development"
     ? "http://localhost:9000/"
-    : `http://rhea.inf.usi.ch:${port}/`;
+    : `http://rhea1.inf.usi.ch:${port}/`;
 
 const localhost = {
   api_v1: `${baseUrl}api/v1/`
