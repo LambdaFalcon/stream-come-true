@@ -98,13 +98,12 @@ deploy as staging:
     - docker info
     - docker build -t $IMAGE_TAG_STAGING .
     - docker image ls
-    - docker login --username $REGISTRY_USER --password $REGISTRY_PASSWORD
+    - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin
     - docker tag $IMAGE_TAG_STAGING $REGISTRY_USER/$IMAGE_TAG_STAGING
     - docker push $REGISTRY_USER/$IMAGE_TAG_STAGING
   only:
     refs:
       - dev
-      - 49-implement-staging-and-deploy-stages-of-ci
     changes:
       - client/**/*
       - server/**/*
@@ -115,7 +114,7 @@ deploy as latest:
     - docker info
     - docker build -t $IMAGE_TAG_LATEST .
     - docker image ls
-    - docker login --username $REGISTRY_USER --password $REGISTRY_PASSWORD
+    - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin
     - docker tag $IMAGE_TAG_LATEST $REGISTRY_USER/$IMAGE_TAG_LATEST
     - docker push $REGISTRY_USER/$IMAGE_TAG_LATEST
   only:
