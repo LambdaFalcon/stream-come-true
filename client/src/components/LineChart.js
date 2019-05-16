@@ -6,7 +6,6 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   ReferenceArea,
   Label
 } from "recharts";
@@ -119,7 +118,6 @@ class Graph extends React.Component {
           <Label value={this.props.labelY} offset={10} position="insideLeft" stroke="#8884d8" angle={-90}/>
         </YAxis>
         <Tooltip filterNull={true} labelFormatter={this.formatDate} />
-        <Legend/>
         <Line type="monotone" dataKey={this.props.y} stroke="#8884d8" activeDot={true}/>
         {/*the reference area is a rectangle representing the new time selection*/}
         {refAreaLeft && refAreaRight ? (

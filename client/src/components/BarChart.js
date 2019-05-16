@@ -105,7 +105,6 @@ class Graph extends React.Component {
           <Label value={this.props.labelY} offset={10} position="insideLeft" stroke="#8884d8" angle={-90}/>
         </YAxis>
         <Tooltip />
-        <Legend />
         <Bar
           dataKey={this.props.y}
           fill="#8884d8"
