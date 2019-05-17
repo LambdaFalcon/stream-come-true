@@ -111,10 +111,10 @@ class Graph extends React.Component {
         data={this.state.data}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={this.props.x} tickFormatter={this.formatDate} allowDuplicatedCategory={false} allowDataOverflow={false} minTickGap={7}>
+        <XAxis dataKey={this.props.x} tickFormatter={this.formatDate} allowDuplicatedCategory={false} allowDataOverflow={false} minTickGap={7} tick={{fontSize: 9}}>
           <Label value={this.props.labelX} offset={-3} position="insideBottom" stroke={"#8884d8"}/>
         </XAxis>
-        <YAxis minTickGap={5} tickSize={3}>
+        <YAxis minTickGap={5} tickSize={3} tick={{fontSize: 9}}>
           <Label value={this.props.labelY} offset={10} position="insideLeft" stroke="#8884d8" angle={-90}/>
         </YAxis>
         <Tooltip filterNull={true} labelFormatter={this.formatDate} separator=":" offset={10} active={true}/>
