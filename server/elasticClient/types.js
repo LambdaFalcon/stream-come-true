@@ -9,6 +9,7 @@
  * @property {string} text
  * @property {string} domain domain selected for the ingestion
  * @property {string} user_image url to user image
+ * @property {number} [sentiment] probability of containing positive text, in [0,1]
  */
 
 /**
@@ -18,7 +19,9 @@
  * @typedef ItemsOverTimeElement
  * @type {Object}
  * @property {number} time as Unix time, can be used in `new Date(1556355600000)`
- * @property {number} count
+ * @property {number} count amount of items at this time
+ * @property {number} positive_count amount of items at this time with p_positive >= 0.5
+ * @property {number} negative_count amount of items at this time with p_positive < 0.5
  */
 
 /**

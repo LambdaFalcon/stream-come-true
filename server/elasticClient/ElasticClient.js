@@ -14,6 +14,7 @@ const significantText = require('./queries/significantText');
 const distinctCount = require('./queries/distinctCount');
 const termsCount = require('./queries/termsCount');
 const sampler = require('./queries/sampler');
+const range = require('./queries/range');
 
 /**
  * @class ElasticClient
@@ -78,9 +79,22 @@ class ElasticClient {
   async itemsOverTime(filters) {
     const aggName = 'items_over_time';
     const query = this.applyFilters(filters);
+    const timeBucketsAgg = timeBucketing(
+      aggName,
+      this.queryFields.dateField,
+      this.computeInterval(filters),
+    );
+    const ranges = [
+      { from: 0, to: 0.5, key: 'negative_count' },
+      { from: 0.5, key: 'positive_count' },
+    ];
+    const rangesAgg = range('sentiment_counts', 'sentiment', ranges, true);
+
+    // Nest aggregations and define result extractor
+    const itemsOverTimeAgg = ElasticClient.nestAgg(timeBucketsAgg, aggName, rangesAgg);
     const queryWithAgg = {
       ...query,
-      ...timeBucketing(aggName, this.queryFields.dateField, this.computeInterval(filters)),
+      ...itemsOverTimeAgg,
     };
     const resultExtractor = aggResult => aggResult.buckets.map(selectFields.itemsOverTime);
 

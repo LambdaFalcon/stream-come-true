@@ -5,7 +5,7 @@
  * @param {string} field name of the text field to aggregate on
  * @returns {{aggs: object}} a query object with the aggs field
  */
-const distinctCount = (aggName, field) => ({
+const termsCount = (aggName, field) => ({
   aggs: {
     [aggName]: {
       terms: {
@@ -15,4 +15,4 @@ const distinctCount = (aggName, field) => ({
   },
 });
 
-module.exports = distinctCount;
+module.exports = termsCount;
