@@ -27,6 +27,7 @@ describe('ElasticClient.all()', function allTest() {
         item.should.have.property('text');
         item.should.have.property('domain');
         item.should.have.property('user_image');
+        item.should.have.property('sentiment');
       });
     });
 
@@ -38,6 +39,15 @@ describe('ElasticClient.all()', function allTest() {
         item.text.should.be.a('string');
         item.domain.should.be.a('string');
         item.user_image.should.be.a('string');
+        item.sentiment.should.be.a('number');
+      });
+    });
+
+    it('should contain elements with properties in the correct ranges', async () => {
+      const res = await client.all();
+      res.forEach((item) => {
+        new Date(item.created_at).should.be.at.most(new Date());
+        item.sentiment.should.be.within(0, 1);
       });
     });
   });

@@ -42,6 +42,7 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
         item.should.have.property('text');
         item.should.have.property('domain');
         item.should.have.property('user_image');
+        item.should.have.property('sentiment');
       });
     });
 
@@ -53,6 +54,15 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
         item.text.should.be.a('string');
         item.domain.should.be.a('string');
         item.user_image.should.be.a('string');
+        item.sentiment.should.be.a('number');
+      });
+    });
+
+    it('should contain elements with properties in the correct ranges', async () => {
+      const res = await getRequest(twitterRoute);
+      res.body.forEach((item) => {
+        new Date(item.created_at).should.be.at.most(new Date());
+        item.sentiment.should.be.within(0, 1);
       });
     });
 
@@ -91,6 +101,7 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
         item.should.have.property('text');
         item.should.have.property('domain');
         item.should.have.property('user_image');
+        item.should.have.property('sentiment');
       });
     });
 
@@ -102,6 +113,15 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
         item.text.should.be.a('string');
         item.domain.should.be.a('string');
         item.user_image.should.be.a('string');
+        item.sentiment.should.be.a('number');
+      });
+    });
+
+    it('should contain elements with properties in the correct ranges', async () => {
+      const res = await getRequest(redditRoute);
+      res.body.forEach((item) => {
+        new Date(item.created_at).should.be.at.most(new Date());
+        item.sentiment.should.be.within(0, 1);
       });
     });
 
