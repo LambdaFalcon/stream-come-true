@@ -6,7 +6,6 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   Label
 } from "recharts";
 class BarVisual extends React.PureComponent {
@@ -98,13 +97,13 @@ class Graph extends React.Component {
         textfilter={textfilter}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={this.props.x} allowDuplicatedCategory={false} >
+        <XAxis dataKey={this.props.x} allowDuplicatedCategory={false} type={"category"} allowDataOverflow={false} minTickGap={7}>
           <Label value={this.props.labelX} offset={-3} position="insideBottom" stroke={"#8884d8"}/>
         </XAxis>
         <YAxis >
-          <Label value={this.props.labelY} offset={10} position="insideLeft" stroke="#8884d8" angle={-90}/>
+          <Label value={this.props.labelY} offset={10} position="insideLeft" stroke="#8884d8" angle={-90} type={Number}/>
         </YAxis>
-        <Tooltip />
+        <Tooltip separator=":" offset={10} filterNull={true} active={true}/>
         <Bar
           dataKey={this.props.y}
           fill="#8884d8"

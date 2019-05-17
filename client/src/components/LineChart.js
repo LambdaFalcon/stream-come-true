@@ -111,13 +111,13 @@ class Graph extends React.Component {
         data={this.state.data}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={this.props.x} tickFormatter={this.formatDate} allowDuplicatedCategory={false}>
+        <XAxis dataKey={this.props.x} tickFormatter={this.formatDate} allowDuplicatedCategory={false} allowDataOverflow={false} minTickGap={7}>
           <Label value={this.props.labelX} offset={-3} position="insideBottom" stroke={"#8884d8"}/>
         </XAxis>
         <YAxis minTickGap={5} tickSize={3}>
           <Label value={this.props.labelY} offset={10} position="insideLeft" stroke="#8884d8" angle={-90}/>
         </YAxis>
-        <Tooltip filterNull={true} labelFormatter={this.formatDate} />
+        <Tooltip filterNull={true} labelFormatter={this.formatDate} separator=":" offset={10} active={true}/>
         <Line type="monotone" dataKey={this.props.y} stroke="#8884d8" activeDot={true}/>
         {/*the reference area is a rectangle representing the new time selection*/}
         {refAreaLeft && refAreaRight ? (
