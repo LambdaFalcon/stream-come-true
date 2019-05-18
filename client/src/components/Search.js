@@ -1,8 +1,12 @@
+
 import React from "react";
 class Search extends React.PureComponent {
   /**
-   * 
-   * So in the begining the textfilter will be empty 
+   * Constructor for the react class
+   * It takes the props from the parent
+   * The state of the input will match to the state of the texfilter
+   * At first the state of the component will be an mpty string 
+   * since the textfilter will be an empty string 
    */
   constructor(props) {
     super(props);
@@ -10,7 +14,14 @@ class Search extends React.PureComponent {
     this.state = {
       input: textfilter
     };
-  }
+  } 
+  /**
+   * 
+   * function called when the state of the current component
+   * has changed
+   * It check if the previous state is the same with the changed state
+   * If not you update the state 
+   */
   componentDidUpdate(prevState){
     const{input} = this.state
     const {textfilter} = this.props
@@ -20,7 +31,10 @@ class Search extends React.PureComponent {
       })
     }
   }
-
+  /**
+   * function that render the React component 
+   * based on html syntax
+   */
   render() {
     const {input} = this.state
     console.log(input)
@@ -35,4 +49,5 @@ class Search extends React.PureComponent {
     );
   }
 }
+//In order to import class in other javascript files.
 export default Search;
