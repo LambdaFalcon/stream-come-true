@@ -29,6 +29,7 @@ class App extends React.Component {
   }
 
   render() {
+    console.log(this.state.textfilter)
     return (
       <div className="App">
         <Menu
@@ -36,6 +37,7 @@ class App extends React.Component {
           onChangeTimeInterval={this.handleTimeIntervalChange.bind(this)}
           fromdate={this.state.fromdate}
           todate={this.state.todate}
+          textfilter={this.state.textfilter}
         />
         <div className="navbar-brand ">
           <span>From: {this.state.fromdate.toLocaleString()}</span>

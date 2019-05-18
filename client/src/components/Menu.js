@@ -7,7 +7,7 @@ class Menu extends React.PureComponent {
 
     this.state = {
       fromdate: this.props.fromdate,
-      todate: this.props.todate
+      todate: this.props.todate,
     };
   }
 
@@ -19,6 +19,7 @@ class Menu extends React.PureComponent {
   }
 
   render() {
+    const{handler,textfilter} = this.props
     return (
       <div className="navbar navbar-custom navbar-fixed-top" role="navigation">
         <div className="container-fluid">
@@ -29,7 +30,7 @@ class Menu extends React.PureComponent {
             </div>
           </div>
           <div className="pull-right nav navbar-right">
-            <Search handler={this.props.handler.bind(this)} />
+            <Search handler={handler} textfilter={textfilter}/>
           </div>
         </div>
       </div>
