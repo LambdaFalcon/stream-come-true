@@ -10,6 +10,7 @@ import "./css/bootstrap.min.css.map";
 import "./css/datepicker3.css";
 import "./css/styles.css";
 import Menu from "./components/Menu";
+import Search from "./components/Search.js";
 import ChartsLocation from "./components/ChartsLocations";
 
 class App extends React.Component {
@@ -27,8 +28,14 @@ class App extends React.Component {
       todate: now
     };
   }
+  
 
   render() {
+    var formStyle = {
+      paddingRight: '3%',
+      paddingTop: '1%'
+    };
+    
     return (
       <div className="App">
         <Menu
@@ -37,11 +44,16 @@ class App extends React.Component {
           fromdate={this.state.fromdate}
           todate={this.state.todate}
         />
-        <div className="navbar-brand ">
-          <span>From: {this.state.fromdate.toLocaleString()}</span>
-        </div>
-        <div className="navbar-brand">
-          <span>To: {this.state.todate.toLocaleString()}</span>
+        <div className="row">
+          <div className="col-md-6">  
+          <h5><span>From: {this.state.fromdate.toLocaleString()}</span></h5>
+          <h5><span>To: {this.state.todate.toLocaleString()}</span> </h5>
+          </div>
+          <div className="col-md-6">
+          <form style={formStyle}> 
+            <Search handler={this.handleChange.bind(this)} />
+          </form>
+          </div>
         </div>
         <ChartsLocation
           textfilter={this.state.textfilter}
