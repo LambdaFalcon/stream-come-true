@@ -27,9 +27,6 @@ class Menu extends React.PureComponent {
               COMETRUE
             </div>
           </div>
-          {/* <form className="navbar-form navbar-right">
-            <Search handler={this.props.handler.bind(this)} />
-          </form> */}
         </div>
       </div>
     );
