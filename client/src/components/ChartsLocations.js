@@ -39,6 +39,8 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"time"}
             y={"count"}
+            labelX={"Time"}
+            labelY={"Count"}
           />
           <OverTime
             name={"Reddit Data"}
@@ -48,6 +50,8 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"time"}
             y={"count"}
+            labelX={"Time"}
+            labelY={"Count"}
           />
         </div>
         <div className="col-lg-12">
@@ -59,6 +63,8 @@ class ChartsLocation extends React.Component {
             x={"keyword"}
             y={"count"}
             onTextFilterChange={onTextFilterChange}
+            labelX={"Keyword"}
+            labelY={"Popularity"}
           />
           <BarVisual
             name={"Reddit Popular Keywords"}
@@ -68,6 +74,8 @@ class ChartsLocation extends React.Component {
             x={"keyword"}
             y={"count"}
             onTextFilterChange={onTextFilterChange}
+            labelX={"Keyword"}
+            labelY={"Popularity"}
           />
         </div>
         <div className="col-lg-12">
@@ -79,6 +87,8 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"time"}
             y={"count"}
+            labelX={"Time"}
+            labelY={"Users"}
           />
           <OverTime
             name={"Reddit Users Over Time"}
@@ -88,6 +98,8 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"time"}
             y={"count"}
+            labelX={"Time"}
+            labelY={"Users"}
           />
         </div>
         <div className="col-lg-12">
@@ -99,6 +111,8 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"user"}
             y={"count"}
+            labelX={"User"}
+            labelY={"Popularity"}
           />
           <BarVisual
             name={"Reddit Popular Users"}
@@ -108,6 +122,8 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"user"}
             y={"count"}
+            labelX={"User"}
+            labelY={"Popularity"}
           />
         </div>
         <div className="col-lg-12">
@@ -116,6 +132,7 @@ class ChartsLocation extends React.Component {
             api={twit_data}
             textfilter={this.props.textfilter}
             timefilter={"timefilter"}
+
           />
           <Users
             name={"Latest Posts Reddit"}

@@ -6,8 +6,8 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
-  ReferenceArea
+  ReferenceArea,
+  Label
 } from "recharts";
 
 class OverTime extends React.Component {
@@ -18,7 +18,16 @@ class OverTime extends React.Component {
         <div className="panel panel-default">
           <div className="panel-heading">{this.props.name}</div>
           <div className="panel-body">
-            <Graph api={api} textfilter={textfilter} timefilter={timefilter} onChangeTimeInterval={onChangeTimeInterval} x={x} y={y}/>
+            <Graph 
+            api={api} 
+            textfilter={textfilter} 
+            timefilter={timefilter} 
+            onChangeTimeInterval={onChangeTimeInterval} 
+            x={x} 
+            y={y}
+            labelX={this.props.labelX}
+            labelY={this.props.labelY}  
+            />
           </div>
         </div>
       </div>
@@ -102,10 +111,13 @@ class Graph extends React.Component {
         data={this.state.data}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={this.props.x} tickFormatter={this.formatDate} allowDuplicatedCategory={false}/>
-        <YAxis minTickGap={5} tickSize={3} />
-        <Tooltip filterNull={true} labelFormatter={this.formatDate} />
-        <Legend/>
+        <XAxis dataKey={this.props.x} tickFormatter={this.formatDate} allowDuplicatedCategory={false} allowDataOverflow={false} minTickGap={7} tick={{fontSize: 9}}>
+          <Label value={this.props.labelX} offset={-3} position="insideBottom"/>
+        </XAxis>
+        <YAxis minTickGap={5} tickSize={3} tick={{fontSize: 9}}>
+          <Label value={this.props.labelY} offset={10} position="insideLeft" angle={-90}/>
+        </YAxis>
+        <Tooltip filterNull={true} labelFormatter={this.formatDate} separator=":" offset={10} active={true}/>
         <Line type="monotone" dataKey={this.props.y} stroke="#8884d8" activeDot={true}/>
         {/*the reference area is a rectangle representing the new time selection*/}
         {refAreaLeft && refAreaRight ? (
