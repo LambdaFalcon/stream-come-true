@@ -12,7 +12,7 @@ class Hashtags extends React.PureComponent{
                             {this.props.name}
                         </div>
                         <div className="panel-body">
-                        <HashtagGraph id='networkg' api={this.props.api} textfilter={this.props.textfilter}/>
+                        <HashtagGraph id='networkg' timefilter={this.props.timefilter} api={this.props.api} textfilter={this.props.textfilter}/>
                         </div>
                     </div>
                 </div>
@@ -76,8 +76,8 @@ class HashtagGraph extends React.Component {
       });
       const chart = this.graphRef.current;
       
-      // if chart has been initialized
-      if( chart !== null ){
+      // if chart has been initialized and data exists
+      if( chart !== null && this.state.data.vertices ){
         const mychart = chart.getEchartsInstance();
         // add the rest of the properties
         mychart.setOption({
