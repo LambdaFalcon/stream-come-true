@@ -1,4 +1,5 @@
 import React from "react";
+import Search from "./Search.js";
 
 class Menu extends React.PureComponent {
   constructor(props) {
@@ -26,6 +27,9 @@ class Menu extends React.PureComponent {
               <span>STREAM</span>
               COMETRUE
             </div>
+          </div>
+          <div className="pull-right nav navbar-right">
+            <Search handler={this.props.handler.bind(this)} />
           </div>
         </div>
       </div>

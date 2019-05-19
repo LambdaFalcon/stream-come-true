@@ -1,6 +1,5 @@
 import React from "react";
 import Menu from "./components/Menu";
-import Search from "./components/Search.js";
 import ChartsLocation from "./components/ChartsLocations";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/styles.css"
@@ -23,11 +22,6 @@ class App extends React.Component {
   
 
   render() {
-    var formStyle = {
-      paddingRight: '3%',
-      paddingTop: '1%'
-    };
-    
     return (
       <div className="App">
         <Menu
@@ -36,16 +30,11 @@ class App extends React.Component {
           fromdate={this.state.fromdate}
           todate={this.state.todate}
         />
-        <div className="row">
-          <div className="col-md-6">  
-          <h5><span>From: {this.state.fromdate.toLocaleString()}</span></h5>
-          <h5><span>To: {this.state.todate.toLocaleString()}</span> </h5>
-          </div>
-          <div className="col-md-6">
-          <form style={formStyle}> 
-            <Search handler={this.handleChange.bind(this)} />
-          </form>
-          </div>
+        <div className="navbar-brand ">
+          <span>From: {this.state.fromdate.toLocaleString()}</span>
+        </div>
+        <div className="navbar-brand">
+          <span>To: {this.state.todate.toLocaleString()}</span>
         </div>
         <ChartsLocation
           textfilter={this.state.textfilter}
