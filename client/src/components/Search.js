@@ -37,7 +37,6 @@ class Search extends React.PureComponent {
    */
   render() {
     const {input} = this.state
-    console.log(input)
     return (
         <input
           type="text"
