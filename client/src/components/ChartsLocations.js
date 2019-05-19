@@ -71,7 +71,7 @@ class ChartsLocation extends React.Component {
             api={red_pop_key_words}
             timefilter={timefilter}
             textfilter={textfilter}
-            x={"Keyword"}
+            x={"keyword"}
             y={"count"}
             onTextFilterChange={onTextFilterChange}
             labelX={"Keyword"}
