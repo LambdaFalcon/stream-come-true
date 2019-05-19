@@ -133,14 +133,14 @@ class ChartsLocation extends React.Component {
             name={"Latest Posts Twitter"}
             api={twit_data}
             textfilter={this.props.textfilter}
-            timefilter={"timefilter"}
+            timefilter={timefilter}
 
           />
           <Users
             name={"Latest Posts Reddit"}
             api={reddit_data}
             textfilter={this.props.textfilter}
-            timefilter={"timefilter"}
+            timefilter={timefilter}
           />
         </div>
         <div className="col-lg-12">
@@ -148,7 +148,7 @@ class ChartsLocation extends React.Component {
           name={"Hashtag Network"}
           api={hashtag_data}
           textfilter={this.props.textfilter}
-          timefilter={"timefilter"}
+          timefilter={timefilter}
            />
         </div>
 

@@ -1,4 +1,5 @@
 import React from "react"
+
 class Users extends React.PureComponent{
     render(){
         return(
@@ -9,7 +10,7 @@ class Users extends React.PureComponent{
                             {this.props.name}
                         </div>
                         <div className="panel-body">
-                            <List api={this.props.api} textfilter={this.props.textfilter}/>
+                            <List api={this.props.api} timefilter={this.props.timefilter} textfilter={this.props.textfilter}/>
                         </div>
                     </div>
                 </div>
@@ -43,7 +44,9 @@ class List extends React.Component {
   }
 
   fetchData() {
-    fetch(this.props.api)
+    fetch(this.props.api +
+      `?textfilter=${this.props.textfilter || ""}` +
+      (this.props.timefilter ? this.props.timefilter : ""))
       .then(res => {
         return res;
       })

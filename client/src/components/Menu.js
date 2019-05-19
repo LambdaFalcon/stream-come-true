@@ -27,6 +27,7 @@ class Menu extends React.PureComponent {
               <span>STREAM</span>
               COMETRUE
             </div>
+            {this.props.refreshControlls}
           </div>
           <div className="pull-right nav navbar-right">
             <Search handler={this.props.handler.bind(this)} />
