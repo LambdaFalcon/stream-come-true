@@ -1,16 +1,8 @@
 import React from "react";
-import "./css/bootstrap-table.css";
-import "./css/bootstrap-theme.css";
-import "./css/bootstrap-theme.css.map";
-import "./css/bootstrap-theme.min.css";
-import "./css/bootstrap-table.css";
-import "./css/bootstrap-theme.min.css.map";
-import "./css/bootstrap.css";
-import "./css/bootstrap.min.css.map";
-import "./css/datepicker3.css";
-import "./css/styles.css";
 import Menu from "./components/Menu";
 import ChartsLocation from "./components/ChartsLocations";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./css/styles.css"
 
 class App extends React.Component {
   constructor(props) {
@@ -27,6 +19,7 @@ class App extends React.Component {
       todate: now
     };
   }
+  
 
   render() {
     return (
