@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "echarts": "^4.2.1",
+    "echarts-for-react": "^2.0.15-beta.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.0",

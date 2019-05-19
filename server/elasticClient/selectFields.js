@@ -49,6 +49,11 @@ const selectFields = {
     user: key,
     count: doc_count,
   }),
+
+  graph: ({ vertices, connections }) => ({
+    vertices,
+    connections,
+  }),
 };
 
 module.exports = selectFields;
