@@ -63,6 +63,7 @@ class App extends React.Component {
           onChangeTimeInterval={this.handleTimeIntervalChange.bind(this)}
           timefilter={this.getTimeFilter()}
           onTextFilterChange={this.handleTextFilterChange.bind(this)}
+          refreshing={this.state.refreshing}
         />
       </div>
     );
