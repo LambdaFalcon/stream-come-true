@@ -9,18 +9,30 @@
  */
 const selectFields = {
   all: ({
-    created_at, screen_name, text, domain, user_image,
+    created_at, screen_name, text, domain, user_image, sentiment,
   }) => ({
     created_at,
     screen_name,
     text,
     domain,
     user_image,
+    sentiment,
   }),
 
-  itemsOverTime: ({ key, doc_count }) => ({
+  itemsOverTime: ({
+    key,
+    doc_count,
+    sentiment_counts: {
+      buckets: {
+        negative_count: { doc_count: negative_count },
+        positive_count: { doc_count: positive_count },
+      },
+    },
+  }) => ({
     time: key,
     count: doc_count,
+    negative_count,
+    positive_count,
   }),
 
   popularKeywords: ({ key, doc_count }) => ({
@@ -36,6 +48,11 @@ const selectFields = {
   popularUsers: ({ key, doc_count }) => ({
     user: key,
     count: doc_count,
+  }),
+
+  graph: ({ vertices, connections }) => ({
+    vertices,
+    connections,
   }),
 };
 

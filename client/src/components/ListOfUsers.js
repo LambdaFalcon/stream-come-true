@@ -1,4 +1,5 @@
 import React from "react"
+
 class Users extends React.PureComponent{
     render(){
         return(
@@ -9,7 +10,7 @@ class Users extends React.PureComponent{
                             {this.props.name}
                         </div>
                         <div className="panel-body">
-                            <List api={this.props.api} textfilter={this.props.textfilter}/>
+                            <List api={this.props.api} timefilter={this.props.timefilter} textfilter={this.props.textfilter}/>
                         </div>
                     </div>
                 </div>
@@ -43,7 +44,9 @@ class List extends React.Component {
   }
 
   fetchData() {
-    fetch(this.props.api)
+    fetch(this.props.api +
+      `?textfilter=${this.props.textfilter || ""}` +
+      (this.props.timefilter ? this.props.timefilter : ""))
       .then(res => {
         return res;
       })
@@ -60,33 +63,38 @@ class List extends React.Component {
   };
 
   styles1 = {
-    margin: '10px',
+    margin: 'auto',
+    marginBottom:"10px",
     padding: '10px',
-    width: '500px',
-    height: 'auto'
+    width: '100%',
+    height: 'auto',
+    backgroundColor: '#eff1f4',
+    border:"1px solid",
+    borderColor:"#c5c8cc",
+    borderRadius:"5px"
   };
 
   render() {
-    return this.state.data.map(i => (
-    <div className="row" style={this.styles1}>
+    return this.state.data.map((user, index) => (
+    <div className="row" style={this.styles1} key={index}>
         <div className="col-sm-6 col-md-3">
           <img
-            src={i["user_image"]}
+            src={user["user_image"]}
             width={"50px"}
             height={"50px"}
             alt={"user profile"}
           />
         </div>
         <div>
-        <h6>{i["screen_name"]}</h6>
+        <h6>{user["screen_name"]}</h6>
         </div>
         <hr/>
         <div>
-            <h6>{i["created_at"]}</h6>
+            <h6>{new Date(user["created_at"]).toLocaleString()}</h6>
         </div>
         <div>
             <p>
-                {i["text"]}
+                {user["text"]}
             </p>
         </div>
     </div>
