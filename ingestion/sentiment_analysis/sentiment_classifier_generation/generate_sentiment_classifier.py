@@ -2,16 +2,35 @@ import re
 import pickle
 import sys
 import pandas as pd
+import nltk
+import swifter
+
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Sequential
 from keras.layers import Dense, Embedding, LSTM, SpatialDropout1D
 from sklearn.model_selection import train_test_split
 from keras.utils.np_utils import to_categorical
-
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
 #in the Sentiment140 dataset 0 = Negative and 4 = Positive
 NEGATIVE_SENTIMENT = 0
 POSITIVE_SENTIMENT = 4
+
+def remove_stop_words(text, stop_words):
+    words = list(map(lambda x: x.strip(), text.split(" ")))
+    return " ".join([word for word in words if word not in stop_words])
+
+def clean_text(text, stemmer, stop_words):
+    '''given a text a stemmer and a list of stop words applys the following transofrmations:
+    lowercase, remove non alphanumeric characters, stemming, removing stop words
+    '''
+    ret = text.lower()
+    ret = re.sub('[^a-zA-z0-9\s]','', ret)
+    ret = stemmer.stem(ret)
+    ret = remove_stop_words(ret, stop_words)
+    return ret
+    
 
 def read_data(file):
     '''
@@ -25,13 +44,13 @@ def read_data(file):
    
     # we only keep the text and sentiment
     df = df[['text','sentiment']]
-
-    #set text to lowercase
-    df['text'] = df['text'].apply(lambda x: x.lower())
-
-    #remove all non alphanumeric characters
-    df['text'] = df['text'].apply((lambda x: re.sub('[^a-zA-z0-9\s]','',x)))
-    print(df.dtypes)
+    
+    stop_words = stopwords.words('english')
+    ps = PorterStemmer()
+    #clean text
+    df['text'] = df['text'].swifter.apply(lambda x: clean_text(x, ps, stop_words))
+    print(df)
+    exit(0)
     return df
 
 def get_training_data(data, size):
@@ -61,7 +80,7 @@ def train_classifier(data):
     model.add(SpatialDropout1D(0.4))
     model.add(LSTM(lstm_out, dropout=0.2, recurrent_dropout=0.2))
     model.add(Dense(2,activation='softmax'))
-    model.compile(loss = 'categorical_crossentropy', optimizer='adam',metrics = ['accuracy'])
+    model.compile(loss = 'binary_crossentropy', optimizer='adam',metrics = ['accuracy'])
 
     Y = pd.get_dummies(data['sentiment']).values
     X_train, X_test, Y_train, Y_test = train_test_split(X,Y, test_size = 0.2, random_state = 42)
@@ -84,7 +103,6 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("usage: <path-to-Sentiment140-dataset.csv> <optional: TRAINING_SIZE>")
         exit(0)
-
     sentiment_140 = sys.argv[1]
     #Training size should be divisble by two, since we are taking half positive and half negative samples
     #note 20% will be used for evaluating the model

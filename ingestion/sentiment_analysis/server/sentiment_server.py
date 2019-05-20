@@ -3,6 +3,7 @@ import pickle
 import json
 import re
 import os
+import nltk
 
 from flask import Flask
 from flask import request
@@ -10,15 +11,29 @@ from waitress import serve
 
 from keras.models import load_model
 from keras.preprocessing.sequence import pad_sequences
-
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
 app = Flask(__name__)
 
 model = None
 tokenizer = None
+stop_words = None
+stemmer = None
+def remove_stop_words(text, stop_words):
+    words = list(map(lambda x: x.strip(), text.split(" ")))
+    return " ".join([word for word in words if word not in stop_words])
 
 def clean_text(text):
-    '''removes non alphanumeric characters and turns the text to lowercase'''
-    return re.sub('[^a-zA-z0-9\s]','',text).lower()
+    '''given a text a stemmer and a list of stop words applys the following transofrmations:
+    lowercase, remove non alphanumeric characters, stemming, removing stop words
+    '''
+    ret = text.lower()
+    ret = re.sub('[^a-zA-z0-9\s]','', ret)
+    ret = stemmer.stem(ret)
+    ret = remove_stop_words(ret, stop_words)
+    return ret
+
+
 
 @app.route("/sentiment")
 def analyze_sentiment_ml():
@@ -46,6 +61,11 @@ if __name__ == "__main__":
     model = load_model(model_file)
     #otherwise model.predict doesn't work
     model._make_predict_function()
+
+    stemmer = PorterStemmer()
+
+    nltk.download('stopwords')
+    stop_words = stopwords.words('english')
 
     #loading tokenizer
     with open(tokenizer_file, 'rb') as f:
