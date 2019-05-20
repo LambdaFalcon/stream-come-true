@@ -23,7 +23,7 @@ class Search extends React.PureComponent {
    * If not you update the state 
    */
   componentDidUpdate(prevState){
-    const{input} = this.state
+    const {input} = this.state
     const {textfilter} = this.props
     if(prevState.input !== input){
       this.setState({
