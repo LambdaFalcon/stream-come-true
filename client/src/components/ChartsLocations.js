@@ -3,7 +3,7 @@ import OverTime from "./LineChart";
 import BarVisual from "./BarChart";
 import config from "../config";
 import Users from "./ListOfUsers";
-import Hashtags from "./HashtagGraph"
+import Hashtags from "./HashtagGraph";
 
 const red_over_time = config["red_over_time"];
 const twit_over_time = config["twit_over_time"];
@@ -43,6 +43,8 @@ class ChartsLocation extends React.Component {
             y={"count"}
             labelX={"Time"}
             labelY={"Count"}
+            sentiment={true}
+            refreshing={this.props.refreshing}
           />
           <OverTime
             name={"Reddit Data"}
@@ -54,6 +56,8 @@ class ChartsLocation extends React.Component {
             y={"count"}
             labelX={"Time"}
             labelY={"Count"}
+            sentiment={true}
+            refreshing={this.props.refreshing}
           />
         </div>
         <div className="col-lg-12">
@@ -134,7 +138,6 @@ class ChartsLocation extends React.Component {
             api={twit_data}
             textfilter={this.props.textfilter}
             timefilter={timefilter}
-
           />
           <Users
             name={"Latest Posts Reddit"}
@@ -145,13 +148,12 @@ class ChartsLocation extends React.Component {
         </div>
         <div className="col-lg-12">
           <Hashtags
-          name={"Hashtag Network"}
-          api={hashtag_data}
-          textfilter={this.props.textfilter}
-          timefilter={timefilter}
-           />
+            name={"Hashtag Network"}
+            api={hashtag_data}
+            textfilter={this.props.textfilter}
+            timefilter={timefilter}
+          />
         </div>
-
       </div>
     );
   }

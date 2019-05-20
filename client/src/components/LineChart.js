@@ -26,6 +26,8 @@ class OverTime extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval} 
             x={x} 
             y={y}
+            sentiment={this.props.sentiment}
+            refreshing={this.props.refreshing}
             labelX={this.props.labelX}
             labelY={this.props.labelY}  
             />
@@ -119,7 +121,12 @@ class Graph extends React.Component {
           <Label value={this.props.labelY} offset={10} position="insideLeft" angle={-90}/>
         </YAxis>
         <Tooltip filterNull={true} labelFormatter={this.formatDate} separator=":" offset={10} active={true}/>
+
+        {/* line for data and optionally lines for sentiment */}
         <Line type="monotone" dataKey={this.props.y} stroke="#8884d8" activeDot={true} dot={false}/>
+        {this.props.sentiment && !this.props.refreshing && <Line type="monotone" dataKey={`positive_${this.props.y}`} stroke={"green"} strokeDasharray={"3 3"} strokeWidth={0.5} activeDot={true} dot={false}/>}
+        {this.props.sentiment && !this.props.refreshing && <Line type="monotone" dataKey={`negative_${this.props.y}`} stroke={"red"} strokeDasharray={"3 3"} strokeWidth={0.5} activeDot={true} dot={false}/>}
+
         {/*the reference area is a rectangle representing the new time selection*/}
         {refAreaLeft && refAreaRight ? (
           <ReferenceArea
