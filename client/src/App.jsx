@@ -52,18 +52,12 @@ class App extends React.Component {
       <div className="App">
         <Menu
           handler={this.handleChange.bind(this)}
-          onChangeTimeInterval={this.handleTimeIntervalChange.bind(this)}
+          handleTimeIntervalChangeObjectBased={this.handleTimeIntervalChangeObjectBased.bind(this)}
           fromdate={this.state.fromdate}
           todate={this.state.todate}
+          refreshing={this.state.refreshing}
           refreshControlls={this.getRefreshControls()}
         />
-        <div className="navbar-brand ">
-          <span>From: {this.state.fromdate.toLocaleString()}</span>
-        </div>
-        <div className="navbar-brand">
-          <span>To: {this.state.todate.toLocaleString()}</span>
-        </div>
-
         <ChartsLocation
           textfilter={this.state.textfilter}
           onChangeTimeInterval={this.handleTimeIntervalChange.bind(this)}
@@ -163,6 +157,14 @@ class App extends React.Component {
       todate: toDateTime
     });
   }
+
+  //expects ojects of the form {fromdate:date}, {todate:date}, {fromdate:date,todate:date }
+  handleTimeIntervalChangeObjectBased(o) {
+    this.setState({
+      ...o
+    });
+  }
+
 
   getTimeFilter() {
     const { fromdate, todate } = this.state;
