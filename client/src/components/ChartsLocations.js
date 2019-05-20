@@ -3,6 +3,7 @@ import OverTime from "./LineChart";
 import BarVisual from "./BarChart";
 import config from "../config";
 import Users from "./ListOfUsers";
+import Hashtags from "./HashtagGraph"
 
 const red_over_time = config["red_over_time"];
 const twit_over_time = config["twit_over_time"];
@@ -14,6 +15,7 @@ const red_pop_users = config["red_pop_users"];
 const twit_pop_users = config["twit_pop_users"];
 const reddit_data = config["reddit_data"];
 const twit_data = config["twit_data"];
+const hashtag_data = config["hashtag_data"];
 
 class ChartsLocation extends React.Component {
   render() {
@@ -39,6 +41,8 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"time"}
             y={"count"}
+            labelX={"Time"}
+            labelY={"Count"}
           />
           <OverTime
             name={"Reddit Data"}
@@ -48,6 +52,8 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"time"}
             y={"count"}
+            labelX={"Time"}
+            labelY={"Count"}
           />
         </div>
         <div className="col-lg-12">
@@ -59,6 +65,8 @@ class ChartsLocation extends React.Component {
             x={"keyword"}
             y={"count"}
             onTextFilterChange={onTextFilterChange}
+            labelX={"Keyword"}
+            labelY={"Popularity"}
           />
           <BarVisual
             name={"Reddit Popular Keywords"}
@@ -68,6 +76,8 @@ class ChartsLocation extends React.Component {
             x={"keyword"}
             y={"count"}
             onTextFilterChange={onTextFilterChange}
+            labelX={"Keyword"}
+            labelY={"Popularity"}
           />
         </div>
         <div className="col-lg-12">
@@ -79,6 +89,8 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"time"}
             y={"count"}
+            labelX={"Time"}
+            labelY={"Users"}
           />
           <OverTime
             name={"Reddit Users Over Time"}
@@ -88,6 +100,8 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"time"}
             y={"count"}
+            labelX={"Time"}
+            labelY={"Users"}
           />
         </div>
         <div className="col-lg-12">
@@ -99,6 +113,8 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"user"}
             y={"count"}
+            labelX={"User"}
+            labelY={"Popularity"}
           />
           <BarVisual
             name={"Reddit Popular Users"}
@@ -108,6 +124,8 @@ class ChartsLocation extends React.Component {
             onChangeTimeInterval={onChangeTimeInterval}
             x={"user"}
             y={"count"}
+            labelX={"User"}
+            labelY={"Popularity"}
           />
         </div>
         <div className="col-lg-12">
@@ -115,15 +133,25 @@ class ChartsLocation extends React.Component {
             name={"Latest Posts Twitter"}
             api={twit_data}
             textfilter={this.props.textfilter}
-            timefilter={"timefilter"}
+            timefilter={timefilter}
+
           />
           <Users
             name={"Latest Posts Reddit"}
             api={reddit_data}
             textfilter={this.props.textfilter}
-            timefilter={"timefilter"}
+            timefilter={timefilter}
           />
         </div>
+        <div className="col-lg-12">
+          <Hashtags
+          name={"Hashtag Network"}
+          api={hashtag_data}
+          textfilter={this.props.textfilter}
+          timefilter={timefilter}
+           />
+        </div>
+
       </div>
     );
   }

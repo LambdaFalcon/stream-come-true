@@ -29,6 +29,8 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
       res.body.forEach((item) => {
         item.should.have.property('time');
         item.should.have.property('count');
+        item.should.have.property('positive_count');
+        item.should.have.property('negative_count');
       });
     });
 
@@ -37,6 +39,15 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
       res.body.forEach((item) => {
         item.time.should.be.a('number');
         item.count.should.be.a('number');
+        item.positive_count.should.be.a('number');
+        item.negative_count.should.be.a('number');
+      });
+    });
+
+    it('should contain elements where positive and negative counts sum up to total count', async () => {
+      const res = await getRequest(itemsOverTimeRoute);
+      res.body.forEach((item) => {
+        (item.positive_count + item.negative_count).should.be.within(0, item.count);
       });
     });
   });
@@ -57,6 +68,8 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
       res.body.forEach((item) => {
         item.should.have.property('time');
         item.should.have.property('count');
+        item.should.have.property('positive_count');
+        item.should.have.property('negative_count');
       });
     });
 
@@ -65,6 +78,15 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
       res.body.forEach((item) => {
         item.time.should.be.a('number');
         item.count.should.be.a('number');
+        item.positive_count.should.be.a('number');
+        item.negative_count.should.be.a('number');
+      });
+    });
+
+    it('should contain elements where positive and negative counts sum up to total count', async () => {
+      const res = await getRequest(itemsOverTimeRoute);
+      res.body.forEach((item) => {
+        (item.positive_count + item.negative_count).should.be.within(0, item.count);
       });
     });
   });
@@ -87,6 +109,8 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
       res.body.forEach((item) => {
         item.should.have.property('time');
         item.should.have.property('count');
+        item.should.have.property('positive_count');
+        item.should.have.property('negative_count');
       });
     });
 
@@ -95,6 +119,15 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
       res.body.forEach((item) => {
         item.time.should.be.a('number');
         item.count.should.be.a('number');
+        item.positive_count.should.be.a('number');
+        item.negative_count.should.be.a('number');
+      });
+    });
+
+    it('should contain elements where positive and negative counts sum up to total count', async () => {
+      const res = await getRequest(itemsOverTimeRoute);
+      res.body.forEach((item) => {
+        (item.positive_count + item.negative_count).should.be.within(0, item.count);
       });
     });
 

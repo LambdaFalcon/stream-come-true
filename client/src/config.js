@@ -20,7 +20,8 @@ const config = {
   red_sent_analysis: localhost["api_v1"].concat("reddit/sentiment"),
   twit_sent_analysis: localhost["api_v1"].concat("twitter/sentiment"),
   reddit_data: localhost["api_v1"].concat("reddit/"),
-  twit_data: localhost["api_v1"].concat("twitter/")
+  twit_data: localhost["api_v1"].concat("twitter/"),
+  hashtag_data: localhost["api_v1"].concat("twitter/hashtag_graph")
 };
 
 export default config;

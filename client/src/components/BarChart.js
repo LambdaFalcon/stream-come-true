@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   BarChart,
   Bar,
@@ -6,7 +7,7 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend
+  Label
 } from "recharts";
 class BarVisual extends React.PureComponent {
   render() {
@@ -23,6 +24,8 @@ class BarVisual extends React.PureComponent {
               timefilter={timefilter}
               x={this.props.x}
               y={this.props.y}
+              labelX={this.props.labelX}
+              labelY={this.props.labelY}
             />
           </div>
         </div>
@@ -95,10 +98,13 @@ class Graph extends React.Component {
         textfilter={textfilter}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={this.props.x} allowDuplicatedCategory={false} />
-        <YAxis />
-        <Tooltip />
-        <Legend />
+        <XAxis dataKey={this.props.x} allowDuplicatedCategory={false} type={"category"} allowDataOverflow={false} interval={0} tick={{fontSize:9}}>
+          <Label value={this.props.labelX} offset={-3} position="insideBottom"/>
+        </XAxis>
+        <YAxis type={"number"} tick={{fontSize: 9}}>
+          <Label value={this.props.labelY} offset={10} position="insideLeft" angle={-90}/>
+        </YAxis>
+        <Tooltip separator=":" offset={10} filterNull={true} active={true}/>
         <Bar
           dataKey={this.props.y}
           fill="#8884d8"

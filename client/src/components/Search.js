@@ -23,8 +23,8 @@ class Search extends React.PureComponent {
    * If not you update the state 
    */
   componentDidUpdate(prevState){
-    const {input} = this.state
-    const {textfilter} = this.props
+    const{input} = this.state;
+    const {textfilter} = this.props;
     if(prevState.input !== input){
       this.setState({
         input: textfilter
@@ -38,6 +38,7 @@ class Search extends React.PureComponent {
   render() {
     const {input} = this.state
     return (
+      <div className="form-group">
         <input
           type="text"
           className="form-control input-md"
@@ -45,6 +46,8 @@ class Search extends React.PureComponent {
           value={input}
           onChange={this.props.handler}
         />
+      </div>
+
     );
   }
 }

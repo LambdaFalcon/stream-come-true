@@ -9,11 +9,14 @@ const applyFiltersImpl = require('./filters');
 const computeIntervalImpl = require('./computeInterval');
 const selectFields = require('./selectFields');
 
-const timeBucketing = require('./queries/timeBucketing');
-const significantText = require('./queries/significantText');
-const distinctCount = require('./queries/distinctCount');
-const termsCount = require('./queries/termsCount');
-const sampler = require('./queries/sampler');
+const timeBucketing = require('./aggs/timeBucketing');
+const significantText = require('./aggs/significantText');
+const distinctCount = require('./aggs/distinctCount');
+const termsCount = require('./aggs/termsCount');
+const sampler = require('./aggs/sampler');
+const range = require('./aggs/range');
+
+const graph = require('./explore/graph');
 
 /**
  * @class ElasticClient
@@ -78,9 +81,22 @@ class ElasticClient {
   async itemsOverTime(filters) {
     const aggName = 'items_over_time';
     const query = this.applyFilters(filters);
+    const timeBucketsAgg = timeBucketing(
+      aggName,
+      this.queryFields.dateField,
+      this.computeInterval(filters),
+    );
+    const ranges = [
+      { from: 0, to: 0.5, key: 'negative_count' },
+      { from: 0.5, key: 'positive_count' },
+    ];
+    const rangesAgg = range('sentiment_counts', 'sentiment', ranges, true);
+
+    // Nest aggregations and define result extractor
+    const itemsOverTimeAgg = ElasticClient.nestAgg(timeBucketsAgg, aggName, rangesAgg);
     const queryWithAgg = {
       ...query,
-      ...timeBucketing(aggName, this.queryFields.dateField, this.computeInterval(filters)),
+      ...itemsOverTimeAgg,
     };
     const resultExtractor = aggResult => aggResult.buckets.map(selectFields.itemsOverTime);
 
@@ -162,6 +178,33 @@ class ElasticClient {
     const resultExtractor = aggResult => aggResult.buckets.map(selectFields.popularUsers);
 
     return this.aggregation(queryWithAgg, aggName, resultExtractor);
+  }
+
+  /**
+   * Get the hashtags graph with the given filters applied.
+   *
+   * @public
+   * @param {Filters} filters text and time frame filters
+   * @returns {Promise<Graph>} a graph with vertices and connections
+   */
+  async hashtagGraph(filters) {
+    if (this.index !== 'tweets') {
+      throw createError(400, 'The hashtagGraph is supported only on the tweets index.');
+    }
+    const field = 'hashtags';
+    const controls = {
+      use_significance: true,
+      sample_size: 2000,
+      timeout: 5000,
+    };
+    const query = this.applyFilters(filters);
+    const queryWithExplore = {
+      ...query,
+      ...graph(field, controls),
+    };
+    const resultExtractor = qResult => selectFields.graph(qResult);
+
+    return this.explore(queryWithExplore, resultExtractor);
   }
 
   /**
@@ -250,7 +293,7 @@ class ElasticClient {
   }
 
   /**
-   * Send an aggregation search query the ElasticSearch instance and get a result.
+   * Send an aggregation search query to the ElasticSearch instance and get a result.
    * This is a private method used internally
    *
    * @typedef AggItem
@@ -267,13 +310,46 @@ class ElasticClient {
    * @returns {Promise<Array<AggItem>>}
    */
   async aggregation(query, aggName, resultExtractor) {
-    if (!query.aggs[aggName]) throw createError(500, `Aggregation ${aggName} is not specified in the given query`);
+    if (!query.aggs[aggName]) {
+      throw createError(500, `Aggregation ${aggName} is not specified in the given query`);
+    }
+
     return this.client
       .search({
         index: this.index,
         body: query,
       })
       .then(res => res.body.aggregations[aggName])
+      .then(resultExtractor);
+  }
+
+  /**
+   * Send an Explore API query to the ElasticSearch instance and get a result.
+   *
+   * @function ExploreResultExtractor
+   * @param {Object} result explore result
+   * @returns {Graph}
+   *
+   * @private
+   * @param {Object} query an ElasticSearch query object for the Explore API
+   * @param {ExploreResultExtractor} resultExtractor function to extract the wanted
+   *                                                 result from the response
+   * @returns {Promise<Graph>} the graph resulting from the given query
+   */
+  async explore(query, resultExtractor) {
+    if (!query.controls || !query.vertices || !query.connections) {
+      throw createError(
+        500,
+        'Fields controls, vertices and connections are not specified in the given explore API query',
+      );
+    }
+
+    return this.client.graph
+      .explore({
+        index: this.index,
+        body: query,
+      })
+      .then(res => res.body)
       .then(resultExtractor);
   }
 }
