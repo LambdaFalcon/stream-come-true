@@ -24,7 +24,7 @@ def remove_stop_words(text, stop_words):
     return " ".join([word for word in words if word not in stop_words])
 
 def clean_text(text):
-    '''given a text a stemmer and a list of stop words applys the following transofrmations:
+    '''given a text applys the following transofrmations:
     lowercase, remove non alphanumeric characters, stemming, removing stop words
     '''
     ret = text.lower()
@@ -64,6 +64,7 @@ if __name__ == "__main__":
 
     stemmer = PorterStemmer()
 
+    #need to download the stopwords
     nltk.download('stopwords')
     stop_words = stopwords.words('english')
 
