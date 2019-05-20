@@ -27,8 +27,8 @@ def clean_text(text, stemmer, stop_words):
     '''
     ret = text.lower()
     ret = re.sub('[^a-zA-z0-9\s]','', ret)
-    ret = stemmer.stem(ret)
     ret = remove_stop_words(ret, stop_words)
+    ret = stemmer.stem(ret)
     return ret
     
 
