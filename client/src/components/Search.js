@@ -38,16 +38,18 @@ class Search extends React.PureComponent {
   render() {
     const {input} = this.state
     return (
-      <div className="form-group">
+      // eslint-disable-next-line jsx-a11y/no-redundant-roles
+      <form>
+      <div>
         <input
           type="text"
-          className="form-control input-md"
+          className="form-control"
           placeholder="Keyword"
           value={input}
           onChange={this.props.handler}
         />
       </div>
-
+      </form>
     );
   }
 }
