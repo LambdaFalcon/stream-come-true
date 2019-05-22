@@ -134,8 +134,8 @@ class App extends React.Component {
         valueField="value"
       />)]
     return (
-      <div className="navbar-custom" style={{ display: "flex", alignItems: "center" }}>
-          <span style={{ marginRight: 10 }}>Auto Refresh:</span>
+      <div style={{ display: "flex", alignItems: "center" }}>
+          <span style={{ marginRight: 5 }}>Auto Refresh:</span>
           <ToggleButton
             value={this.state.refreshing}
             onToggle={value => {
