@@ -26,9 +26,9 @@ const timeFrameRangeFilter = (fromdatetime, todatetime, dateField) => ({
 const textMatchFilter = (text, textField) => {
   if (text) {
     return {
-      multi_match: {
+      query_string: {
+        default_field: textField,
         query: text,
-        fields: textField,
       },
     };
   }
