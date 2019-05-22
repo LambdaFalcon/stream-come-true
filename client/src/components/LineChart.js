@@ -1,35 +1,32 @@
 import React from "react";
-
-import {
-  Line,
-  LineChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ReferenceArea,
-  Label
-} from "recharts";
+import ReactEcharts from "echarts-for-react";
 
 class OverTime extends React.Component {
   render() {
-    const {onChangeTimeInterval, textfilter,timefilter, x, y, api} = this.props
+    const {
+      onChangeTimeInterval,
+      textfilter,
+      timefilter,
+      x,
+      y,
+      api
+    } = this.props;
     return (
       <div className="col-xs-6">
         <div className="panel panel-default">
           <div className="panel-heading">{this.props.name}</div>
           <div className="panel-body">
-            <Graph 
-            api={api} 
-            textfilter={textfilter} 
-            timefilter={timefilter} 
-            onChangeTimeInterval={onChangeTimeInterval} 
-            x={x} 
-            y={y}
-            sentiment={this.props.sentiment}
-            refreshing={this.props.refreshing}
-            labelX={this.props.labelX}
-            labelY={this.props.labelY}  
+            <Graph
+              api={api}
+              textfilter={textfilter}
+              timefilter={timefilter}
+              onChangeTimeInterval={onChangeTimeInterval}
+              x={x}
+              y={y}
+              sentiment={this.props.sentiment}
+              refreshing={this.props.refreshing}
+              labelX={this.props.labelX}
+              labelY={this.props.labelY}
             />
           </div>
         </div>
@@ -41,10 +38,7 @@ class Graph extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //stores the value of where we start the drag process
-      refAreaLeft: "",
-      //stores the value of where we end the drag prrocess
-      refAreaRight: "",
+      option: this.getDefaultOption(),
       data: []
     };
   }
@@ -57,8 +51,8 @@ class Graph extends React.Component {
     if (this.props.textfilter !== prevProps.textfilter) {
       this.fetchData();
     }
-    if(this.props.timefilter !== prevProps.timefilter){
-      this.fetchData()
+    if (this.props.timefilter !== prevProps.timefilter) {
+      this.fetchData();
     }
   }
   //disables removes the selection rectangle
@@ -70,75 +64,117 @@ class Graph extends React.Component {
   }
   //calls this.props.onChangeTimeInterval
   changeTimeInterval() {
-    let {onChangeTimeInterval} = this.props
-    let { refAreaLeft, refAreaRight} = this.state;
+    let { onChangeTimeInterval } = this.props;
+    let { refAreaLeft, refAreaRight } = this.state;
     //if the from and to time are the same or there is no onChangeTimeInterval callback
     //we return immediately
-    if (refAreaLeft === refAreaRight || refAreaRight === "" || !onChangeTimeInterval ) {
+    if (
+      refAreaLeft === refAreaRight ||
+      refAreaRight === "" ||
+      !onChangeTimeInterval
+    ) {
       this._resetSelectionState();
       return;
     }
-    const fromDate = new Date(Math.min(refAreaLeft, refAreaRight))
-    const toDate = new Date(Math.max(refAreaLeft, refAreaRight))
+    const fromDate = new Date(Math.min(refAreaLeft, refAreaRight));
+    const toDate = new Date(Math.max(refAreaLeft, refAreaRight));
     //call calback
-    onChangeTimeInterval(fromDate, toDate)
+    onChangeTimeInterval(fromDate, toDate);
     this._resetSelectionState();
   }
 
   fetchData() {
-    fetch(this.props.api + `?textfilter=${this.props.textfilter || ""}` + (this.props.timefilter ? this.props.timefilter : ""))
+    fetch(
+      this.props.api +
+        `?textfilter=${this.props.textfilter || ""}` +
+        (this.props.timefilter ? this.props.timefilter : "")
+    )
       .then(res => res.json())
       .then(res => {
-        this.setState({
-          data: res
-        });
+        this.updateGraph(res);
       });
   }
   formatDate(time) {
     const date = new Date(time);
     return date.toLocaleTimeString("it-IT");
   }
-  render() {
-    const { refAreaLeft, refAreaRight } = this.state;
-    return (
-      <LineChart
-        width={730}
-        height={250}
-        /*making the chart interactive*/
-        onMouseDown={e => this.setState({ refAreaLeft: e.activeLabel })}
-        onMouseMove={e =>
-          this.state.refAreaLeft &&
-          this.setState({ refAreaRight: e.activeLabel })
+  updateGraph(data) {
+    const option = this.getDefaultOption();
+    //note data.lengt is not always 100 it is usually in [99,101]
+    option.xAxis[0].data = data.map(item => this.formatDate(item.time));
+    option.series[0].data = data.map(item => item.count);
+    option.series[1].data = data.map(item => item.positive_count);
+    option.series[2].data = data.map(item => item.negative_count);
+
+    this.setState({
+      option: option
+    });
+  }
+  getDefaultOption() {
+    return {
+      title: {
+        // text:'We could put a title here as well',
+      },
+      tooltip: {
+        trigger: "axis"
+      },
+      legend: {},
+      toolbox: {
+        show: true,
+        feature: {
+          saveAsImage: {}
         }
-        onMouseUp={this.changeTimeInterval.bind(this)}
-        data={this.state.data}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={this.props.x} tickFormatter={this.formatDate} allowDuplicatedCategory={false} allowDataOverflow={false} minTickGap={7} tick={{fontSize: 9}}>
-          <Label value={this.props.labelX} offset={-3} position="insideBottom"/>
-        </XAxis>
-        <YAxis minTickGap={5} tickSize={3} tick={{fontSize: 9}}>
-          <Label value={this.props.labelY} offset={10} position="insideLeft" angle={-90}/>
-        </YAxis>
-        <Tooltip filterNull={true} labelFormatter={this.formatDate} separator=":" offset={10} active={true}/>
-
-        {/* line for data and optionally lines for sentiment */}
-        <Line type="monotone" dataKey={this.props.y} stroke="#8884d8" activeDot={true} dot={false}/>
-        {this.props.sentiment && !this.props.refreshing && <Line type="monotone" dataKey={`positive_${this.props.y}`} stroke={"green"} strokeDasharray={"3 3"} strokeWidth={0.5} activeDot={true} dot={false}/>}
-        {this.props.sentiment && !this.props.refreshing && <Line type="monotone" dataKey={`negative_${this.props.y}`} stroke={"red"} strokeDasharray={"3 3"} strokeWidth={0.5} activeDot={true} dot={false}/>}
-
-        {/*the reference area is a rectangle representing the new time selection*/}
-        {refAreaLeft && refAreaRight ? (
-          <ReferenceArea
-            x1={refAreaLeft}
-            x2={refAreaRight}
-            strokeOpacity={0.3}
-          />
-        ) : null}
-        </LineChart>
-      );
-    }
+      },
+      dataZoom: {
+        show: false,
+        start: 0,
+        end: 100
+      },
+      xAxis: [
+        {
+          type: "category",
+          boundaryGap: true,
+          data: []
+        }
+      ],
+      yAxis: [
+        {
+          type: "value",
+          scale: true,
+          name: "abcd",
+          min: 0,
+          boundaryGap: [0.2, 0.2]
+        }
+      ],
+      series: [
+        {
+          name: "count",
+          color: "rgb(117,108,206)",
+          type: "line",
+          smooth: true,
+          data: []
+        },
+        {
+          name: "positive",
+          type: "line",
+          color: "#E9C46A",
+          smooth: true,
+          data: []
+        },
+        {
+          name: "negative",
+          type: "line",
+          color: "#2A9D8F",
+          smooth: true,
+          data: []
+        }
+      ]
+    };
   }
 
+  render() {
+    return <ReactEcharts ref="echarts_react" option={this.state.option} />;
+  }
+}
 
 export default OverTime;
