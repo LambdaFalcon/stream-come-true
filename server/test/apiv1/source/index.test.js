@@ -130,7 +130,7 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
       const res = await getRequest(`${redditRoute}?textfilter=${textfilter}`);
       res.body
         .map(item => item.text.toLowerCase())
-        .should.all.have.string(`<em>${textfilter}</em>`);
+        .should.all.have.string(`<b>${textfilter}</b>`);
     });
   });
 
