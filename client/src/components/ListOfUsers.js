@@ -1,4 +1,5 @@
 import React from "react"
+import { Markup } from 'interweave';
 
 class Users extends React.PureComponent{
     render(){
@@ -73,7 +74,6 @@ class List extends React.Component {
     borderColor:"#c5c8cc",
     borderRadius:"5px"
   };
-
   render() {
     return this.state.data.map((user, index) => (
     <div className="row" style={this.styles1} key={index}>
@@ -93,9 +93,7 @@ class List extends React.Component {
             <h6>{new Date(user["created_at"]).toLocaleString()}</h6>
         </div>
         <div>
-            <p>
-                {user["text"]}
-            </p>
+        <Markup content={user["text"]} />
         </div>
     </div>
     ));
