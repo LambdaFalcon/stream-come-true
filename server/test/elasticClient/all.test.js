@@ -63,7 +63,7 @@ describe('ElasticClient.all()', function allTest() {
 
     it('should contain elements that match the text filter', async () => {
       const res = await client.all(filters);
-      res.map(item => item.text.toLowerCase()).should.all.have.string(`<em>${textfilter}</em>`);
+      res.map(item => item.text.toLowerCase()).should.all.have.string(`<b>${textfilter}</b>`);
     });
   });
 
