@@ -53,7 +53,7 @@ class ElasticClient {
 
     const { dateField, textField } = this.queryFields;
     const sortByDate = { [dateField]: { order: 'desc' } };
-    const highlight = { fields: { [textField]: {} }, number_of_fragments: 0 };
+    const highlight = { pre_tags: ['<b>'], post_tags: ['</b>'], fields: { [textField]: {} } };
 
     return this.client
       .search({
