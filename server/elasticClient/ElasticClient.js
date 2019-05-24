@@ -142,7 +142,7 @@ class ElasticClient {
     const parentAggName = 'sample';
     const childAggName = 'popular_keywords';
     const query = this.applyFilters(filters);
-    const exclude = [filters.textfilter];
+    const exclude = (filters && filters.textfilter && [filters.textfilter]) || [];
     const samplerAgg = sampler(parentAggName, this.config.samplerSize);
     const significantTextAgg = significantText(childAggName, this.queryFields.textField, exclude);
 
