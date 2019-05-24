@@ -67,7 +67,7 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
     });
 
     it('should contain elements that match a given filter', async () => {
-      const textfilter = 'apex';
+      const textfilter = 'huawei';
       const res = await getRequest(`${twitterRoute}?textfilter=${textfilter}`);
       res.body
         .map(item => item.text.toLowerCase())
@@ -126,7 +126,7 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
     });
 
     it('should contain elements that match a given filter', async () => {
-      const textfilter = 'apex';
+      const textfilter = 'huawei';
       const res = await getRequest(`${redditRoute}?textfilter=${textfilter}`);
       res.body
         .map(item => item.text.toLowerCase())

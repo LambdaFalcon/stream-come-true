@@ -53,7 +53,7 @@ describe('ElasticClient.all()', function allTest() {
   });
 
   describe('with text filter', () => {
-    const textfilter = 'apex';
+    const textfilter = 'huawei';
     const filters = { textfilter };
 
     it('should return an array', async () => {

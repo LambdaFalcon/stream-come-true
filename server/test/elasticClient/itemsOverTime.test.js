@@ -49,7 +49,7 @@ describe('ElasticClient.itemsOverTime()', function itemsOverTimeTest() {
   });
 
   describe('with text filter', () => {
-    const textfilter = 'apex';
+    const textfilter = 'huawei';
     const filters = { textfilter };
 
     it('should return an array', async () => {

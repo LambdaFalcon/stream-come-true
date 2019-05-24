@@ -73,7 +73,7 @@ describe('ElasticClient.hashtagGraph()', function hashtagGraphTest() {
   });
 
   describe('with text filter', () => {
-    const textfilter = 'apex';
+    const textfilter = 'huawei';
     const filters = { textfilter };
 
     it('should return an object', async () => {
