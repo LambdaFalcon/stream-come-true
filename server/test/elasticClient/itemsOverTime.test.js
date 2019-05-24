@@ -1,6 +1,7 @@
 // Import the dependencies for testing
 const chai = require('chai');
 const chaiThings = require('chai-things');
+
 const config = require('../../config');
 const ElasticClient = require('../../elasticClient/ElasticClient');
 const testUtils = require('../utils');
@@ -49,7 +50,7 @@ describe('ElasticClient.itemsOverTime()', function itemsOverTimeTest() {
   });
 
   describe('with text filter', () => {
-    const textfilter = 'huawei';
+    const textfilter = testUtils.textFilter;
     const filters = { textfilter };
 
     it('should return an array', async () => {

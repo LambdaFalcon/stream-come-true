@@ -53,7 +53,7 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
   });
 
   describe('with text filter', () => {
-    const textfilter = 'huawei';
+    const textfilter = testUtils.textFilter;
     const filters = `?textfilter=${textfilter}`;
     const itemsOverTimeRoute = `${route}/items_over_time${filters}`;
 

@@ -19,6 +19,9 @@ const getNMinutesAgo = (n, { floor, ceil } = { floor: false, ceil: false }) => {
   return nMinutesAgo;
 };
 
+const textFilter = 'huawei';
+
 module.exports = {
   getNMinutesAgo,
+  textFilter,
 };

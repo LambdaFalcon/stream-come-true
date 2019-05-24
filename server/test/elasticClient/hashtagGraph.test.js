@@ -1,8 +1,10 @@
 // Import the dependencies for testing
 const chai = require('chai');
 const chaiThings = require('chai-things');
+
 const config = require('../../config');
 const ElasticClient = require('../../elasticClient/ElasticClient');
+const testUtils = require('../utils');
 
 // Configure chai
 chai.should();
@@ -73,7 +75,7 @@ describe('ElasticClient.hashtagGraph()', function hashtagGraphTest() {
   });
 
   describe('with text filter', () => {
-    const textfilter = 'huawei';
+    const textfilter = testUtils.textFilter;
     const filters = { textfilter };
 
     it('should return an object', async () => {
