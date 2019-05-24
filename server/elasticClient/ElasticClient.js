@@ -142,8 +142,9 @@ class ElasticClient {
     const parentAggName = 'sample';
     const childAggName = 'popular_keywords';
     const query = this.applyFilters(filters);
+    const exclude = [filters.textfilter];
     const samplerAgg = sampler(parentAggName, this.config.samplerSize);
-    const significantTextAgg = significantText(childAggName, this.queryFields.textField);
+    const significantTextAgg = significantText(childAggName, this.queryFields.textField, exclude);
 
     // Nest significant text into sampler and define result extractor
     const sampledSignificantTextAgg = ElasticClient.nestAgg(
