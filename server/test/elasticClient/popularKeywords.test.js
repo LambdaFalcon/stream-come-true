@@ -61,10 +61,10 @@ describe('ElasticClient.popularKeywords()', function popularKeywordsTest() {
       });
     });
 
-    it('should contain at least one element matching the text filter', async () => {
+    it('should contain no elements matching the text filter because it is excluded', async () => {
       const res = await client.popularKeywords(filters);
       if (res.length !== 0) {
-        res.should.contain.an.item.with.property('keyword', textfilter);
+        res.should.not.contain.an.item.with.property('keyword', textfilter);
       }
     });
   });
