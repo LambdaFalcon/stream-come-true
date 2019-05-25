@@ -163,6 +163,7 @@ class ChartsLocation extends React.Component {
             timefilter={timefilter}
             spidering={spidering}
             onNodeSpidering={onNodeSpidering}
+            refreshing={this.props.refreshing}
           />
         </div>
       </div>

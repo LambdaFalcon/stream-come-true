@@ -11,7 +11,7 @@ class Hashtags extends React.PureComponent{
                         {this.props.name}
                     </div>
                     <div className="panel-body">
-                    <HashtagGraph timefilter={this.props.timefilter} api={this.props.api} textfilter={this.props.textfilter} spidering={this.props.spidering} onNodeSpidering={this.props.onNodeSpidering}/>
+                    <HashtagGraph timefilter={this.props.timefilter} api={this.props.api} textfilter={this.props.textfilter} spidering={this.props.spidering} onNodeSpidering={this.props.onNodeSpidering} refreshing={this.props.refreshing}/>
                     </div>
                 </div>
             </div>
@@ -96,9 +96,8 @@ class HashtagGraph extends React.Component {
       }
 
       handleClick = item => {  
-        // click on a node to expand the network
-        if( item.dataType !== 'edge' ) {
-          console.log(item);
+        // click on a node to expand the network, only if not on Live mode
+        if ( item.dataType !== 'edge' && !this.props.refreshing ) {
           var hashtag = item.data.term;
           var exclude = this.state.data.vertices.filter(node => {
             return node.term !== item.data.term
@@ -125,9 +124,9 @@ class HashtagGraph extends React.Component {
       });
       const chart = this.graphRef.current;
       // if chart has been initialized and data exists
-      if( chart !== null && this.state.data.vertices ){
+      if ( chart !== null && this.state.data.vertices ) {
         const mychart = chart.getEchartsInstance();
-        if(this.state.data.vertices.length > 0){
+        if ( this.state.data.vertices.length > 0 ) {
           // add the rest of the properties
           mychart.setOption({
             title: {
@@ -208,7 +207,7 @@ class HashtagGraph extends React.Component {
 
     return ( 
       <ReactEcharts ref={this.graphRef} option={getOption()} style={{ height: 350 }} onEvents={onEvents}/>
-        );
+      );
     }
 }
 export default Hashtags;
