@@ -28,7 +28,8 @@ class App extends React.Component {
       refreshTimePeriod: refreshTimePeriod,
       refreshIntervalId: undefined,
       refreshing: true,
-      selectablePeriods: selectablePeriods
+      selectablePeriods: selectablePeriods,
+      spidering: ""
     };
   }
   componentDidMount() {
@@ -64,6 +65,8 @@ class App extends React.Component {
           timefilter={this.getTimeFilter()}
           onTextFilterChange={this.handleTextFilterChange.bind(this)}
           refreshing={this.state.refreshing}
+          spidering={this.state.spidering}
+          onNodeSpidering={this.handleNodeSpidering.bind(this)}
         />
       </div>
     );
@@ -187,6 +190,13 @@ class App extends React.Component {
   handleTextFilterChange(keyword) {
     this.setState({
       textfilter: keyword
+    });
+  }
+
+  handleNodeSpidering(hashtagObj){
+    console.log(hashtagObj);
+    this.setState({
+      spidering: hashtagObj
     });
   }
 }
