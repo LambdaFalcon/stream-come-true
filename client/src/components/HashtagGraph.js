@@ -83,7 +83,7 @@ class HashtagGraph extends React.Component {
               data: res
             })
           });
-    }
+      }
     
       changeTextFilter(keyword) {
         const { onTextFilterChange } = this.props;
@@ -95,31 +95,33 @@ class HashtagGraph extends React.Component {
         onNodeSpidering(node);
       }
 
-      handleClick = hashtagNode => {  
+      handleClick = item => {  
         // click on a node to expand the network
-        var hashtag = hashtagNode.data.term;
-        var exclude = this.state.data.vertices.filter(node => {
-          return node.term !== hashtagNode.data.term
-        }).map(node => {
-          return node.term;
-        });
-
-        var obj = {
-          hashtag: hashtag,
-          exclude: exclude
-        }
-        this.setState({
-          spidering: obj
-        });
-        
-        this.onNodeSpidering(obj);
+        if( item.dataType !== 'edge' ) {
+          console.log(item);
+          var hashtag = item.data.term;
+          var exclude = this.state.data.vertices.filter(node => {
+            return node.term !== item.data.term
+          }).map(node => {
+            return node.term;
+          });
+  
+          var obj = {
+            hashtag: hashtag,
+            exclude: exclude
+          }
+          this.setState({
+            spidering: obj
+          });
+          this.onNodeSpidering(obj);
+        }  
       };
 
     render() {
-      const getOption = () =>({
+      const getOption = () => ({
         animationDuration: 2000,
         animationEasingUpdate: 'quadraticIn',
-        color: '#157DEC'
+        color: '#6A5ACD'
       });
       const chart = this.graphRef.current;
       // if chart has been initialized and data exists
@@ -139,6 +141,7 @@ class HashtagGraph extends React.Component {
                   normal: {
                       position: 'right',
                       formatter: '{b}',
+                      fontSize: 15,
                       show: true
                   }
               },
@@ -148,8 +151,26 @@ class HashtagGraph extends React.Component {
               force: {
                   initLayout: 'circular',
                   edgeLength: 100,
-                  repulsion: 300,
+                  repulsion: 350,
                   gravity: 0.2
+              },
+              lineStyle: {
+                normal: {
+                    curveness: 0.1
+                }
+              },
+              emphasis: {
+                lineStyle: {
+                    width: 10
+                }
+              },
+              itemStyle: {
+                normal: {
+                    borderColor: '#fff',
+                    borderWidth: 1,
+                    shadowBlur: 15,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)'
+                }
               },
               data: this.state.data.vertices.map(function (node, index) {
                   node.id = index;
@@ -165,7 +186,7 @@ class HashtagGraph extends React.Component {
        else {  
         mychart.clear()
         mychart.setOption({
-          color: '#157DEC',
+          color: '#6A5ACD',
           title: {
             textStyle:{
               fontWeight: 'normal',
@@ -178,15 +199,15 @@ class HashtagGraph extends React.Component {
             text: 'No data available'
           }
         });
+      }
     }
-  }
 
     const onEvents = {
       'click': this.handleClick
     }
 
     return ( 
-      <ReactEcharts ref={this.graphRef} option={getOption()} style={{ height: 300 }} onEvents={onEvents}/>
+      <ReactEcharts ref={this.graphRef} option={getOption()} style={{ height: 350 }} onEvents={onEvents}/>
         );
     }
 }
