@@ -4,6 +4,7 @@ import ReactEcharts from "echarts-for-react";
 
 class Hashtags extends React.PureComponent{
     render(){
+      const { textfilter, timefilter, refreshing } = this.props;
         return(
             <div>
                 <div className="panel panel-default">
@@ -11,7 +12,7 @@ class Hashtags extends React.PureComponent{
                         {this.props.name}
                     </div>
                     <div className="panel-body">
-                    <HashtagGraph timefilter={this.props.timefilter} api={this.props.api} textfilter={this.props.textfilter} spidering={this.props.spidering} onNodeSpidering={this.props.onNodeSpidering} refreshing={this.props.refreshing}/>
+                    <HashtagGraph timefilter={timefilter} api={this.props.api} textfilter={textfilter} refreshing={refreshing}/>
                     </div>
                 </div>
             </div>
@@ -24,24 +25,24 @@ class HashtagGraph extends React.Component {
         super(props);
         this.graphRef = React.createRef();
         this.state = {
-          data: {}
+          data: {},
+          spidering: ""
         };
         this.textfilter = "";
-        this.spidering = "";
       }
     
       componentDidMount() {
         this.fetchData();
       }
     
-      componentDidUpdate(prevProps) {
+      componentDidUpdate(prevProps, prevState) {
         if (this.props.textfilter !== prevProps.textfilter) {
           this.fetchData();
         }
         if (this.props.timefilter !== prevProps.timefilter) {
           this.fetchData();
         }
-        if (this.props.spidering !== prevProps.spidering) {
+        if (this.state.spidering !== prevState.spidering) {
           this.fetchHashtagSpidering();
         }
       }
@@ -58,8 +59,7 @@ class HashtagGraph extends React.Component {
           .then(res => res.json())
           .then(res => {
             this.setState({
-              data: res
-              
+              data: res   
             });
           });
       }
@@ -69,10 +69,10 @@ class HashtagGraph extends React.Component {
           this.props.api + 
             `?textfilter=${this.props.textfilter || ""}` +
             (this.props.timefilter ? this.props.timefilter : "") +
-            `&spidering=${this.props.spidering}`, {
+            `&spidering=${this.state.spidering}`, {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify(this.props.spidering)     
+            body: JSON.stringify(this.state.spidering)     
           })
           .then(res => {
             return res;
@@ -90,9 +90,10 @@ class HashtagGraph extends React.Component {
         onTextFilterChange(keyword);
       }
 
-      onNodeSpidering(node) {
-        const { onNodeSpidering } = this.props;
-        onNodeSpidering(node);
+      setSpidering(obj) { 
+        this.setState({
+          spidering: obj
+        });
       }
 
       handleClick = item => {  
@@ -104,15 +105,11 @@ class HashtagGraph extends React.Component {
           }).map(node => {
             return node.term;
           });
-  
           const obj = {
             hashtag: hashtag,
             exclude: exclude
           }
-          this.setState({
-            spidering: obj
-          });
-          this.onNodeSpidering(obj);
+          this.setSpidering(obj);
         }  
       };
 

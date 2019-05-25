@@ -64,8 +64,6 @@ class App extends React.Component {
           timefilter={this.getTimeFilter()}
           onTextFilterChange={this.handleTextFilterChange.bind(this)}
           refreshing={this.state.refreshing}
-          spidering={this.state.spidering}
-          onNodeSpidering={this.handleNodeSpidering.bind(this)}
         />
       </div>
     );
@@ -189,12 +187,6 @@ class App extends React.Component {
   handleTextFilterChange(keyword) {
     this.setState({
       textfilter: keyword
-    });
-  }
-
-  handleNodeSpidering(hashtagObj){
-    this.setState({
-      spidering: hashtagObj
     });
   }
 }
