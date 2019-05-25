@@ -97,7 +97,7 @@ describe("Check API Requests", function() {
     });
     cy.route({
       method: "GET",
-      url: "http://localhost:9000/api/v1/reddit/popular_users",
+      url: "http://localhost:9000/api/v1/twitter/popular_users",
       delay: 1000
     });
   });
