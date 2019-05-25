@@ -30,6 +30,7 @@
     ]
   },
   "devDependencies": {
+    "cypress": "^3.3.1",
     "jqwidgets-scripts": "^7.2.0"
   }
 }
