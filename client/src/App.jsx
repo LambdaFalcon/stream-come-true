@@ -28,8 +28,7 @@ class App extends React.Component {
       refreshTimePeriod: refreshTimePeriod,
       refreshIntervalId: undefined,
       refreshing: true,
-      selectablePeriods: selectablePeriods,
-      spidering: ""
+      selectablePeriods: selectablePeriods
     };
   }
   componentDidMount() {
