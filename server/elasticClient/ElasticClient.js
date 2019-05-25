@@ -17,6 +17,7 @@ const sampler = require('./aggs/sampler');
 const range = require('./aggs/range');
 
 const graph = require('./explore/graph');
+const spidering = require('./explore/spidering');
 
 /**
  * @class ElasticClient
@@ -188,9 +189,7 @@ class ElasticClient {
    * @returns {Promise<Graph>} a graph with vertices and connections
    */
   async hashtagGraph(filters) {
-    if (this.index !== 'tweets') {
-      throw createError(400, 'The hashtagGraph is supported only on the tweets index.');
-    }
+    this.checkIndexSupportsGraph();
     const field = 'hashtags';
     const controls = {
       use_significance: true,
@@ -205,6 +204,44 @@ class ElasticClient {
     const resultExtractor = qResult => selectFields.graph(qResult);
 
     return this.explore(queryWithExplore, resultExtractor);
+  }
+
+  /**
+   * Get the hashtags graph that starts from a given hashtag.
+   * Hashtags to exclude can be specified, e.g. if they have already been seen.
+   * The given filters are also applied.
+   *
+   * @param {string} hashtag hashtag from which to start exploration
+   * @param {Array<string>} exclude hashtags to exclude from exploration
+   * @param {Filters} filters text and time frame filters
+   */
+  async spiderFromHashtag(hashtag, exclude, filters) {
+    this.checkIndexSupportsGraph();
+    const field = 'hashtags';
+    const controls = {
+      use_significance: true,
+      sample_size: 2000,
+      timeout: 5000,
+    };
+    const query = this.applyFilters(filters);
+    const queryWithSpidering = {
+      ...query,
+      ...spidering(field, hashtag, exclude, controls),
+    };
+    const resultExtractor = qResult => selectFields.graph(qResult);
+
+    return this.explore(queryWithSpidering, resultExtractor);
+  }
+
+  /**
+   * Check that the index this client is connected to supports graph operations.
+   *
+   * @private
+   */
+  checkIndexSupportsGraph() {
+    if (this.index !== 'tweets') {
+      throw createError(400, 'The hashtagGraph is supported only on the tweets index.');
+    }
   }
 
   /**

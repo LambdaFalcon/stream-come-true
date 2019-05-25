@@ -1,5 +1,5 @@
 /**
- * Create a graph query (see Explore API at: https://www.elastic.co/guide/en/elasticsearch/reference/current/graph-explore-api.html).
+ * Create a graph spidering query (see Explore API at: https://www.elastic.co/guide/en/elasticsearch/reference/current/graph-explore-api.html).
  *
  * @typedef Controls a controls object as described in the documentation
  * @type {Object}
@@ -13,21 +13,31 @@
  * @property {number} [sample_diversity.max_docs_per_value]
  *
  * @param {string} keywordField name of the keyword field to explore on
+ * @param {string} startingValue value from which exploration will start
+ * @param {Array<string>} excludeValues values that should be excluded in the exploration
  * @param {Controls} controls controld for the Explore API
  * @returns {ExploreAPIQuery} a query object with controls, vertices, connections
  */
-const graph = (keywordField, controls) => ({
+const spidering = (keywordField, startingValue, excludeValues, controls) => ({
   controls,
-  vertices: [{ field: keywordField, size: 5, min_doc_count: 3 }],
+  vertices: [
+    {
+      field: keywordField,
+      size: 5,
+      min_doc_count: 3,
+      include: [startingValue],
+    },
+  ],
   connections: {
     vertices: [
       {
         field: keywordField,
         size: 5,
         min_doc_count: 3,
+        exclude: excludeValues,
       },
     ],
   },
 });
 
-module.exports = graph;
+module.exports = spidering;

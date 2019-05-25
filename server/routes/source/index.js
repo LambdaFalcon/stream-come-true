@@ -8,6 +8,7 @@ const usersOverTime = require('./usersOverTime');
 const popularUsers = require('./popularUsers');
 
 const hashtagGraph = require('./hashtagGraph');
+const hashtagGraphSpidering = require('./hashtagGraphSpidering');
 
 /**
  * Create the router for a specific source.
@@ -40,6 +41,7 @@ const sourceRouter = (config) => {
   router.get('/popular_users', popularUsers(config));
 
   router.get('/hashtag_graph', hashtagGraph(config));
+  router.post('/hashtag_graph', hashtagGraphSpidering(config));
 
   return router;
 };
