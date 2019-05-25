@@ -43,7 +43,7 @@ class Graph extends React.Component {
   constructor(props) {
     super(props);
     if (props.bars.length + props.lines.length < 1) {
-      throw "At least one bar or line needs to be defined";
+      throw Error("At least one bar or line needs to be defined");
     }
     this.state = {
       option: this.getDefaultOption(),
@@ -138,17 +138,22 @@ class Graph extends React.Component {
     //note data.length is not always 100 it is usually in [99,101]
 
     //if time between first and last item is more than 24h we display dates instead of times
-    let first = data[0].time;
-    let last = data[data.length - 1].time;
-    option.xAxis[0].data = data.map(item => {
-      return {
-        value:
-          last - first < DAY
-            ? this.formatTime(item.time)
-            : this.formatDate(item.time),
-        actual: item.time
-      };
-    });
+    if(data.length !== 0){
+      let first = data[0].time;
+      let last = data[data.length - 1].time;
+      option.xAxis[0].data = data.map(item => {
+        return {
+          value:
+            last - first < DAY
+              ? this.formatTime(item.time)
+              : this.formatDate(item.time),
+          actual: item.time
+        };
+      });
+    }else{
+      option.xAxis[0].data = []
+    }
+    
     //updating data for all series
     option.series.forEach(item => {
       item.data = data.map(x=> x[item.dataKey])
