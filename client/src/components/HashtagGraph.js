@@ -6,14 +6,12 @@ class Hashtags extends React.PureComponent{
     render(){
         return(
             <div>
-                <div className="col-xs-6">
-                    <div className="panel panel-default">
-                        <div className="panel-heading">
-                            {this.props.name}
-                        </div>
-                        <div className="panel-body">
-                        <HashtagGraph timefilter={this.props.timefilter} api={this.props.api} textfilter={this.props.textfilter} spidering={this.props.spidering} onNodeSpidering={this.props.onNodeSpidering}/>
-                        </div>
+                <div className="panel panel-default">
+                    <div className="panel-heading">
+                        {this.props.name}
+                    </div>
+                    <div className="panel-body">
+                    <HashtagGraph timefilter={this.props.timefilter} api={this.props.api} textfilter={this.props.textfilter} spidering={this.props.spidering} onNodeSpidering={this.props.onNodeSpidering}/>
                     </div>
                 </div>
             </div>
@@ -119,8 +117,8 @@ class HashtagGraph extends React.Component {
 
     render() {
       const getOption = () =>({
-        animationDurationUpdate: 1600,
-        animationEasingUpdate: 'quinticInOut',
+        animationDuration: 2000,
+        animationEasingUpdate: 'quadraticIn',
         color: '#157DEC'
       });
       const chart = this.graphRef.current;
@@ -128,7 +126,6 @@ class HashtagGraph extends React.Component {
       if( chart !== null && this.state.data.vertices ){
         const mychart = chart.getEchartsInstance();
         if(this.state.data.vertices.length > 0){
-          console.log(this.state.data.vertices.length)
           // add the rest of the properties
           mychart.setOption({
             title: {
@@ -146,6 +143,7 @@ class HashtagGraph extends React.Component {
                   }
               },
               draggable: true,
+              roam: true,
               focusNodeAdjacency: true,
               force: {
                   initLayout: 'circular',
@@ -159,22 +157,23 @@ class HashtagGraph extends React.Component {
                   node.symbolSize = 10;
                   return node;
               }),
-            edges: this.state.data.connections
-            }] 
+            edges: this.state.data.connections,
+            animationDurationUpdate: 3000
+            }]
           });
       }
        else {  
         mychart.clear()
         mychart.setOption({
+          color: '#157DEC',
           title: {
             textStyle:{
               fontWeight: 'normal',
+              fontFamily: '"Montserrat", Arial, Helvetica, sans-serif',
               color: 'grey',
-              fontSize: 18
+              fontSize: 16
             },
-            top: '50%',
-            left: '50%',
-            right: '50%',
+            textVerticalAlign: 'middle',
             show: true,
             text: 'No data available'
           }
