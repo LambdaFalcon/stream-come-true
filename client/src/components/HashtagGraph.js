@@ -195,7 +195,7 @@ class HashtagGraph extends React.Component {
             },
             textVerticalAlign: 'middle',
             show: true,
-            text: 'No data available'
+            text: 'No networks available'
           }
         });
       }
