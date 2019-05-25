@@ -1,6 +1,8 @@
 import React from "react";
 import ReactEcharts from "echarts-for-react";
 
+const DAY = 24*60*60*1000
+
 class OverTime extends React.Component {
   render() {
     const {
@@ -96,12 +98,49 @@ class Graph extends React.Component {
   }
   formatDate(time) {
     const date = new Date(time);
+    return date.toLocaleDateString("it-IT");
+  }
+  formatTime(time) {
+    const date = new Date(time);
     return date.toLocaleTimeString("it-IT");
+  }
+  formatDateTime(time){
+    const date = new Date(time);
+    return date.toLocaleString("it-IT");
+  }
+  /**
+   * 
+   * @param {[series information]} params 
+   */
+  formatTooltip(params){
+    let {option} = this.state
+    let timeAxis = option.xAxis[0].data
+    let index = params[0].dataIndex
+
+    let fromString = this.formatDateTime(timeAxis[index].actual)
+    let toString = timeAxis[index+1] ? this.formatDateTime(timeAxis[index+1].actual) : "now"
+    let ret = `<div>${fromString} - ${toString} </di>`
+    params.forEach(item =>{
+      ret+= `<div>${item.seriesName}: ${item.value}</div>`
+    })
+    return ret
   }
   updateGraph(data) {
     const option = this.getDefaultOption();
-    //note data.lengt is not always 100 it is usually in [99,101]
-    option.xAxis[0].data = data.map(item => this.formatDate(item.time));
+    //note data.length is not always 100 it is usually in [99,101]
+
+    //if time between first and last item is more than 24h we display dates
+    let first = data[0].time
+    let last = data[data.length-1].time
+      option.xAxis[0].data = data.map(item => {
+        return {
+          value: last - first < DAY ? this.formatTime(item.time) : this.formatDate(item.time),
+          actual:item.time}
+      });
+    
+
+    
+    
     option.series[0].data = data.map(item => item.count);
     option.series[1].data = data.map(item => item.positive_count);
     option.series[2].data = data.map(item => item.negative_count);
@@ -116,14 +155,13 @@ class Graph extends React.Component {
         // text:'We could put a title here as well',
       },
       tooltip: {
-        trigger: "axis"
+        trigger: "axis",
+        formatter:(params)=>{return this.formatTooltip(params)}
       },
-      legend: {},
-      toolbox: {
-        show: true,
-        feature: {
-          saveAsImage: {}
-        }
+      legend: {
+        orient:"vertical",
+        right:0,
+        bottom:"50%"
       },
       dataZoom: {
         show: false,
@@ -141,7 +179,11 @@ class Graph extends React.Component {
         {
           type: "value",
           scale: true,
-          name: "abcd",
+          name: "count",
+          nameLocation: "middle",
+          nameTextStyle:{
+            padding: [0, 0, 30, 0]
+          },
           min: 0,
           boundaryGap: [0.2, 0.2]
         }
@@ -156,15 +198,19 @@ class Graph extends React.Component {
         },
         {
           name: "positive",
-          type: "line",
-          color: "#E9C46A",
+          type: "bar",
+          stack:"one",
+          color: "#2A9D8F",
+          lineStyle:{type: 'dashed'},
           smooth: true,
           data: []
         },
         {
           name: "negative",
-          type: "line",
-          color: "#2A9D8F",
+          color: "#E9C46A",
+          type: "bar",
+          stack:"one",
+          lineStyle:{type: 'dashed'},
           smooth: true,
           data: []
         }
