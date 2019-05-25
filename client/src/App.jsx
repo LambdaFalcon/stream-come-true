@@ -194,7 +194,6 @@ class App extends React.Component {
   }
 
   handleNodeSpidering(hashtagObj){
-    console.log(hashtagObj);
     this.setState({
       spidering: hashtagObj
     });
