@@ -1,9 +1,21 @@
+/**
+ * describe; It groups tests
+ * it; the runing with the description and the test to be done
+ * In this case we are testing if we can acces the main react app file
+ */
 describe("Check Website", function() {
   it("Website", function() {
     cy.visit("/");
   });
 });
-
+/**
+ * Checking if we get an answer from the apis and the server
+ * method; defines the type of request that we are making GET, POST, UPDATE, DELETE etc.
+ * url; The link where to make the request
+ * delay: The delay time that it needs to wait for the request.
+ * cy.server; global variable for server
+ * cy.route; global variable for the route API
+ */
 describe("Check API Requests", function() {
   it("Reddit Over Time", function() {
     cy.server({
