@@ -86,6 +86,7 @@
  */
 
 /**
+ * Type definition for time and text filters that are passed in most methd calls
  * @typedef Filters
  * @type {Object}
  * @property {string} textfilter text filter for fulltext search
@@ -93,4 +94,20 @@
  *                                        5 minutes, hours or days, respcetively
  * @property {string} fromdatetime datetime string (ISO 8601), gte date filter
  * @property {string} todatetime datetime string (ISO 8601), lte date filter
+ */
+
+/**
+ * @typedef ExploreAPIQuery
+ * @type {Object}
+ * @property {Controls} controls
+ * @property {Array<{
+ *    field: string,
+ *    size: number,
+ *    min_doc_count: number,
+ *    include?: Array<string>}>} vertices
+ * @property {{vertices: Array<{
+ *    field: string,
+ *    size: number,
+ *    min_doc_count: number,
+ *    exclude?: Array<string>}> }} conenctions
  */
