@@ -98,14 +98,14 @@ class HashtagGraph extends React.Component {
       handleClick = item => {  
         // click on a node to expand the network, only if not on Live mode
         if ( item.dataType !== 'edge' && !this.props.refreshing ) {
-          var hashtag = item.data.term;
-          var exclude = this.state.data.vertices.filter(node => {
+          const hashtag = item.data.term;
+          const exclude = this.state.data.vertices.filter(node => {
             return node.term !== item.data.term
           }).map(node => {
             return node.term;
           });
   
-          var obj = {
+          const obj = {
             hashtag: hashtag,
             exclude: exclude
           }
