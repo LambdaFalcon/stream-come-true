@@ -253,9 +253,12 @@ class ElasticClient {
    * @param {Filters} filters text and time frame filters
    * @returns {object} ElasticSearch query with filters applied
    */
-  applyFilters(filters) {
+  applyFilters(filters = {}) {
+    const { fromdatetime: candidateFromdatetime, todatetime = new Date().toISOString() } = filters;
+    const fromdatetime = candidateFromdatetime
+      || datetimeUtils.minusHours(todatetime, this.config.defaultHourRange);
     return applyFiltersImpl(this.config)(
-      filters,
+      { ...filters, fromdatetime, todatetime },
       this.queryFields.dateField,
       this.queryFields.textField,
     );

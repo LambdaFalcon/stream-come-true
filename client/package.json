@@ -26,7 +26,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cypress:open": "cypress open"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -44,6 +45,9 @@
     ]
   },
   "devDependencies": {
+    "cypress": "^3.3.1",
+    "eslint-plugin-chai-friendly": "^0.4.1",
+    "eslint-plugin-cypress": "^2.2.1",
     "jqwidgets-scripts": "^7.2.0",
     "react-app-rewired": "^2.1.3"
   }

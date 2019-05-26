@@ -82,7 +82,7 @@
  * @typedef Graph
  * @type {Object}
  * @property {Array<Vertex>} vertices vertices of the graph
- * @property {Array<Connections>} connections connections between the vertices
+ * @property {Array<Connection>} connections connections between the vertices
  */
 
 /**
