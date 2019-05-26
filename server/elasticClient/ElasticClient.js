@@ -292,7 +292,7 @@ class ElasticClient {
       ...rest,
       _source: {
         ..._source,
-        [textField]: highlight[textField][0],
+        [textField]: highlight ? highlight[textField][0] : _source[textField],
       },
     });
   }
