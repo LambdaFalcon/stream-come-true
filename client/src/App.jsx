@@ -8,6 +8,12 @@ import "react-widgets/dist/css/react-widgets.css";
 import ToggleButton from "react-toggle-button";
 import { DropdownList } from "react-widgets";
 
+//register font awesome icons
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faSmile, faMeh, faFrown } from '@fortawesome/free-solid-svg-icons'
+library.add(faSmile, faMeh, faFrown)
+
+
 
 class App extends React.Component {
   constructor(props) {
