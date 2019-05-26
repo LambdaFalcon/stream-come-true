@@ -1,6 +1,7 @@
 // Import the dependencies for testing
 const chai = require('chai');
 const chaiThings = require('chai-things');
+
 const config = require('../../config');
 const ElasticClient = require('../../elasticClient/ElasticClient');
 const testUtils = require('../utils');
@@ -38,7 +39,7 @@ describe('ElasticClient.usersOverTime()', function usersOverTimeTest() {
   });
 
   describe('with text filter', () => {
-    const textfilter = 'apex';
+    const textfilter = testUtils.textFilter;
     const filters = { textfilter };
 
     it('should return an array', async () => {
@@ -64,12 +65,15 @@ describe('ElasticClient.usersOverTime()', function usersOverTimeTest() {
   });
 
   describe('with time frame filter', () => {
-    const fiveMinutesAgo = testUtils.getNMinutesAgo(5, true);
-    const tenMinutesAgo = testUtils.getNMinutesAgo(10, false);
+    const fiveMinutesAgo = testUtils.getNMinutesAgo(5);
+    const tenMinutesAgo = testUtils.getNMinutesAgo(10);
     const filters = {
       fromdatetime: tenMinutesAgo.toISOString(),
       todatetime: fiveMinutesAgo.toISOString(),
     };
+
+    const fiveMinutesAgoRounded = testUtils.getNMinutesAgo(5, { ceil: true });
+    const tenMinutesAgoRounded = testUtils.getNMinutesAgo(10, { floor: true });
 
     it('should return an array', async () => {
       const res = await client.usersOverTime(filters);
@@ -94,8 +98,8 @@ describe('ElasticClient.usersOverTime()', function usersOverTimeTest() {
 
     it('should contain elements that are within the time frame filter', async () => {
       const res = await client.usersOverTime(filters);
-      res.map(item => new Date(item.time)).should.all.be.at.most(fiveMinutesAgo);
-      res.map(item => new Date(item.time)).should.all.be.at.least(tenMinutesAgo);
+      res.map(item => new Date(item.time)).should.all.be.at.most(fiveMinutesAgoRounded);
+      res.map(item => new Date(item.time)).should.all.be.at.least(tenMinutesAgoRounded);
     });
   });
 });

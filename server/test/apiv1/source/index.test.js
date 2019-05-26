@@ -4,6 +4,7 @@ const chaiThings = require('chai-things');
 const chaiHttp = require('chai-http');
 
 const app = require('../../../app');
+const testUtils = require('../../utils');
 
 // Configure chai
 chai.use(chaiHttp);
@@ -67,7 +68,7 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
     });
 
     it('should contain elements that match a given filter', async () => {
-      const textfilter = 'apex';
+      const textfilter = testUtils.textFilter;
       const res = await getRequest(`${twitterRoute}?textfilter=${textfilter}`);
       res.body
         .map(item => item.text.toLowerCase())
@@ -126,7 +127,7 @@ describe('/api/v1/:source ROUTE', function sourceTest() {
     });
 
     it('should contain elements that match a given filter', async () => {
-      const textfilter = 'apex';
+      const textfilter = testUtils.textFilter;
       const res = await getRequest(`${redditRoute}?textfilter=${textfilter}`);
       res.body
         .map(item => item.text.toLowerCase())
