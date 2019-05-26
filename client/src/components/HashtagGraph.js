@@ -63,9 +63,6 @@ class HashtagGraph extends React.Component {
         `?textfilter=${this.props.textfilter || ""}` +
         (this.props.timefilter ? this.props.timefilter : "")
     )
-      .then(res => {
-        return res;
-      })
       .then(res => res.json())
       .then(res => {
         this.setState({
@@ -86,9 +83,6 @@ class HashtagGraph extends React.Component {
         body: JSON.stringify(this.state.spidering)
       }
     )
-      .then(res => {
-        return res;
-      })
       .then(res => res.json())
       .then(res => {
         this.setState({

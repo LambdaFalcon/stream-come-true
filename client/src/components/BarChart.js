@@ -65,9 +65,6 @@ class Graph extends React.Component {
         `?textfilter=${this.props.textfilter || ""}` +
         (this.props.timefilter ? this.props.timefilter : "")
     )
-      .then(res => {
-        return res;
-      })
       .then(res => res.json())
       .then(res => {
         this.setState({
