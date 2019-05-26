@@ -3,9 +3,9 @@ import { Markup } from "interweave";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactTooltip from "react-tooltip";
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTwitter, faReddit } from '@fortawesome/free-brands-svg-icons'
-library.add(faTwitter, faReddit)
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faTwitter, faReddit } from "@fortawesome/free-brands-svg-icons";
+library.add(faTwitter, faReddit);
 
 class Users extends React.PureComponent {
   render() {
@@ -13,8 +13,13 @@ class Users extends React.PureComponent {
       <div>
         <div className="col-xs-6">
           <div className="panel panel-default">
-            <div className="panel-heading">{this.props.icon} {this.props.name}</div>
-            <div className="panel-body" style={{ height: 500, overflowY: "scroll" }}>
+            <div className="panel-heading">
+              {this.props.icon} {this.props.name}
+            </div>
+            <div
+              className="panel-body"
+              style={{ height: 500, overflowY: "scroll" }}
+            >
               <List
                 api={this.props.api}
                 timefilter={this.props.timefilter}
@@ -105,11 +110,16 @@ class List extends React.Component {
     }
     return ret;
   }
+
   render() {
     return this.state.data.map((user, index) => {
       let styleForSentiment = this.getStyleForSentiment(user.sentiment);
       return (
-        <div className="row" style={{...this.styles1, borderColor:styleForSentiment.color}} key={index}>
+        <div
+          className="row"
+          style={{ ...this.styles1, borderColor: styleForSentiment.color }}
+          key={index}
+        >
           <div className="col-sm-6 col-md-3">
             <img
               src={user["user_image"]}
