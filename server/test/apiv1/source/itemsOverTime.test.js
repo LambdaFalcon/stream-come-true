@@ -24,6 +24,11 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
       res.body.should.be.instanceOf(Array);
     });
 
+    it('should return an array of at most 101 elements', async () => {
+      const res = await getRequest(itemsOverTimeRoute);
+      res.body.length.should.be.at.most(101);
+    });
+
     it('should contain elements with the correct properties', async () => {
       const res = await getRequest(itemsOverTimeRoute);
       res.body.forEach((item) => {
@@ -61,6 +66,11 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
       const res = await getRequest(itemsOverTimeRoute);
       res.should.have.status(200);
       res.body.should.be.instanceOf(Array);
+    });
+
+    it('should return an array of at most 101 elements', async () => {
+      const res = await getRequest(itemsOverTimeRoute);
+      res.body.length.should.be.at.most(101);
     });
 
     it('should contain elements with the correct properties', async () => {
@@ -102,6 +112,11 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
       const res = await getRequest(itemsOverTimeRoute);
       res.should.have.status(200);
       res.body.should.be.instanceOf(Array);
+    });
+
+    it('should return an array of at most 101 elements', async () => {
+      const res = await getRequest(itemsOverTimeRoute);
+      res.body.length.should.be.at.most(101);
     });
 
     it('should contain elements with the correct properties', async () => {
