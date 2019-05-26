@@ -21,6 +21,11 @@ describe('ElasticClient.itemsOverTime()', function itemsOverTimeTest() {
       res.should.be.instanceOf(Array);
     });
 
+    it('should return an array of at most 101 elements', async () => {
+      const res = await await client.itemsOverTime();
+      res.length.should.be.at.most(101);
+    });
+
     it('should contain elements with the correct properties', async () => {
       const res = await client.itemsOverTime();
       res.forEach((item) => {
@@ -56,6 +61,11 @@ describe('ElasticClient.itemsOverTime()', function itemsOverTimeTest() {
     it('should return an array', async () => {
       const res = await client.itemsOverTime(filters);
       res.should.be.instanceOf(Array);
+    });
+
+    it('should return an array of at most 101 elements', async () => {
+      const res = await await client.itemsOverTime();
+      res.length.should.be.at.most(101);
     });
 
     it('should contain elements with the correct properties', async () => {
@@ -100,6 +110,11 @@ describe('ElasticClient.itemsOverTime()', function itemsOverTimeTest() {
     it('should return an array', async () => {
       const res = await client.itemsOverTime(filters);
       res.should.be.instanceOf(Array);
+    });
+
+    it('should return an array of at most 101 elements', async () => {
+      const res = await await client.itemsOverTime();
+      res.length.should.be.at.most(101);
     });
 
     it('should contain elements with the correct properties', async () => {

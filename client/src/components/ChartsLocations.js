@@ -23,7 +23,9 @@ class ChartsLocation extends React.Component {
       textfilter,
       onChangeTimeInterval,
       timefilter,
-      onTextFilterChange
+      onTextFilterChange,
+      spidering,
+      onNodeSpidering
     } = this.props;
     return (
       <div>
@@ -159,6 +161,9 @@ class ChartsLocation extends React.Component {
             api={hashtag_data}
             textfilter={this.props.textfilter}
             timefilter={timefilter}
+            spidering={spidering}
+            onNodeSpidering={onNodeSpidering}
+            refreshing={this.props.refreshing}
           />
         </div>
       </div>
