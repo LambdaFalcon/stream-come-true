@@ -5,6 +5,12 @@ import config from "../config";
 import Users from "./ListOfUsers";
 import Hashtags from "./HashtagGraph";
 
+// font Awesome Icons
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTwitter, faReddit } from '@fortawesome/free-brands-svg-icons'
+library.add(faTwitter, faReddit)
+
 const red_over_time = config["red_over_time"];
 const twit_over_time = config["twit_over_time"];
 const red_pop_key_words = config["red_pop_key_words"];
@@ -29,19 +35,20 @@ class ChartsLocation extends React.Component {
       <div>
         <div className="row">
           <div className="col-lg-6">
-            <div className="col-md-9">
-              <h3>Twitter</h3>
-            </div>
+            <div className="page-header text-center">
+              <h2 style={{verticalAlign: "middle"}}><FontAwesomeIcon size="1x" icon={faTwitter} color={"#38A1F3"}/> Twitter</h2>
+            </div>   
           </div>
           <div className="col-lg-6">
-            <div className="col-md-9">
-              <h3>Reddit</h3>
-            </div>
+            <div className="page-header text-center">
+              <h2 style={{verticalAlign: "middle"}}><FontAwesomeIcon size="1x" icon={faReddit} color={"#FF4301"}/> Reddit</h2>
+            </div>   
           </div>
         </div>
         <div className="col-lg-12">
           <OverTime
             name={"Posts Over Time"}
+            icon={<FontAwesomeIcon size="1x" icon={faTwitter} color={"#38A1F3"}/>}
             api={twit_over_time}
             textfilter={textfilter}
             timefilter={timefilter}
@@ -55,6 +62,7 @@ class ChartsLocation extends React.Component {
           />
           <OverTime
             name={"Posts Over Time"}
+            icon={<FontAwesomeIcon size="1x" icon={faReddit} color={"#FF4301"}/>}
             api={red_over_time}
             textfilter={textfilter}
             timefilter={timefilter}
@@ -70,6 +78,7 @@ class ChartsLocation extends React.Component {
         <div className="col-lg-12">
           <BarVisual
             name={"Popular Keywords"}
+            icon={<FontAwesomeIcon size="1x" icon={faTwitter} color={"#38A1F3"}/>}
             api={twit_pop_key_words}
             timefilter={timefilter}
             textfilter={textfilter}
@@ -81,6 +90,7 @@ class ChartsLocation extends React.Component {
           />
           <BarVisual
             name={"Popular Keywords"}
+            icon={<FontAwesomeIcon size="1x" icon={faReddit} color={"#FF4301"}/>}
             api={red_pop_key_words}
             timefilter={timefilter}
             textfilter={textfilter}
@@ -94,6 +104,7 @@ class ChartsLocation extends React.Component {
         <div className="col-lg-12">
           <OverTime
             name={"Users Over Time"}
+            icon={<FontAwesomeIcon size="1x" icon={faTwitter} color={"#38A1F3"}/>}
             api={twit_user_over_time}
             timefilter={timefilter}
             textfilter={textfilter}
@@ -105,6 +116,7 @@ class ChartsLocation extends React.Component {
           />
           <OverTime
             name={"Users Over Time"}
+            icon={<FontAwesomeIcon size="1x" icon={faReddit} color={"#FF4301"}/>}
             api={red_user_over_time}
             timefilter={timefilter}
             textfilter={textfilter}
@@ -118,6 +130,7 @@ class ChartsLocation extends React.Component {
         <div className="col-lg-12">
           <BarVisual
             name={"Popular Users"}
+            icon={<FontAwesomeIcon size="1x" icon={faTwitter} color={"#38A1F3"}/>}
             api={twit_pop_users}
             timefilter={timefilter}
             textfilter={textfilter}
@@ -129,6 +142,7 @@ class ChartsLocation extends React.Component {
           />
           <BarVisual
             name={"Popular Users"}
+            icon={<FontAwesomeIcon size="1x" icon={faReddit} color={"#FF4301"}/>}
             api={red_pop_users}
             timefilter={timefilter}
             textfilter={textfilter}
@@ -142,12 +156,14 @@ class ChartsLocation extends React.Component {
         <div className="col-lg-12">
           <Users
             name={"Latest Posts"}
+            icon={<FontAwesomeIcon size="1x" icon={faTwitter} color={"#38A1F3"}/>}
             api={twit_data}
             textfilter={this.props.textfilter}
             timefilter={timefilter}
           />
           <Users
             name={"Latest Posts"}
+            icon={<FontAwesomeIcon size="1x" icon={faReddit} color={"#FF4301"}/>}
             api={reddit_data}
             textfilter={this.props.textfilter}
             timefilter={timefilter}

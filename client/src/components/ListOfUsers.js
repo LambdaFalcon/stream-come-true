@@ -2,13 +2,18 @@ import React from "react";
 import { Markup } from "interweave";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactTooltip from "react-tooltip";
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTwitter, faReddit } from '@fortawesome/free-brands-svg-icons'
+library.add(faTwitter, faReddit)
+
 class Users extends React.PureComponent {
   render() {
     return (
       <div>
         <div className="col-xs-6">
           <div className="panel panel-default">
-            <div className="panel-heading">{this.props.name}</div>
+            <div className="panel-heading">{this.props.icon} {this.props.name}</div>
             <div className="panel-body" style={{ height: 500, overflowY: "scroll" }}>
               <List
                 api={this.props.api}

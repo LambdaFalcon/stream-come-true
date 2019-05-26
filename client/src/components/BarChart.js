@@ -9,13 +9,18 @@ import {
   Tooltip,
   Label
 } from "recharts";
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTwitter, faReddit } from '@fortawesome/free-brands-svg-icons'
+library.add(faTwitter, faReddit)
+
 class BarVisual extends React.PureComponent {
   render() {
     const { textfilter, timefilter, onTextFilterChange } = this.props;
     return (
       <div className="col-xs-6">
         <div className="panel panel-default">
-          <div className="panel-heading">{this.props.name}</div>
+          <div className="panel-heading">{this.props.icon} {this.props.name}</div>
           <div className="panel-body">
             <Graph
               api={this.props.api}
