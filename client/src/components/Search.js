@@ -50,8 +50,6 @@ class Search extends React.PureComponent {
   render() {
     const {input} = this.state
     return (
-      // eslint-disable-next-line jsx-a11y/no-redundant-roles
-      <form>
       <div>
         <input
           type="text"
@@ -62,7 +60,6 @@ class Search extends React.PureComponent {
           onBlur={this.props.handler}
         />
       </div>
-      </form>
     );
   }
 }
