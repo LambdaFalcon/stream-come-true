@@ -28,8 +28,8 @@ class ChartsLocation extends React.Component {
       onNodeSpidering
     } = this.props;
     let overTimeCountConfig = {name:"Count",color:"rgb(117,108,206)",dataKey:"count"}
-    let positiveConfig = {name:"Positive",color:"#2A9D8F",dataKey:"positive_count",stack:"one"}
-    let negativeConfig = {name:"Negative",color:"#E9C46A",dataKey:"negative_count",stack:"one"}
+    let positiveConfig = {name:"Positive",color:"rgb(36,175,161)",dataKey:"positive_count",stack:"one"}
+    let negativeConfig = {name:"Negative",color:"rgb(253,201,12)",dataKey:"negative_count",stack:"one"}
 
     return (
       <div>
