@@ -68,8 +68,7 @@ class HashtagGraph extends React.Component {
         fetch(
           this.props.api + 
             `?textfilter=${this.props.textfilter || ""}` +
-            (this.props.timefilter ? this.props.timefilter : "") +
-            `&spidering=${this.state.spidering}`, {
+            (this.props.timefilter ? this.props.timefilter : ""), {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify(this.state.spidering)     
@@ -225,7 +224,13 @@ class HashtagGraph extends React.Component {
                   node.symbolSize = 10;
                   return node;
               }),
-            edges: this.state.data.connections,
+            edges: this.state.data.connections.map(conn => ({
+              ...conn,
+              lineStyle: {
+                type: "solid",
+                width: 1 + Math.sqrt(conn.weight) * 10,
+              },
+            })),
             animationDurationUpdate: 3000
             }]
           });
