@@ -6,10 +6,10 @@ class Users extends React.PureComponent {
   render() {
     return (
       <div>
-        <div className="col-xs-6" style={{ height: 500, overflowY: "scroll" }}>
+        <div className="col-xs-6">
           <div className="panel panel-default">
             <div className="panel-heading">{this.props.name}</div>
-            <div className="panel-body">
+            <div className="panel-body" style={{ height: 500, overflowY: "scroll" }}>
               <List
                 api={this.props.api}
                 timefilter={this.props.timefilter}
