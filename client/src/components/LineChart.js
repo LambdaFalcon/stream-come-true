@@ -95,7 +95,8 @@ class Graph extends React.Component {
       .then(res => res.json())
       .then(res => {
         this.updateGraph(res);
-      });
+      })
+      .catch(console.log);
   }
   formatDate(time) {
     const date = new Date(time);

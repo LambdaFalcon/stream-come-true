@@ -73,7 +73,8 @@ class Graph extends React.Component {
         this.setState({
           data: res
         });
-      });
+      })
+      .catch(console.log);
   }
 
   changeTextFilter(keyword) {

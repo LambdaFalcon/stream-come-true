@@ -70,7 +70,8 @@ class List extends React.Component {
         this.setState({
           data: res
         });
-      });
+      })
+      .catch(console.log);
   }
 
   userData = data => {

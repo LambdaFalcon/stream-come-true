@@ -71,7 +71,8 @@ class HashtagGraph extends React.Component {
         this.setState({
           data: res
         });
-      });
+      })
+      .catch(console.log);
   }
 
   fetchHashtagSpidering() {
@@ -93,7 +94,8 @@ class HashtagGraph extends React.Component {
         this.setState({
           data: HashtagGraph.mergeGraph(this.state.data, res)
         });
-      });
+      })
+      .catch(console.log);
   }
 
   /**
