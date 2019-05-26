@@ -20,7 +20,7 @@ class Menu extends React.PureComponent {
                   {this.props.refreshControlls}
                 </div>
                 <div className="col-xs-3">
-                  <Search handler={this.props.handler.bind(this)}/>
+                  <Search handler={this.props.handler.bind(this)} textfilter={this.props.textfilter}/>
                 </div>
                 <div className="col-xs-2">
                   <DateTime 

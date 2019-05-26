@@ -14,17 +14,16 @@ class Search extends React.PureComponent {
       input: textfilter
     };
   }
+
   /**
-   *
    * function called when the state of the current component
    * has changed
    * It check if the previous state is the same with the changed state
    * If not you update the state
    */
-  componentDidUpdate(prevState) {
-    const { input } = this.state;
+  componentDidUpdate(prevProps) {
     const { textfilter } = this.props;
-    if (prevState.input !== input) {
+    if (prevProps.textfilter !== textfilter) {
       this.setState({
         input: textfilter
       });
@@ -44,6 +43,16 @@ class Search extends React.PureComponent {
   }
 
   /**
+   * When the input value changes, update internal state.
+   *
+   * @param {Event} e change event
+   */
+  handleChange(e) {
+    console.log(e.target.value);
+    this.setState({ input: e.target.value });
+  }
+
+  /**
    * Render the search input field.
    */
   render() {
@@ -57,6 +66,7 @@ class Search extends React.PureComponent {
           value={input}
           onKeyDown={this.handleKeyDown.bind(this)}
           onBlur={this.props.handler}
+          onChange={this.handleChange.bind(this)}
         />
       </div>
     );
