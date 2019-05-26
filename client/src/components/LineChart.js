@@ -43,7 +43,7 @@ class Graph extends React.Component {
   constructor(props) {
     super(props);
     if (props.bars.length + props.lines.length < 1) {
-      throw Error("At least one bar or line needs to be defined");
+      throw new Error("At least one bar or line needs to be defined");
     }
     this.state = {
       option: this.getDefaultOption(),
