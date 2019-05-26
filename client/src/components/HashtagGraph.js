@@ -80,9 +80,60 @@ class HashtagGraph extends React.Component {
           .then(res => res.json())
           .then(res => {
             this.setState({
-              data: res
+              data: HashtagGraph.mergeGraph(this.state.data, res),
             })
           });
+      }
+
+      /**
+       * Merge a given graph with another graph which is an extension of it,
+       * spidering out from one of its vertices.
+       *
+       * @private
+       * @param {Graph} currentGraph
+       * @param {Graph} graphSpidering
+       * @returns {Graph} merged graph
+       */
+      static mergeGraph(currentGraph, graphSpidering) {
+        if (graphSpidering.vertices.length === 0) return currentGraph;
+
+        // Number of vertices in current graph
+        const currentGraphLength = currentGraph.vertices.length;
+
+        // Index of spidering source in new graph part and in current graph
+        const newSpideringSourceIndex = graphSpidering.vertices.findIndex(
+          v => v.depth === 0
+        );
+        const currentSpideringSourceIndex = currentGraph.vertices.findIndex(
+          v => v.term === graphSpidering.vertices[newSpideringSourceIndex].term
+        );
+
+        // Remove existing vertex form new vertices (spidering source)
+        const spideringNewVertices = graphSpidering.vertices.filter(
+          (_v, i) => i !== newSpideringSourceIndex
+        );
+
+        // Map new connections to correct indices (either original source index or add current vertices length)
+        const newConnections = graphSpidering.connections.map(conn => ({
+          ...conn,
+          source:
+            conn.source === newSpideringSourceIndex
+              ? currentSpideringSourceIndex
+              : conn.source +
+                currentGraphLength -
+                (conn.source > newSpideringSourceIndex ? 1 : 0),
+          target:
+            conn.target === newSpideringSourceIndex
+              ? currentSpideringSourceIndex
+              : conn.target +
+                currentGraphLength -
+                (conn.target > newSpideringSourceIndex ? 1 : 0)
+        }));
+
+        return {
+          vertices: [...currentGraph.vertices, ...spideringNewVertices],
+          connections: [...currentGraph.connections, ...newConnections]
+        };
       }
     
       changeTextFilter(keyword) {
