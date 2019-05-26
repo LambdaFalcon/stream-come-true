@@ -140,7 +140,7 @@ class Graph extends React.Component {
             last - first < DAY
               ? this.formatTime(item.time)
               : this.formatDate(item.time),
-          actual: item.time
+          actual: item.time,
         };
       });
     } else {
@@ -198,6 +198,9 @@ class Graph extends React.Component {
         {
           type: "category",
           boundaryGap: true,
+          axisLabel:{
+            color: "rgb(102,102,102)"
+          },
           data: []
         }
       ],
@@ -205,10 +208,14 @@ class Graph extends React.Component {
         {
           type: "value",
           scale: true,
-          name: "count",
+          name: "Count",
           nameLocation: "middle",
           nameTextStyle: {
-            padding: [0, 0, 30, 0]
+            padding: [0, 0, 28, 0],
+            color: "black"
+          },
+          axisLabel:{
+            color: "rgb(102,102,102)"
           },
           min: 0,
           boundaryGap: [0.2, 0.2]
