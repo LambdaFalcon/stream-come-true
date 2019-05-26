@@ -31,9 +31,21 @@ class Search extends React.PureComponent {
       })
     }
   }
+
   /**
-   * function that render the React component 
-   * based on html syntax
+   * Handle key down event on input field and call
+   * hanler of props only if enter key is pressed.
+   *
+   * @param {Event} e keyDown event
+   */
+  handleKeyDown(e) {
+    if (e.key === "Enter") {
+      this.props.handler(e);
+    }
+  }
+
+  /**
+   * Render the search input field.
    */
   render() {
     const {input} = this.state
@@ -46,7 +58,8 @@ class Search extends React.PureComponent {
           className="form-control"
           placeholder="Keyword"
           value={input}
-          onChange={this.props.handler}
+          onKeyDown={this.handleKeyDown.bind(this)}
+          onBlur={this.props.handler}
         />
       </div>
       </form>
