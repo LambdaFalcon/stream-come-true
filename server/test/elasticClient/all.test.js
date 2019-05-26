@@ -69,6 +69,21 @@ describe('ElasticClient.all()', function allTest() {
     });
   });
 
+  describe('with query string as text filter', () => {
+    const positiveSentimentFilters = { textfilter: 'sentiment:>0.5' };
+    const screenNameFilters = { textfilter: 'screen_name:BBC' };
+
+    it('should contain elements that match a query string for sentiment', async () => {
+      const res = await client.all(positiveSentimentFilters);
+      res.map(item => item.sentiment).should.all.be.above(0.5);
+    });
+
+    it('should contain elements that match a query string for screen_name', async () => {
+      const res = await client.all(screenNameFilters);
+      res.map(item => item.screen_name).should.all.equal('BBC');
+    });
+  });
+
   describe('with time frame filter', () => {
     const fiveMinutesAgo = new Date();
     const tenMinutesAgo = new Date();
