@@ -33,6 +33,10 @@ class ChartsLocation extends React.Component {
       spidering,
       onNodeSpidering
     } = this.props;
+    let overTimeCountConfig = {name:"Count",color:"rgb(117,108,206)",dataKey:"count"}
+    let positiveConfig = {name:"Positive",color:"rgb(36,175,161)",dataKey:"positive_count",stack:"one"}
+    let negativeConfig = {name:"Negative",color:"rgb(253,201,12)",dataKey:"negative_count",stack:"one"}
+
     return (
       <div>
         <div className="row">
@@ -55,12 +59,11 @@ class ChartsLocation extends React.Component {
             textfilter={textfilter}
             timefilter={timefilter}
             onChangeTimeInterval={onChangeTimeInterval}
-            x={"time"}
-            y={"count"}
             labelX={"Time"}
             labelY={"Count"}
-            sentiment={true}
             refreshing={this.props.refreshing}
+            lines={[overTimeCountConfig]}
+            bars={[positiveConfig, negativeConfig]}
           />
           <OverTime
             name={"Posts Over Time"}
@@ -69,12 +72,11 @@ class ChartsLocation extends React.Component {
             textfilter={textfilter}
             timefilter={timefilter}
             onChangeTimeInterval={onChangeTimeInterval}
-            x={"time"}
-            y={"count"}
             labelX={"Time"}
             labelY={"Count"}
-            sentiment={true}
             refreshing={this.props.refreshing}
+            lines={[overTimeCountConfig]}
+            bars={[positiveConfig, negativeConfig]}
           />
         </div>
         <div className="col-lg-12">
@@ -111,10 +113,9 @@ class ChartsLocation extends React.Component {
             timefilter={timefilter}
             textfilter={textfilter}
             onChangeTimeInterval={onChangeTimeInterval}
-            x={"time"}
-            y={"count"}
             labelX={"Time"}
             labelY={"Users"}
+            lines={[overTimeCountConfig]}
           />
           <OverTime
             name={"Users Over Time"}
@@ -123,10 +124,9 @@ class ChartsLocation extends React.Component {
             timefilter={timefilter}
             textfilter={textfilter}
             onChangeTimeInterval={onChangeTimeInterval}
-            x={"time"}
-            y={"count"}
             labelX={"Time"}
             labelY={"Users"}
+            lines={[overTimeCountConfig]}
           />
         </div>
         <div className="col-lg-12">
