@@ -1,8 +1,10 @@
 // Import the dependencies for testing
 const chai = require('chai');
 const chaiThings = require('chai-things');
+
 const config = require('../../config');
 const ElasticClient = require('../../elasticClient/ElasticClient');
+const testUtils = require('../utils');
 
 // Configure chai
 chai.should();
@@ -37,7 +39,7 @@ describe('ElasticClient.popularKeywords()', function popularKeywordsTest() {
   });
 
   describe('with text filter', () => {
-    const textfilter = 'apex';
+    const textfilter = testUtils.textFilter;
     const filters = { textfilter };
 
     it('should return an array', async () => {
@@ -61,10 +63,10 @@ describe('ElasticClient.popularKeywords()', function popularKeywordsTest() {
       });
     });
 
-    it('should contain at least one element matching the text filter', async () => {
+    it('should contain no elements matching the text filter because it is excluded', async () => {
       const res = await client.popularKeywords(filters);
       if (res.length !== 0) {
-        res.should.contain.an.item.with.property('keyword', textfilter);
+        res.should.not.contain.an.item.with.property('keyword', textfilter);
       }
     });
   });

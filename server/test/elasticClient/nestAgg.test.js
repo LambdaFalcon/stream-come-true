@@ -1,9 +1,10 @@
 // Import the dependencies for testing
 const chai = require('chai');
 const chaiThings = require('chai-things');
+
 const ElasticClient = require('../../elasticClient/ElasticClient');
-const timeBucketing = require('../../elasticClient/queries/timeBucketing');
-const distinctCount = require('../../elasticClient/queries/distinctCount');
+const timeBucketing = require('../../elasticClient/aggs/timeBucketing');
+const distinctCount = require('../../elasticClient/aggs/distinctCount');
 
 // Configure chai
 chai.should();

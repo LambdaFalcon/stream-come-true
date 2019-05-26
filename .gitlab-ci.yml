@@ -94,6 +94,8 @@ client test:
 
 deploy as staging:
   stage: deploy
+  tags:
+    - dind
   script:
     - docker info
     - docker build -t $IMAGE_TAG_STAGING .
@@ -110,6 +112,8 @@ deploy as staging:
 
 deploy as latest:
   stage: deploy
+  tags:
+    - dind
   script:
     - docker info
     - docker build -t $IMAGE_TAG_LATEST .

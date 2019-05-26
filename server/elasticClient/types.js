@@ -53,6 +53,40 @@
  */
 
 /**
+ * Type definition for a Vertex element, usually part of the array "vertices" returned
+ * by a call to the explore API, paired with an array of Connection (see below).
+ *
+ * @typedef Vertex
+ * @type {Object}
+ * @property {string} field
+ * @property {string} term
+ * @property {number} weight significance score
+ * @property {number} depth how many hops from the start of exploration
+ */
+
+/**
+ * Type definition for a Connection element, usually part of the array "connections"
+ * returned by a call to the explore API, paired with an array of Vertex (see above).
+ *
+ * @typedef Connection
+ * @type {Object}
+ * @property {number} source index in the vertices array
+ * @property {number} target index in the vertices array
+ * @property {number} weight weight of the connection
+ * @property {number} doc_count number of documents that contain the pair of terms connected
+ */
+
+/**
+ * Type definition for the response of the explore API.
+ *
+ * @typedef Graph
+ * @type {Object}
+ * @property {Array<Vertex>} vertices vertices of the graph
+ * @property {Array<Connections>} connections connections between the vertices
+ */
+
+/**
+ * Type definition for time and text filters that are passed in most methd calls
  * @typedef Filters
  * @type {Object}
  * @property {string} textfilter text filter for fulltext search
@@ -60,4 +94,20 @@
  *                                        5 minutes, hours or days, respcetively
  * @property {string} fromdatetime datetime string (ISO 8601), gte date filter
  * @property {string} todatetime datetime string (ISO 8601), lte date filter
+ */
+
+/**
+ * @typedef ExploreAPIQuery
+ * @type {Object}
+ * @property {Controls} controls
+ * @property {Array<{
+ *    field: string,
+ *    size: number,
+ *    min_doc_count: number,
+ *    include?: Array<string>}>} vertices
+ * @property {{vertices: Array<{
+ *    field: string,
+ *    size: number,
+ *    min_doc_count: number,
+ *    exclude?: Array<string>}> }} conenctions
  */

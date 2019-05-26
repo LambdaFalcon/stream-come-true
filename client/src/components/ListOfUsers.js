@@ -1,4 +1,6 @@
 import React from "react"
+import { Markup } from 'interweave';
+
 class Users extends React.PureComponent{
     render(){
         return(
@@ -9,7 +11,7 @@ class Users extends React.PureComponent{
                             {this.props.name}
                         </div>
                         <div className="panel-body">
-                            <List api={this.props.api} textfilter={this.props.textfilter}/>
+                            <List api={this.props.api} timefilter={this.props.timefilter} textfilter={this.props.textfilter}/>
                         </div>
                     </div>
                 </div>
@@ -43,7 +45,9 @@ class List extends React.Component {
   }
 
   fetchData() {
-    fetch(this.props.api)
+    fetch(this.props.api +
+      `?textfilter=${this.props.textfilter || ""}` +
+      (this.props.timefilter ? this.props.timefilter : ""))
       .then(res => {
         return res;
       })
@@ -70,7 +74,6 @@ class List extends React.Component {
     borderColor:"#c5c8cc",
     borderRadius:"5px"
   };
-
   render() {
     return this.state.data.map((user, index) => (
     <div className="row" style={this.styles1} key={index}>
@@ -90,9 +93,7 @@ class List extends React.Component {
             <h6>{new Date(user["created_at"]).toLocaleString()}</h6>
         </div>
         <div>
-            <p>
-                {user["text"]}
-            </p>
+        <Markup content={user["text"]} />
         </div>
     </div>
     ));

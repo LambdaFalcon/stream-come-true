@@ -9,12 +9,15 @@ const applyFiltersImpl = require('./filters');
 const computeIntervalImpl = require('./computeInterval');
 const selectFields = require('./selectFields');
 
-const timeBucketing = require('./queries/timeBucketing');
-const significantText = require('./queries/significantText');
-const distinctCount = require('./queries/distinctCount');
-const termsCount = require('./queries/termsCount');
-const sampler = require('./queries/sampler');
-const range = require('./queries/range');
+const timeBucketing = require('./aggs/timeBucketing');
+const significantText = require('./aggs/significantText');
+const distinctCount = require('./aggs/distinctCount');
+const termsCount = require('./aggs/termsCount');
+const sampler = require('./aggs/sampler');
+const range = require('./aggs/range');
+
+const graph = require('./explore/graph');
+const spidering = require('./explore/spidering');
 
 /**
  * @class ElasticClient
@@ -51,7 +54,7 @@ class ElasticClient {
 
     const { dateField, textField } = this.queryFields;
     const sortByDate = { [dateField]: { order: 'desc' } };
-    const highlight = { fields: { [textField]: {} }, number_of_fragments: 0 };
+    const highlight = { pre_tags: ['<b>'], post_tags: ['</b>'], fields: { [textField]: {} } };
 
     return this.client
       .search({
@@ -140,8 +143,9 @@ class ElasticClient {
     const parentAggName = 'sample';
     const childAggName = 'popular_keywords';
     const query = this.applyFilters(filters);
+    const exclude = (filters && filters.textfilter && [filters.textfilter]) || [];
     const samplerAgg = sampler(parentAggName, this.config.samplerSize);
-    const significantTextAgg = significantText(childAggName, this.queryFields.textField);
+    const significantTextAgg = significantText(childAggName, this.queryFields.textField, exclude);
 
     // Nest significant text into sampler and define result extractor
     const sampledSignificantTextAgg = ElasticClient.nestAgg(
@@ -176,6 +180,69 @@ class ElasticClient {
     const resultExtractor = aggResult => aggResult.buckets.map(selectFields.popularUsers);
 
     return this.aggregation(queryWithAgg, aggName, resultExtractor);
+  }
+
+  /**
+   * Get the hashtags graph with the given filters applied.
+   *
+   * @public
+   * @param {Filters} filters text and time frame filters
+   * @returns {Promise<Graph>} a graph with vertices and connections
+   */
+  async hashtagGraph(filters) {
+    this.checkIndexSupportsGraph();
+    const field = 'hashtags';
+    const controls = {
+      use_significance: true,
+      sample_size: 2000,
+      timeout: 5000,
+    };
+    const query = this.applyFilters(filters);
+    const queryWithExplore = {
+      ...query,
+      ...graph(field, controls),
+    };
+    const resultExtractor = qResult => selectFields.graph(qResult);
+
+    return this.explore(queryWithExplore, resultExtractor);
+  }
+
+  /**
+   * Get the hashtags graph that starts from a given hashtag.
+   * Hashtags to exclude can be specified, e.g. if they have already been seen.
+   * The given filters are also applied.
+   *
+   * @param {string} hashtag hashtag from which to start exploration
+   * @param {Array<string>} exclude hashtags to exclude from exploration
+   * @param {Filters} filters text and time frame filters
+   */
+  async spiderFromHashtag(hashtag, exclude, filters) {
+    this.checkIndexSupportsGraph();
+    const field = 'hashtags';
+    const controls = {
+      use_significance: true,
+      sample_size: 2000,
+      timeout: 5000,
+    };
+    const query = this.applyFilters(filters);
+    const queryWithSpidering = {
+      ...query,
+      ...spidering(field, hashtag, exclude, controls),
+    };
+    const resultExtractor = qResult => selectFields.graph(qResult);
+
+    return this.explore(queryWithSpidering, resultExtractor);
+  }
+
+  /**
+   * Check that the index this client is connected to supports graph operations.
+   *
+   * @private
+   */
+  checkIndexSupportsGraph() {
+    if (this.index !== 'tweets') {
+      throw createError(400, 'The hashtagGraph is supported only on the tweets index.');
+    }
   }
 
   /**
@@ -264,7 +331,7 @@ class ElasticClient {
   }
 
   /**
-   * Send an aggregation search query the ElasticSearch instance and get a result.
+   * Send an aggregation search query to the ElasticSearch instance and get a result.
    * This is a private method used internally
    *
    * @typedef AggItem
@@ -281,13 +348,46 @@ class ElasticClient {
    * @returns {Promise<Array<AggItem>>}
    */
   async aggregation(query, aggName, resultExtractor) {
-    if (!query.aggs[aggName]) throw createError(500, `Aggregation ${aggName} is not specified in the given query`);
+    if (!query.aggs[aggName]) {
+      throw createError(500, `Aggregation ${aggName} is not specified in the given query`);
+    }
+
     return this.client
       .search({
         index: this.index,
         body: query,
       })
       .then(res => res.body.aggregations[aggName])
+      .then(resultExtractor);
+  }
+
+  /**
+   * Send an Explore API query to the ElasticSearch instance and get a result.
+   *
+   * @function ExploreResultExtractor
+   * @param {Object} result explore result
+   * @returns {Graph}
+   *
+   * @private
+   * @param {Object} query an ElasticSearch query object for the Explore API
+   * @param {ExploreResultExtractor} resultExtractor function to extract the wanted
+   *                                                 result from the response
+   * @returns {Promise<Graph>} the graph resulting from the given query
+   */
+  async explore(query, resultExtractor) {
+    if (!query.controls || !query.vertices || !query.connections) {
+      throw createError(
+        500,
+        'Fields controls, vertices and connections are not specified in the given explore API query',
+      );
+    }
+
+    return this.client.graph
+      .explore({
+        index: this.index,
+        body: query,
+      })
+      .then(res => res.body)
       .then(resultExtractor);
   }
 }

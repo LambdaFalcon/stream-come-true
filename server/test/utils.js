@@ -1,20 +1,27 @@
 /**
- * Returns the time n minutes ago, rounded to the earlier or later second
- * depending on the lowerBound flag.
+ * Returns the time n minutes ago.
+ * Options can indicate wheter to round to the beginning or
+ * end of the second.
  *
  * @param {number} n number of minutes
- * @param {boolean} roundSecondsFloor whether this needs to be rounded to the second (earlier)
- *                             or not (rounded to later second)
+ * @param {object} options
+ * @param {boolean} options.floor whether to round to the beginning of the second
+ * @param {boolean} options.ceil whether to round to the end of the second
  */
-const getNMinutesAgo = (n, roundSecondsFloor) => {
+const getNMinutesAgo = (n, { floor, ceil } = { floor: false, ceil: false }) => {
   const nMinutesAgo = new Date();
   nMinutesAgo.setMinutes(nMinutesAgo.getMinutes() - n);
-  nMinutesAgo.setMilliseconds(0);
-  if (roundSecondsFloor) nMinutesAgo.setSeconds(0);
-  else nMinutesAgo.setSeconds(nMinutesAgo.getSeconds() + 1);
+
+  // optional rounding
+  if (floor || ceil) nMinutesAgo.setMilliseconds(0);
+  if (ceil) nMinutesAgo.setSeconds(nMinutesAgo.getSeconds() + 1);
+
   return nMinutesAgo;
 };
 
+const textFilter = 'huawei';
+
 module.exports = {
   getNMinutesAgo,
+  textFilter,
 };

@@ -35,9 +35,9 @@ const selectFields = {
     positive_count,
   }),
 
-  popularKeywords: ({ key, doc_count }) => ({
+  popularKeywords: ({ key, score }) => ({
     keyword: key,
-    count: doc_count,
+    count: score,
   }),
 
   usersOverTime: ({ key, users_count: { value } }) => ({
@@ -48,6 +48,11 @@ const selectFields = {
   popularUsers: ({ key, doc_count }) => ({
     user: key,
     count: doc_count,
+  }),
+
+  graph: ({ vertices, connections }) => ({
+    vertices,
+    connections,
   }),
 };
 

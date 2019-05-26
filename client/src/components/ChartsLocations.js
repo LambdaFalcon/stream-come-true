@@ -3,6 +3,7 @@ import OverTime from "./LineChart";
 import BarVisual from "./BarChart";
 import config from "../config";
 import Users from "./ListOfUsers";
+import Hashtags from "./HashtagGraph";
 
 const red_over_time = config["red_over_time"];
 const twit_over_time = config["twit_over_time"];
@@ -14,6 +15,7 @@ const red_pop_users = config["red_pop_users"];
 const twit_pop_users = config["twit_pop_users"];
 const reddit_data = config["reddit_data"];
 const twit_data = config["twit_data"];
+const hashtag_data = config["hashtag_data"];
 
 class ChartsLocation extends React.Component {
   render() {
@@ -26,102 +28,137 @@ class ChartsLocation extends React.Component {
     return (
       <div>
         <div className="row">
-          <div className="col-lg-12">
-            <h1 className="page-header col-lg-12">Charts</h1>
+          <div className="col-lg-6">
+            <div className="col-md-9">
+              <h3>Twitter</h3>
+            </div>
+          </div>
+          <div className="col-lg-6">
+            <div className="col-md-9">
+              <h3>Reddit</h3>
+            </div>
           </div>
         </div>
         <div className="col-lg-12">
           <OverTime
-            name={"Twitter Data"}
+            name={"Posts Over Time"}
             api={twit_over_time}
             textfilter={textfilter}
             timefilter={timefilter}
             onChangeTimeInterval={onChangeTimeInterval}
             x={"time"}
             y={"count"}
+            labelX={"Time"}
+            labelY={"Count"}
+            sentiment={true}
+            refreshing={this.props.refreshing}
           />
           <OverTime
-            name={"Reddit Data"}
+            name={"Posts Over Time"}
             api={red_over_time}
             textfilter={textfilter}
             timefilter={timefilter}
             onChangeTimeInterval={onChangeTimeInterval}
             x={"time"}
             y={"count"}
+            labelX={"Time"}
+            labelY={"Count"}
+            sentiment={true}
+            refreshing={this.props.refreshing}
           />
         </div>
         <div className="col-lg-12">
           <BarVisual
-            name={"Twitter Popular Keywords"}
+            name={"Popular Keywords"}
             api={twit_pop_key_words}
             timefilter={timefilter}
             textfilter={textfilter}
             x={"keyword"}
             y={"count"}
             onTextFilterChange={onTextFilterChange}
+            labelX={"Keyword"}
+            labelY={"Popularity"}
           />
           <BarVisual
-            name={"Reddit Popular Keywords"}
+            name={"Popular Keywords"}
             api={red_pop_key_words}
             timefilter={timefilter}
             textfilter={textfilter}
             x={"keyword"}
             y={"count"}
             onTextFilterChange={onTextFilterChange}
+            labelX={"Keyword"}
+            labelY={"Popularity"}
           />
         </div>
         <div className="col-lg-12">
           <OverTime
-            name={"Twitter Users Over Time"}
+            name={"Users Over Time"}
             api={twit_user_over_time}
             timefilter={timefilter}
             textfilter={textfilter}
             onChangeTimeInterval={onChangeTimeInterval}
             x={"time"}
             y={"count"}
+            labelX={"Time"}
+            labelY={"Users"}
           />
           <OverTime
-            name={"Reddit Users Over Time"}
+            name={"Users Over Time"}
             api={red_user_over_time}
             timefilter={timefilter}
             textfilter={textfilter}
             onChangeTimeInterval={onChangeTimeInterval}
             x={"time"}
             y={"count"}
+            labelX={"Time"}
+            labelY={"Users"}
           />
         </div>
         <div className="col-lg-12">
           <BarVisual
-            name={"Twitter Popular Users"}
+            name={"Popular Users"}
             api={twit_pop_users}
             timefilter={timefilter}
             textfilter={textfilter}
             onChangeTimeInterval={onChangeTimeInterval}
             x={"user"}
             y={"count"}
+            labelX={"User"}
+            labelY={"Popularity"}
           />
           <BarVisual
-            name={"Reddit Popular Users"}
+            name={"Popular Users"}
             api={red_pop_users}
             timefilter={timefilter}
             textfilter={textfilter}
             onChangeTimeInterval={onChangeTimeInterval}
             x={"user"}
             y={"count"}
+            labelX={"User"}
+            labelY={"Popularity"}
           />
         </div>
         <div className="col-lg-12">
           <Users
-            name={"Latest Posts Twitter"}
+            name={"Latest Posts"}
             api={twit_data}
             textfilter={this.props.textfilter}
-            timefilter={"timefilter"}
+            timefilter={timefilter}
           />
           <Users
-            name={"Latest Posts Reddit"}
+            name={"Latest Posts"}
             api={reddit_data}
             textfilter={this.props.textfilter}
-            timefilter={"timefilter"}
+            timefilter={timefilter}
+          />
+        </div>
+        <div className="col-lg-12">
+          <Hashtags
+            name={"Hashtag Network"}
+            api={hashtag_data}
+            textfilter={this.props.textfilter}
+            timefilter={timefilter}
           />
         </div>
       </div>
