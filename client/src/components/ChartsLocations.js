@@ -3,7 +3,7 @@ import OverTime from "./LineChart";
 import BarVisual from "./BarChart";
 import config from "../config";
 import Users from "./ListOfUsers";
-import Hashtags from "./HashtagGraph"
+import Hashtags from "./HashtagGraph";
 
 const red_over_time = config["red_over_time"];
 const twit_over_time = config["twit_over_time"];
@@ -23,18 +23,27 @@ class ChartsLocation extends React.Component {
       textfilter,
       onChangeTimeInterval,
       timefilter,
-      onTextFilterChange
+      onTextFilterChange,
+      spidering,
+      onNodeSpidering
     } = this.props;
     return (
       <div>
         <div className="row">
-          <div className="col-lg-12">
-            <h1 className="page-header col-lg-12">Charts</h1>
+          <div className="col-lg-6">
+            <div className="col-md-9">
+              <h3>Twitter</h3>
+            </div>
+          </div>
+          <div className="col-lg-6">
+            <div className="col-md-9">
+              <h3>Reddit</h3>
+            </div>
           </div>
         </div>
         <div className="col-lg-12">
           <OverTime
-            name={"Twitter Data"}
+            name={"Posts Over Time"}
             api={twit_over_time}
             textfilter={textfilter}
             timefilter={timefilter}
@@ -43,9 +52,11 @@ class ChartsLocation extends React.Component {
             y={"count"}
             labelX={"Time"}
             labelY={"Count"}
+            sentiment={true}
+            refreshing={this.props.refreshing}
           />
           <OverTime
-            name={"Reddit Data"}
+            name={"Posts Over Time"}
             api={red_over_time}
             textfilter={textfilter}
             timefilter={timefilter}
@@ -54,11 +65,13 @@ class ChartsLocation extends React.Component {
             y={"count"}
             labelX={"Time"}
             labelY={"Count"}
+            sentiment={true}
+            refreshing={this.props.refreshing}
           />
         </div>
         <div className="col-lg-12">
           <BarVisual
-            name={"Twitter Popular Keywords"}
+            name={"Popular Keywords"}
             api={twit_pop_key_words}
             timefilter={timefilter}
             textfilter={textfilter}
@@ -69,7 +82,7 @@ class ChartsLocation extends React.Component {
             labelY={"Popularity"}
           />
           <BarVisual
-            name={"Reddit Popular Keywords"}
+            name={"Popular Keywords"}
             api={red_pop_key_words}
             timefilter={timefilter}
             textfilter={textfilter}
@@ -82,7 +95,7 @@ class ChartsLocation extends React.Component {
         </div>
         <div className="col-lg-12">
           <OverTime
-            name={"Twitter Users Over Time"}
+            name={"Users Over Time"}
             api={twit_user_over_time}
             timefilter={timefilter}
             textfilter={textfilter}
@@ -93,7 +106,7 @@ class ChartsLocation extends React.Component {
             labelY={"Users"}
           />
           <OverTime
-            name={"Reddit Users Over Time"}
+            name={"Users Over Time"}
             api={red_user_over_time}
             timefilter={timefilter}
             textfilter={textfilter}
@@ -106,7 +119,7 @@ class ChartsLocation extends React.Component {
         </div>
         <div className="col-lg-12">
           <BarVisual
-            name={"Twitter Popular Users"}
+            name={"Popular Users"}
             api={twit_pop_users}
             timefilter={timefilter}
             textfilter={textfilter}
@@ -117,7 +130,7 @@ class ChartsLocation extends React.Component {
             labelY={"Popularity"}
           />
           <BarVisual
-            name={"Reddit Popular Users"}
+            name={"Popular Users"}
             api={red_pop_users}
             timefilter={timefilter}
             textfilter={textfilter}
@@ -130,14 +143,13 @@ class ChartsLocation extends React.Component {
         </div>
         <div className="col-lg-12">
           <Users
-            name={"Latest Posts Twitter"}
+            name={"Latest Posts"}
             api={twit_data}
             textfilter={this.props.textfilter}
             timefilter={timefilter}
-
           />
           <Users
-            name={"Latest Posts Reddit"}
+            name={"Latest Posts"}
             api={reddit_data}
             textfilter={this.props.textfilter}
             timefilter={timefilter}
@@ -145,13 +157,15 @@ class ChartsLocation extends React.Component {
         </div>
         <div className="col-lg-12">
           <Hashtags
-          name={"Hashtag Network"}
-          api={hashtag_data}
-          textfilter={this.props.textfilter}
-          timefilter={timefilter}
-           />
+            name={"Hashtag Network"}
+            api={hashtag_data}
+            textfilter={this.props.textfilter}
+            timefilter={timefilter}
+            spidering={spidering}
+            onNodeSpidering={onNodeSpidering}
+            refreshing={this.props.refreshing}
+          />
         </div>
-
       </div>
     );
   }

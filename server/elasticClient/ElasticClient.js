@@ -17,6 +17,7 @@ const sampler = require('./aggs/sampler');
 const range = require('./aggs/range');
 
 const graph = require('./explore/graph');
+const spidering = require('./explore/spidering');
 
 /**
  * @class ElasticClient
@@ -53,7 +54,7 @@ class ElasticClient {
 
     const { dateField, textField } = this.queryFields;
     const sortByDate = { [dateField]: { order: 'desc' } };
-    const highlight = { fields: { [textField]: {} }, number_of_fragments: 0 };
+    const highlight = { pre_tags: ['<b>'], post_tags: ['</b>'], fields: { [textField]: {} } };
 
     return this.client
       .search({
@@ -142,8 +143,9 @@ class ElasticClient {
     const parentAggName = 'sample';
     const childAggName = 'popular_keywords';
     const query = this.applyFilters(filters);
+    const exclude = (filters && filters.textfilter && [filters.textfilter]) || [];
     const samplerAgg = sampler(parentAggName, this.config.samplerSize);
-    const significantTextAgg = significantText(childAggName, this.queryFields.textField);
+    const significantTextAgg = significantText(childAggName, this.queryFields.textField, exclude);
 
     // Nest significant text into sampler and define result extractor
     const sampledSignificantTextAgg = ElasticClient.nestAgg(
@@ -188,9 +190,7 @@ class ElasticClient {
    * @returns {Promise<Graph>} a graph with vertices and connections
    */
   async hashtagGraph(filters) {
-    if (this.index !== 'tweets') {
-      throw createError(400, 'The hashtagGraph is supported only on the tweets index.');
-    }
+    this.checkIndexSupportsGraph();
     const field = 'hashtags';
     const controls = {
       use_significance: true,
@@ -208,6 +208,44 @@ class ElasticClient {
   }
 
   /**
+   * Get the hashtags graph that starts from a given hashtag.
+   * Hashtags to exclude can be specified, e.g. if they have already been seen.
+   * The given filters are also applied.
+   *
+   * @param {string} hashtag hashtag from which to start exploration
+   * @param {Array<string>} exclude hashtags to exclude from exploration
+   * @param {Filters} filters text and time frame filters
+   */
+  async spiderFromHashtag(hashtag, exclude, filters) {
+    this.checkIndexSupportsGraph();
+    const field = 'hashtags';
+    const controls = {
+      use_significance: true,
+      sample_size: 2000,
+      timeout: 5000,
+    };
+    const query = this.applyFilters(filters);
+    const queryWithSpidering = {
+      ...query,
+      ...spidering(field, hashtag, exclude, controls),
+    };
+    const resultExtractor = qResult => selectFields.graph(qResult);
+
+    return this.explore(queryWithSpidering, resultExtractor);
+  }
+
+  /**
+   * Check that the index this client is connected to supports graph operations.
+   *
+   * @private
+   */
+  checkIndexSupportsGraph() {
+    if (this.index !== 'tweets') {
+      throw createError(400, 'The hashtagGraph is supported only on the tweets index.');
+    }
+  }
+
+  /**
    * Create simple query with filters applied.
    * The default for the time frame filter is '5h'.
    *
@@ -215,9 +253,12 @@ class ElasticClient {
    * @param {Filters} filters text and time frame filters
    * @returns {object} ElasticSearch query with filters applied
    */
-  applyFilters(filters) {
+  applyFilters(filters = {}) {
+    const { fromdatetime: candidateFromdatetime, todatetime = new Date().toISOString() } = filters;
+    const fromdatetime = candidateFromdatetime
+      || datetimeUtils.minusHours(todatetime, this.config.defaultHourRange);
     return applyFiltersImpl(this.config)(
-      filters,
+      { ...filters, fromdatetime, todatetime },
       this.queryFields.dateField,
       this.queryFields.textField,
     );
