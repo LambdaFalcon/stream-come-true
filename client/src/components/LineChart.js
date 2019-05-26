@@ -201,7 +201,13 @@ class Graph extends React.Component {
           axisLabel:{
             color: "rgb(102,102,102)"
           },
-          data: []
+          name: "Time",
+          nameLocation: "middle",
+          data: [],
+          nameTextStyle: {
+            padding: [10, 0, 0, 0],
+            color: "black"
+          },
         }
       ],
       yAxis: [
