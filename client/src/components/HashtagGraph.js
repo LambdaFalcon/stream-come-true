@@ -115,7 +115,7 @@ class HashtagGraph extends React.Component {
       });
     }
     return (  
-      <ReactEcharts ref={this.graphRef} option={getOption()} style={{ height: 300 }}/>
+      <ReactEcharts ref={this.graphRef} option={getOption()} style={{ height: 500 }}/>
         );
     }
 }
