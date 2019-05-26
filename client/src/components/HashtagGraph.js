@@ -2,6 +2,10 @@ import React from "react"
 import ReactEcharts from "echarts-for-react";
 // import echarts from 'echarts';
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTwitter, faReddit } from '@fortawesome/free-brands-svg-icons'
+library.add(faTwitter, faReddit)
+
 class Hashtags extends React.PureComponent{
     render(){
         return(
@@ -9,7 +13,7 @@ class Hashtags extends React.PureComponent{
                 <div className="col-xs-6">
                     <div className="panel panel-default">
                         <div className="panel-heading">
-                            {this.props.name}
+                            {this.props.icon} {this.props.name}
                         </div>
                         <div className="panel-body">
                         <HashtagGraph id='networkg' timefilter={this.props.timefilter} api={this.props.api} textfilter={this.props.textfilter}/>

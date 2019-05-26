@@ -172,6 +172,7 @@ class ChartsLocation extends React.Component {
         <div className="col-lg-12">
           <Hashtags
             name={"Hashtag Network"}
+            icon={<FontAwesomeIcon size="1x" icon={faTwitter} color={"#38A1F3"}/>}
             api={hashtag_data}
             textfilter={this.props.textfilter}
             timefilter={timefilter}
