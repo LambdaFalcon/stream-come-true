@@ -3,11 +3,6 @@ import ReactEcharts from "echarts-for-react";
 
 const DAY = 24 * 60 * 60 * 1000;
 
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTwitter, faReddit } from '@fortawesome/free-brands-svg-icons'
-library.add(faTwitter, faReddit)
-
 class OverTime extends React.Component {
   render() {
     const {
@@ -21,7 +16,9 @@ class OverTime extends React.Component {
     return (
       <div className="col-xs-6">
         <div className="panel panel-default">
-          <div className="panel-heading">{this.props.icon} {this.props.name}</div>
+          <div className="panel-heading">
+            {this.props.icon} {this.props.name}
+          </div>
           <div className="panel-body">
             <Graph
               api={api}
@@ -68,8 +65,8 @@ class Graph extends React.Component {
     if (this.props.timefilter !== prevProps.timefilter) {
       this.fetchData();
     }
-    if(this.props.refreshing !== prevProps.refreshing){
-      this.resetEchartsDrag()
+    if (this.props.refreshing !== prevProps.refreshing) {
+      this.resetEchartsDrag();
     }
   }
 
@@ -98,7 +95,8 @@ class Graph extends React.Component {
       .then(res => res.json())
       .then(res => {
         this.updateGraph(res);
-      });
+      })
+      .catch(console.log);
   }
   formatDate(time) {
     const date = new Date(time);
@@ -145,7 +143,7 @@ class Graph extends React.Component {
             last - first < DAY
               ? this.formatTime(item.time)
               : this.formatDate(item.time),
-          actual: item.time,
+          actual: item.time
         };
       });
     } else {
@@ -203,7 +201,7 @@ class Graph extends React.Component {
         {
           type: "category",
           boundaryGap: true,
-          axisLabel:{
+          axisLabel: {
             color: "rgb(102,102,102)"
           },
           name: "Time",
@@ -212,7 +210,7 @@ class Graph extends React.Component {
           nameTextStyle: {
             padding: [10, 0, 0, 0],
             color: "black"
-          },
+          }
         }
       ],
       yAxis: [
@@ -225,7 +223,7 @@ class Graph extends React.Component {
             padding: [0, 0, 28, 0],
             color: "black"
           },
-          axisLabel:{
+          axisLabel: {
             color: "rgb(102,102,102)"
           },
           min: 0,
@@ -263,7 +261,7 @@ class Graph extends React.Component {
   }
   resetEchartsDrag() {
     let { refreshing } = this.props;
-    
+
     this.echarts_react.getEchartsInstance().dispatchAction({
       type: "brush",
       command: "clear",
@@ -279,10 +277,10 @@ class Graph extends React.Component {
           brushMode: "single"
         }
       });
-    }else{
+    } else {
       this.echarts_react.getEchartsInstance().dispatchAction({
-        type:"takeGlobalCursor"
-      })
+        type: "takeGlobalCursor"
+      });
     }
   }
 

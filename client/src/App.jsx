@@ -3,17 +3,16 @@ import React from "react";
 import Menu from "./components/Menu";
 import ChartsLocation from "./components/ChartsLocations";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./css/styles.css"
+import "./css/styles.css";
 import "react-widgets/dist/css/react-widgets.css";
 import ToggleButton from "react-toggle-button";
 import { DropdownList } from "react-widgets";
 
 //register font awesome icons
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSmile, faMeh, faFrown } from '@fortawesome/free-solid-svg-icons'
-library.add(faSmile, faMeh, faFrown)
-
-
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faSmile, faMeh, faFrown } from "@fortawesome/free-solid-svg-icons";
+import { faTwitter, faReddit } from "@fortawesome/free-brands-svg-icons";
+library.add(faTwitter, faReddit, faSmile, faMeh, faFrown);
 
 class App extends React.Component {
   constructor(props) {
@@ -58,7 +57,9 @@ class App extends React.Component {
       <div className="App">
         <Menu
           handler={this.handleChange.bind(this)}
-          handleTimeIntervalChangeObjectBased={this.handleTimeIntervalChangeObjectBased.bind(this)}
+          handleTimeIntervalChangeObjectBased={this.handleTimeIntervalChangeObjectBased.bind(
+            this
+          )}
           fromdate={this.state.fromdate}
           todate={this.state.todate}
           refreshing={this.state.refreshing}
@@ -122,12 +123,14 @@ class App extends React.Component {
   }
 
   //returns component with toggle and period selector
-  getRefreshControls(){
+  getRefreshControls() {
     let periodSlection = [
-      (<span key={1} style={{ marginLeft: 10, marginRight: 10 }}>Period:</span>),
-      (<DropdownList
+      <span key={1} style={{ marginLeft: 10, marginRight: 10 }}>
+        Period:
+      </span>,
+      <DropdownList
         data={this.state.selectablePeriods}
-        style={{width:100}}
+        style={{ width: 100 }}
         disabled={!this.state.refreshing}
         value={this.state.refreshTimePeriod}
         key={2}
@@ -136,23 +139,22 @@ class App extends React.Component {
             this.startRefreshing();
           });
         }}
-        
         textField="label"
         valueField="value"
-      />)]
+      />
+    ];
     return (
       <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={{ marginRight: 5 }}>Auto Refresh:</span>
-          <ToggleButton
-            value={this.state.refreshing}
-            onToggle={value => {
-              this.toggleRefreshing(value);
-            }}
-          />
-          {this.state.refreshing? periodSlection: null}
-          
-        </div>
-    )
+        <span style={{ marginRight: 5 }}>Auto Refresh:</span>
+        <ToggleButton
+          value={this.state.refreshing}
+          onToggle={value => {
+            this.toggleRefreshing(value);
+          }}
+        />
+        {this.state.refreshing ? periodSlection : null}
+      </div>
+    );
   }
 
   validDateRange(from, to) {
@@ -172,7 +174,6 @@ class App extends React.Component {
       ...o
     });
   }
-
 
   getTimeFilter() {
     const { fromdate, todate } = this.state;
