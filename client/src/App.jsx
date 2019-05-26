@@ -57,6 +57,7 @@ class App extends React.Component {
           todate={this.state.todate}
           refreshing={this.state.refreshing}
           refreshControlls={this.getRefreshControls()}
+          textfilter={this.state.textfilter}
         />
         <ChartsLocation
           textfilter={this.state.textfilter}
