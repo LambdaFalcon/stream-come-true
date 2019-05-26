@@ -47,7 +47,8 @@ class Graph extends React.Component {
     }
     this.state = {
       option: this.getDefaultOption(),
-      data: []
+      data: [],
+      coords: []
     };
   }
 
@@ -62,33 +63,25 @@ class Graph extends React.Component {
     if (this.props.timefilter !== prevProps.timefilter) {
       this.fetchData();
     }
+    if(this.props.refreshing !== prevProps.refreshing){
+      this.resetEchartsDrag()
+    }
   }
-  //disables removes the selection rectangle
-  _resetSelectionState() {
-    this.setState(() => ({
-      refAreaLeft: "",
-      refAreaRight: ""
-    }));
-  }
+
   //calls this.props.onChangeTimeInterval
   changeTimeInterval() {
     let { onChangeTimeInterval } = this.props;
-    let { refAreaLeft, refAreaRight } = this.state;
-    //if the from and to time are the same or there is no onChangeTimeInterval callback
-    //we return immediately
-    if (
-      refAreaLeft === refAreaRight ||
-      refAreaRight === "" ||
-      !onChangeTimeInterval
-    ) {
-      this._resetSelectionState();
-      return;
+    let { coords, data } = this.state;
+    if (coords.length === 2) {
+      let dateTimeL = data[coords[0]].time;
+      let dateTimeR = data[coords[1]].time;
+      const fromDate = new Date(Math.min(dateTimeL, dateTimeR));
+      const toDate = new Date(Math.max(dateTimeL, dateTimeR));
+      onChangeTimeInterval(fromDate, toDate);
+      this.setState({ coords: [] });
     }
-    const fromDate = new Date(Math.min(refAreaLeft, refAreaRight));
-    const toDate = new Date(Math.max(refAreaLeft, refAreaRight));
+
     //call calback
-    onChangeTimeInterval(fromDate, toDate);
-    this._resetSelectionState();
   }
 
   fetchData() {
@@ -138,7 +131,7 @@ class Graph extends React.Component {
     //note data.length is not always 100 it is usually in [99,101]
 
     //if time between first and last item is more than 24h we display dates instead of times
-    if(data.length !== 0){
+    if (data.length !== 0) {
       let first = data[0].time;
       let last = data[data.length - 1].time;
       option.xAxis[0].data = data.map(item => {
@@ -150,16 +143,17 @@ class Graph extends React.Component {
           actual: item.time
         };
       });
-    }else{
-      option.xAxis[0].data = []
+    } else {
+      option.xAxis[0].data = [];
     }
-    
+
     //updating data for all series
     option.series.forEach(item => {
-      item.data = data.map(x=> x[item.dataKey])
-    })
+      item.data = data.map(x => x[item.dataKey]);
+    });
     this.setState({
-      option: option
+      option: option,
+      data: data
     });
   }
   /**
@@ -199,12 +193,7 @@ class Graph extends React.Component {
         }
       },
       //only displaying legend if we display more than one thing
-      legend: series.length > 1 ? {orient: "horizontal"} : false,
-      dataZoom: {
-        show: false,
-        start: 0,
-        end: 100
-      },
+      legend: series.length > 1 ? { orient: "horizontal" } : false,
       xAxis: [
         {
           type: "category",
@@ -225,12 +214,76 @@ class Graph extends React.Component {
           boundaryGap: [0.2, 0.2]
         }
       ],
+      brush: {
+        xAxisIndex: "all",
+        brushLink: "all",
+        outOfBrush: {
+          colorAlpha: 0.1
+        }
+      },
       series: series
     };
   }
+  setUpInteractions(c) {
+    if (!this.props.refreshing) {
+      c.dispatchAction({
+        type: "takeGlobalCursor",
+        key: "brush",
+        brushOption: {
+          brushType: "lineX",
+          brushMode: "single"
+        }
+      });
+    }
 
+    c.on("brushSelected", params => {
+      if (params.batch[0].areas.length === 1) {
+        let area = params.batch[0].areas[0];
+        this.setState({ coords: area.coordRange });
+      }
+    });
+  }
+  resetEchartsDrag() {
+    let { refreshing } = this.props;
+    
+    this.echarts_react.getEchartsInstance().dispatchAction({
+      type: "brush",
+      command: "clear",
+      areas: []
+    });
+    if (!refreshing) {
+      //go back into drag mode
+      this.echarts_react.getEchartsInstance().dispatchAction({
+        type: "takeGlobalCursor",
+        key: "brush",
+        brushOption: {
+          brushType: "lineX",
+          brushMode: "single"
+        }
+      });
+    }else{
+      this.echarts_react.getEchartsInstance().dispatchAction({
+        type:"takeGlobalCursor"
+      })
+    }
+  }
+
+  endDrag() {
+    this.resetEchartsDrag();
+    this.changeTimeInterval();
+  }
   render() {
-    return <ReactEcharts ref="echarts_react" option={this.state.option} />;
+    return (
+      <div onMouseUp={this.endDrag.bind(this)}>
+        <ReactEcharts
+          onChartReady={this.setUpInteractions.bind(this)}
+          ref={e => {
+            this.echarts_react = e;
+          }}
+          option={this.state.option}
+        />
+      </div>
+    );
   }
 }
 
