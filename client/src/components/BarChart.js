@@ -9,13 +9,16 @@ import {
   Tooltip,
   Label
 } from "recharts";
+
 class BarVisual extends React.PureComponent {
   render() {
     const { textfilter, timefilter, onTextFilterChange } = this.props;
     return (
       <div className="col-xs-6">
         <div className="panel panel-default">
-          <div className="panel-heading">{this.props.name}</div>
+          <div className="panel-heading">
+            {this.props.icon} {this.props.name}
+          </div>
           <div className="panel-body">
             <Graph
               api={this.props.api}
@@ -62,15 +65,13 @@ class Graph extends React.Component {
         `?textfilter=${this.props.textfilter || ""}` +
         (this.props.timefilter ? this.props.timefilter : "")
     )
-      .then(res => {
-        return res;
-      })
       .then(res => res.json())
       .then(res => {
         this.setState({
           data: res
         });
-      });
+      })
+      .catch(console.log);
   }
 
   changeTextFilter(keyword) {
@@ -80,7 +81,7 @@ class Graph extends React.Component {
 
   handleClick = data => {
     // this handler should only work for the keyword bar charts
-    if(this.changeTextFilter && data.keyword){
+    if (this.changeTextFilter && data.keyword) {
       this.setState({
         textfilter: data.keyword
       });
@@ -98,13 +99,29 @@ class Graph extends React.Component {
         textfilter={textfilter}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={this.props.x} allowDuplicatedCategory={false} type={"category"} allowDataOverflow={false} interval={0} tick={{fontSize:9}}>
-          <Label value={this.props.labelX} offset={-3} position="insideBottom"/>
+        <XAxis
+          dataKey={this.props.x}
+          allowDuplicatedCategory={false}
+          type={"category"}
+          allowDataOverflow={false}
+          interval={0}
+          tick={{ fontSize: 9 }}
+        >
+          <Label
+            value={this.props.labelX}
+            offset={-3}
+            position="insideBottom"
+          />
         </XAxis>
-        <YAxis type={"number"} tick={{fontSize: 9}}>
-          <Label value={this.props.labelY} offset={10} position="insideLeft" angle={-90}/>
+        <YAxis type={"number"} tick={{ fontSize: 9 }}>
+          <Label
+            value={this.props.labelY}
+            offset={10}
+            position="insideLeft"
+            angle={-90}
+          />
         </YAxis>
-        <Tooltip separator=":" offset={10} filterNull={true} active={true}/>
+        <Tooltip separator=":" offset={10} filterNull={true} active={true} />
         <Bar
           dataKey={this.props.y}
           fill="#8884d8"

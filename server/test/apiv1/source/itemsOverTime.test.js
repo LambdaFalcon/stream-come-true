@@ -24,6 +24,11 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
       res.body.should.be.instanceOf(Array);
     });
 
+    it('should return an array of at most 101 elements', async () => {
+      const res = await getRequest(itemsOverTimeRoute);
+      res.body.length.should.be.at.most(101);
+    });
+
     it('should contain elements with the correct properties', async () => {
       const res = await getRequest(itemsOverTimeRoute);
       res.body.forEach((item) => {
@@ -53,7 +58,7 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
   });
 
   describe('with text filter', () => {
-    const textfilter = 'apex';
+    const textfilter = testUtils.textFilter;
     const filters = `?textfilter=${textfilter}`;
     const itemsOverTimeRoute = `${route}/items_over_time${filters}`;
 
@@ -61,6 +66,11 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
       const res = await getRequest(itemsOverTimeRoute);
       res.should.have.status(200);
       res.body.should.be.instanceOf(Array);
+    });
+
+    it('should return an array of at most 101 elements', async () => {
+      const res = await getRequest(itemsOverTimeRoute);
+      res.body.length.should.be.at.most(101);
     });
 
     it('should contain elements with the correct properties', async () => {
@@ -92,9 +102,12 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
   });
 
   describe('with time frame filter', () => {
-    const fiveMinutesAgo = testUtils.getNMinutesAgo(5, true);
-    const tenMinutesAgo = testUtils.getNMinutesAgo(10, false);
+    const fiveMinutesAgo = testUtils.getNMinutesAgo(5);
+    const tenMinutesAgo = testUtils.getNMinutesAgo(10);
     const filters = `?fromdatetime=${tenMinutesAgo.toISOString()}&todatetime=${fiveMinutesAgo.toISOString()}`;
+
+    const fiveMinutesAgoRounded = testUtils.getNMinutesAgo(5, { ceil: true });
+    const tenMinutesAgoRounded = testUtils.getNMinutesAgo(10, { floor: true });
 
     const itemsOverTimeRoute = `${route}/items_over_time${filters}`;
 
@@ -102,6 +115,11 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
       const res = await getRequest(itemsOverTimeRoute);
       res.should.have.status(200);
       res.body.should.be.instanceOf(Array);
+    });
+
+    it('should return an array of at most 101 elements', async () => {
+      const res = await getRequest(itemsOverTimeRoute);
+      res.body.length.should.be.at.most(101);
     });
 
     it('should contain elements with the correct properties', async () => {
@@ -133,8 +151,8 @@ describe('/api/v1/twitter/items_over_time ROUTE', function itemsOverTimeTest() {
 
     it('should contain elements that are within the time frame filter', async () => {
       const res = await getRequest(itemsOverTimeRoute);
-      res.body.map(item => new Date(item.time)).should.all.be.at.most(fiveMinutesAgo);
-      res.body.map(item => new Date(item.time)).should.all.be.at.least(tenMinutesAgo);
+      res.body.map(item => new Date(item.time)).should.all.be.at.most(fiveMinutesAgoRounded);
+      res.body.map(item => new Date(item.time)).should.all.be.at.least(tenMinutesAgoRounded);
     });
   });
 });

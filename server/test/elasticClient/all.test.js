@@ -1,8 +1,10 @@
 // Import the dependencies for testing
 const chai = require('chai');
 const chaiThings = require('chai-things');
+
 const config = require('../../config');
 const ElasticClient = require('../../elasticClient/ElasticClient');
+const testUtils = require('../utils');
 
 // Configure chai
 chai.should();
@@ -53,7 +55,7 @@ describe('ElasticClient.all()', function allTest() {
   });
 
   describe('with text filter', () => {
-    const textfilter = 'apex';
+    const textfilter = testUtils.textFilter;
     const filters = { textfilter };
 
     it('should return an array', async () => {
@@ -63,7 +65,22 @@ describe('ElasticClient.all()', function allTest() {
 
     it('should contain elements that match the text filter', async () => {
       const res = await client.all(filters);
-      res.map(item => item.text.toLowerCase()).should.all.have.string(`<em>${textfilter}</em>`);
+      res.map(item => item.text.toLowerCase()).should.all.have.string(`<b>${textfilter}</b>`);
+    });
+  });
+
+  describe('with query string as text filter', () => {
+    const positiveSentimentFilters = { textfilter: 'sentiment:>0.5' };
+    const screenNameFilters = { textfilter: 'screen_name:BBC' };
+
+    it('should contain elements that match a query string for sentiment', async () => {
+      const res = await client.all(positiveSentimentFilters);
+      res.map(item => item.sentiment).should.all.be.above(0.5);
+    });
+
+    it('should contain elements that match a query string for screen_name', async () => {
+      const res = await client.all(screenNameFilters);
+      res.map(item => item.screen_name).should.all.equal('BBC');
     });
   });
 

@@ -1,35 +1,35 @@
 import React from "react";
+import ReactEcharts from "echarts-for-react";
 
-import {
-  Line,
-  LineChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ReferenceArea,
-  Label
-} from "recharts";
+const DAY = 24 * 60 * 60 * 1000;
 
 class OverTime extends React.Component {
   render() {
-    const {onChangeTimeInterval, textfilter,timefilter, x, y, api} = this.props
+    const {
+      onChangeTimeInterval,
+      textfilter,
+      timefilter,
+      bars,
+      lines,
+      api
+    } = this.props;
     return (
       <div className="col-xs-6">
         <div className="panel panel-default">
-          <div className="panel-heading">{this.props.name}</div>
+          <div className="panel-heading">
+            {this.props.icon} {this.props.name}
+          </div>
           <div className="panel-body">
-            <Graph 
-            api={api} 
-            textfilter={textfilter} 
-            timefilter={timefilter} 
-            onChangeTimeInterval={onChangeTimeInterval} 
-            x={x} 
-            y={y}
-            sentiment={this.props.sentiment}
-            refreshing={this.props.refreshing}
-            labelX={this.props.labelX}
-            labelY={this.props.labelY}  
+            <Graph
+              api={api}
+              textfilter={textfilter}
+              timefilter={timefilter}
+              onChangeTimeInterval={onChangeTimeInterval}
+              refreshing={this.props.refreshing}
+              labelX={this.props.labelX}
+              labelY={this.props.labelY}
+              bars={bars}
+              lines={lines}
             />
           </div>
         </div>
@@ -38,14 +38,19 @@ class OverTime extends React.Component {
   }
 }
 class Graph extends React.Component {
+  static defaultProps = {
+    bars: [],
+    lines: []
+  };
   constructor(props) {
     super(props);
+    if (props.bars.length + props.lines.length < 1) {
+      throw new Error("At least one bar or line needs to be defined");
+    }
     this.state = {
-      //stores the value of where we start the drag process
-      refAreaLeft: "",
-      //stores the value of where we end the drag prrocess
-      refAreaRight: "",
-      data: []
+      option: this.getDefaultOption(),
+      data: [],
+      coords: []
     };
   }
 
@@ -57,88 +62,245 @@ class Graph extends React.Component {
     if (this.props.textfilter !== prevProps.textfilter) {
       this.fetchData();
     }
-    if(this.props.timefilter !== prevProps.timefilter){
-      this.fetchData()
+    if (this.props.timefilter !== prevProps.timefilter) {
+      this.fetchData();
+    }
+    if (this.props.refreshing !== prevProps.refreshing) {
+      this.resetEchartsDrag();
     }
   }
-  //disables removes the selection rectangle
-  _resetSelectionState() {
-    this.setState(() => ({
-      refAreaLeft: "",
-      refAreaRight: ""
-    }));
-  }
+
   //calls this.props.onChangeTimeInterval
   changeTimeInterval() {
-    let {onChangeTimeInterval} = this.props
-    let { refAreaLeft, refAreaRight} = this.state;
-    //if the from and to time are the same or there is no onChangeTimeInterval callback
-    //we return immediately
-    if (refAreaLeft === refAreaRight || refAreaRight === "" || !onChangeTimeInterval ) {
-      this._resetSelectionState();
-      return;
+    let { onChangeTimeInterval } = this.props;
+    let { coords, data } = this.state;
+    if (coords.length === 2) {
+      let dateTimeL = data[coords[0]].time;
+      let dateTimeR = data[coords[1]].time;
+      const fromDate = new Date(Math.min(dateTimeL, dateTimeR));
+      const toDate = new Date(Math.max(dateTimeL, dateTimeR));
+      onChangeTimeInterval(fromDate, toDate);
+      this.setState({ coords: [] });
     }
-    const fromDate = new Date(Math.min(refAreaLeft, refAreaRight))
-    const toDate = new Date(Math.max(refAreaLeft, refAreaRight))
+
     //call calback
-    onChangeTimeInterval(fromDate, toDate)
-    this._resetSelectionState();
   }
 
   fetchData() {
-    fetch(this.props.api + `?textfilter=${this.props.textfilter || ""}` + (this.props.timefilter ? this.props.timefilter : ""))
+    fetch(
+      this.props.api +
+        `?textfilter=${this.props.textfilter || ""}` +
+        (this.props.timefilter ? this.props.timefilter : "")
+    )
       .then(res => res.json())
       .then(res => {
-        this.setState({
-          data: res
-        });
-      });
+        this.updateGraph(res);
+      })
+      .catch(console.log);
   }
   formatDate(time) {
     const date = new Date(time);
+    return date.toLocaleDateString("it-IT");
+  }
+  formatTime(time) {
+    const date = new Date(time);
     return date.toLocaleTimeString("it-IT");
   }
-  render() {
-    const { refAreaLeft, refAreaRight } = this.state;
-    return (
-      <LineChart
-        width={730}
-        height={250}
-        /*making the chart interactive*/
-        onMouseDown={e => this.setState({ refAreaLeft: e.activeLabel })}
-        onMouseMove={e =>
-          this.state.refAreaLeft &&
-          this.setState({ refAreaRight: e.activeLabel })
+  formatDateTime(time) {
+    const date = new Date(time);
+    return date.toLocaleString("it-IT");
+  }
+  /**
+   *
+   * @param {[series information]} params
+   */
+  formatTooltip(params) {
+    let { option } = this.state;
+    let timeAxis = option.xAxis[0].data;
+    let index = params[0].dataIndex;
+
+    let fromString = this.formatDateTime(timeAxis[index].actual);
+    let toString = timeAxis[index + 1]
+      ? this.formatDateTime(timeAxis[index + 1].actual)
+      : "now";
+    let ret = `<div>${fromString} - ${toString} </di>`;
+    params.forEach(item => {
+      ret += `<div>${item.seriesName}: ${item.value}</div>`;
+    });
+    return ret;
+  }
+  updateGraph(data) {
+    const option = this.getDefaultOption();
+    //note data.length is not always 100 it is usually in [99,101]
+
+    //if time between first and last item is more than 24h we display dates instead of times
+    if (data.length !== 0) {
+      let first = data[0].time;
+      let last = data[data.length - 1].time;
+      option.xAxis[0].data = data.map(item => {
+        return {
+          value:
+            last - first < DAY
+              ? this.formatTime(item.time)
+              : this.formatDate(item.time),
+          actual: item.time
+        };
+      });
+    } else {
+      option.xAxis[0].data = [];
+    }
+
+    //updating data for all series
+    option.series.forEach(item => {
+      item.data = data.map(x => x[item.dataKey]);
+    });
+    this.setState({
+      option: option,
+      data: data
+    });
+  }
+  /**
+   * returns the echarts options that are not dependent on the fetched data
+   */
+  getDefaultOption() {
+    let { bars, lines } = this.props;
+    let series = [];
+    lines.forEach(conf =>
+      series.push({
+        type: "line",
+        name: conf.name,
+        color: conf.color,
+        dataKey: conf.dataKey,
+        smooth: true,
+        data: []
+      })
+    );
+    bars.forEach(conf =>
+      series.push({
+        type: "bar",
+        stack: conf.stack,
+        name: conf.name,
+        color: conf.color,
+        dataKey: conf.dataKey,
+        data: []
+      })
+    );
+    return {
+      title: {
+        // text:'We could put a title here as well',
+      },
+      tooltip: {
+        trigger: "axis",
+        formatter: params => {
+          return this.formatTooltip(params);
         }
-        onMouseUp={this.changeTimeInterval.bind(this)}
-        data={this.state.data}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={this.props.x} tickFormatter={this.formatDate} allowDuplicatedCategory={false} allowDataOverflow={false} minTickGap={7} tick={{fontSize: 9}}>
-          <Label value={this.props.labelX} offset={-3} position="insideBottom"/>
-        </XAxis>
-        <YAxis minTickGap={5} tickSize={3} tick={{fontSize: 9}}>
-          <Label value={this.props.labelY} offset={10} position="insideLeft" angle={-90}/>
-        </YAxis>
-        <Tooltip filterNull={true} labelFormatter={this.formatDate} separator=":" offset={10} active={true}/>
+      },
+      //only displaying legend if we display more than one thing
+      legend: series.length > 1 ? { orient: "horizontal" } : false,
+      xAxis: [
+        {
+          type: "category",
+          boundaryGap: true,
+          axisLabel: {
+            color: "rgb(102,102,102)"
+          },
+          name: "Time",
+          nameLocation: "middle",
+          data: [],
+          nameTextStyle: {
+            padding: [10, 0, 0, 0],
+            color: "black"
+          }
+        }
+      ],
+      yAxis: [
+        {
+          type: "value",
+          scale: true,
+          name: "Count",
+          nameLocation: "middle",
+          nameTextStyle: {
+            padding: [0, 0, 28, 0],
+            color: "black"
+          },
+          axisLabel: {
+            color: "rgb(102,102,102)"
+          },
+          min: 0,
+          boundaryGap: [0.2, 0.2]
+        }
+      ],
+      brush: {
+        xAxisIndex: "all",
+        brushLink: "all",
+        outOfBrush: {
+          colorAlpha: 0.1
+        }
+      },
+      series: series
+    };
+  }
+  setUpInteractions(c) {
+    if (!this.props.refreshing) {
+      c.dispatchAction({
+        type: "takeGlobalCursor",
+        key: "brush",
+        brushOption: {
+          brushType: "lineX",
+          brushMode: "single"
+        }
+      });
+    }
 
-        {/* line for data and optionally lines for sentiment */}
-        <Line type="monotone" dataKey={this.props.y} stroke="#8884d8" activeDot={true} dot={false}/>
-        {this.props.sentiment && !this.props.refreshing && <Line type="monotone" dataKey={`positive_${this.props.y}`} stroke={"green"} strokeDasharray={"3 3"} strokeWidth={0.5} activeDot={true} dot={false}/>}
-        {this.props.sentiment && !this.props.refreshing && <Line type="monotone" dataKey={`negative_${this.props.y}`} stroke={"red"} strokeDasharray={"3 3"} strokeWidth={0.5} activeDot={true} dot={false}/>}
+    c.on("brushSelected", params => {
+      if (params.batch[0].areas.length === 1) {
+        let area = params.batch[0].areas[0];
+        this.setState({ coords: area.coordRange });
+      }
+    });
+  }
+  resetEchartsDrag() {
+    let { refreshing } = this.props;
 
-        {/*the reference area is a rectangle representing the new time selection*/}
-        {refAreaLeft && refAreaRight ? (
-          <ReferenceArea
-            x1={refAreaLeft}
-            x2={refAreaRight}
-            strokeOpacity={0.3}
-          />
-        ) : null}
-        </LineChart>
-      );
+    this.echarts_react.getEchartsInstance().dispatchAction({
+      type: "brush",
+      command: "clear",
+      areas: []
+    });
+    if (!refreshing) {
+      //go back into drag mode
+      this.echarts_react.getEchartsInstance().dispatchAction({
+        type: "takeGlobalCursor",
+        key: "brush",
+        brushOption: {
+          brushType: "lineX",
+          brushMode: "single"
+        }
+      });
+    } else {
+      this.echarts_react.getEchartsInstance().dispatchAction({
+        type: "takeGlobalCursor"
+      });
     }
   }
 
+  endDrag() {
+    this.resetEchartsDrag();
+    this.changeTimeInterval();
+  }
+  render() {
+    return (
+      <div onMouseUp={this.endDrag.bind(this)}>
+        <ReactEcharts
+          onChartReady={this.setUpInteractions.bind(this)}
+          ref={e => {
+            this.echarts_react = e;
+          }}
+          option={this.state.option}
+        />
+      </div>
+    );
+  }
+}
 
 export default OverTime;
