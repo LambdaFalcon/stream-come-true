@@ -15,7 +15,7 @@ const postRequest = async (path, body) => chai
   .post(path)
   .send(body);
 
-describe('/api/v1/twitter/hashtag_graph ROUTE', function spiderFromHashtagTest() {
+describe.skip('/api/v1/twitter/hashtag_graph ROUTE', function spiderFromHashtagTest() {
   this.timeout(5000);
   const hashtagGraphRoute = `${route}/hashtag_graph`;
 
