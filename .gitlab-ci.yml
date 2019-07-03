@@ -10,7 +10,9 @@ services:
 variables:
   NODE: node:10.15.3
   IMAGE_TAG_STAGING: stream-come-true:staging
+  STAGING_PORT: 9999
   IMAGE_TAG_LATEST: stream-come-true:latest
+  RELEASE_PORT: 80
 
 stages:
   - build
@@ -98,7 +100,7 @@ deploy as staging:
     - dind
   script:
     - docker info
-    - docker build -t $IMAGE_TAG_STAGING .
+    - docker build -t $IMAGE_TAG_STAGING --build-arg port=$STAGING_PORT .
     - docker image ls
     - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin
     - docker tag $IMAGE_TAG_STAGING $REGISTRY_USER/$IMAGE_TAG_STAGING
@@ -116,7 +118,7 @@ deploy as latest:
     - dind
   script:
     - docker info
-    - docker build -t $IMAGE_TAG_LATEST .
+    - docker build -t $IMAGE_TAG_LATEST --build-arg port=$RELEASE_PORT .
     - docker image ls
     - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin
     - docker tag $IMAGE_TAG_LATEST $REGISTRY_USER/$IMAGE_TAG_LATEST
