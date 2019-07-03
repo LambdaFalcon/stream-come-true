@@ -10,7 +10,7 @@ chai.use(chaiThings);
 
 const client = new ElasticClient('twitter', config);
 
-describe('ElasticClient.spiderFromHashtag()', function spiderFromHashtagTest() {
+describe.skip('ElasticClient.spiderFromHashtag()', function spiderFromHashtagTest() {
   this.timeout(5000);
 
   describe('without filters', () => {

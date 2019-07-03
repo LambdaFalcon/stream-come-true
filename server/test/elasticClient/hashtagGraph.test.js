@@ -12,7 +12,7 @@ chai.use(chaiThings);
 
 const client = new ElasticClient('twitter', config);
 
-describe('ElasticClient.hashtagGraph()', function hashtagGraphTest() {
+describe.skip('ElasticClient.hashtagGraph()', function hashtagGraphTest() {
   this.timeout(5000);
 
   describe('without filters', () => {
