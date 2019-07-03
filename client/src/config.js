@@ -1,4 +1,4 @@
-const port = 9999;
+const port = process.env.REACT_APP_PORT;
 const baseUrl =
   process.env.NODE_ENV === "development"
     ? "http://localhost:9000/"
