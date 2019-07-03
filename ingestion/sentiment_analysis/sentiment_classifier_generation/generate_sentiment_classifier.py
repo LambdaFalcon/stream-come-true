@@ -49,8 +49,6 @@ def read_data(file):
     ps = PorterStemmer()
     #clean text
     df['text'] = df['text'].swifter.apply(lambda x: clean_text(x, ps, stop_words))
-    print(df)
-    exit(0)
     return df
 
 def get_training_data(data, size):
